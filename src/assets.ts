@@ -66,4 +66,6 @@ export const assets = {
   whyCustomersImg: 'https://www.figma.com/api/mcp/asset/fd315ac2-95bc-44e7-950c-d59fc07d08c5',
   // Footer background "ZUPER" text
   footerBgText: 'https://www.figma.com/api/mcp/asset/e80d2bc1-70f3-459c-a51b-f6446379142c',
+  // Hero orange gradient background
+  heroOrangeBg: 'https://www.figma.com/api/mcp/asset/0b1a3572-6cdc-4c48-a2e4-04d0c330e628',
 }

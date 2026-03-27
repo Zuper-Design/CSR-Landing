@@ -13,9 +13,9 @@ export default {
         },
       },
       fontFamily: {
+        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
-        'dm-sans': ['DM Sans', 'sans-serif'],
-        'geist-mono': ['Geist Mono', 'monospace'],
+        'space-mono': ['Space Mono', 'monospace'],
       },
     },
   },
