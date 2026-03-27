@@ -322,6 +322,9 @@ function Hero() {
             <stop offset="0%" stopColor="#e05828" stopOpacity="0.6" />
             <stop offset="100%" stopColor="transparent" stopOpacity="0" />
           </radialGradient>
+          <filter id="heroBlur">
+            <feGaussianBlur stdDeviation="50" />
+          </filter>
           <filter id="heroNoise">
             <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
             <feColorMatrix type="saturate" values="0" />
@@ -334,12 +337,14 @@ function Hero() {
         <rect width="1440" height="900" fill="url(#heroGlow2)" opacity="0.7" />
         {/* Center glow */}
         <rect width="1440" height="900" fill="url(#heroGlow3)" />
-        {/* Geometric shapes for depth */}
-        <polygon points="0,0 500,0 300,500 0,400" fill="rgba(0,0,0,0.12)" />
-        <polygon points="600,0 1440,0 1440,350 800,450" fill="rgba(0,0,0,0.08)" />
-        <polygon points="200,400 700,300 900,700 400,900 0,900 0,600" fill="rgba(0,0,0,0.06)" />
-        <polygon points="1000,200 1440,100 1440,600 1100,700 900,500" fill="rgba(0,0,0,0.10)" />
-        <polygon points="0,700 300,500 600,800 400,900 0,900" fill="rgba(255,120,50,0.08)" />
+        {/* Geometric shapes for depth — blurred */}
+        <g filter="url(#heroBlur)">
+          <polygon points="0,0 500,0 300,500 0,400" fill="rgba(0,0,0,0.12)" />
+          <polygon points="600,0 1440,0 1440,350 800,450" fill="rgba(0,0,0,0.08)" />
+          <polygon points="200,400 700,300 900,700 400,900 0,900 0,600" fill="rgba(0,0,0,0.06)" />
+          <polygon points="1000,200 1440,100 1440,600 1100,700 900,500" fill="rgba(0,0,0,0.10)" />
+          <polygon points="0,700 300,500 600,800 400,900 0,900" fill="rgba(255,120,50,0.08)" />
+        </g>
         {/* Subtle texture */}
         <rect width="1440" height="900" opacity="0.03" filter="url(#heroNoise)" />
       </svg>
