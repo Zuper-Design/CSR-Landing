@@ -27,11 +27,15 @@ function Chip({ children, className = '' }: { children: React.ReactNode; classNa
   )
 }
 
-function SectionEyebrow({ icon, label }: { icon: string; label: string }) {
+function SectionEyebrow({ label }: { icon?: string; label: string }) {
   return (
-    <Chip>
-      <span>{icon}</span>{label}
-    </Chip>
+    <span
+      className="inline-flex items-center gap-1.5 px-4 py-[6px] rounded-full text-[11px] font-['Space_Mono',monospace] font-medium tracking-[0.06em] uppercase"
+      style={{ background: 'rgba(253,80,0,0.06)', color: '#fd5000' }}
+    >
+      <span className="w-[5px] h-[5px] rounded-full bg-[#fd5000]" />
+      {label}
+    </span>
   )
 }
 
@@ -120,10 +124,16 @@ function Navbar() {
         </nav>
         <span className="lg:hidden" />
         <div className="hidden lg:flex items-center gap-3">
-          <button className="border border-[#f8f5f1]/80 text-[#f8f5f1] font-inter font-bold text-[14px] px-6 py-[11px] rounded-[8px] hover:bg-white/10 transition-colors whitespace-nowrap">
+          <button className="text-[#f8f5f1] font-inter font-semibold text-[14px] px-6 py-[11px] rounded-[10px] whitespace-nowrap transition-all duration-300 hover:-translate-y-[1px]"
+            style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}>
             Customer Login
           </button>
-          <button className="bg-[#f8f5f1] text-[#b5271c] font-inter font-bold text-[14px] px-6 py-[11px] rounded-[8px] hover:bg-white transition-colors whitespace-nowrap">
+          <button className="bg-white text-[#b5271c] font-inter font-semibold text-[14px] px-6 py-[11px] rounded-[10px] whitespace-nowrap transition-all duration-300 hover:-translate-y-[1px]"
+            style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.10)' }}
+            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'}
+            onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.10)'}>
             Schedule Demo
           </button>
         </div>
@@ -191,8 +201,7 @@ function useReadingHighlight(totalWords: number, trigger: number, wordDuration =
           timeout = setTimeout(() => {
             if (cancelled) return
             setPhase('idle')
-            // Loop again after 10 seconds
-            timeout = setTimeout(startReading, 10000)
+            timeout = setTimeout(startReading, 7000)
           }, 1200)
           return
         }
@@ -305,52 +314,21 @@ function Hero() {
     <section ref={heroRef} className="relative overflow-hidden" style={{ minHeight: '100vh' }}>
 
       {/* ── Orange gradient background from Figma ── */}
-      {/* SVG gradient background */}
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="heroGlow1" cx="20%" cy="15%" r="60%">
-            <stop offset="0%" stopColor="#3d0a00" />
-            <stop offset="50%" stopColor="#8b2010" />
-            <stop offset="100%" stopColor="#c43a1a" />
-          </radialGradient>
-          <radialGradient id="heroGlow2" cx="75%" cy="70%" r="65%">
-            <stop offset="0%" stopColor="#f08030" />
-            <stop offset="60%" stopColor="#d85a20" />
-            <stop offset="100%" stopColor="#b83a15" />
-          </radialGradient>
-          <radialGradient id="heroGlow3" cx="50%" cy="40%" r="50%">
-            <stop offset="0%" stopColor="#e05828" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-          </radialGradient>
-          <filter id="heroBlur">
-            <feGaussianBlur stdDeviation="50" />
-          </filter>
-          <filter id="heroNoise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-            <feColorMatrix type="saturate" values="0" />
-            <feBlend in="SourceGraphic" mode="multiply" />
-          </filter>
-        </defs>
-        {/* Base gradient */}
-        <rect width="1440" height="900" fill="url(#heroGlow1)" />
-        {/* Warm overlay */}
-        <rect width="1440" height="900" fill="url(#heroGlow2)" opacity="0.7" />
-        {/* Center glow */}
-        <rect width="1440" height="900" fill="url(#heroGlow3)" />
-        {/* Geometric shapes for depth — blurred */}
-        <g filter="url(#heroBlur)">
-          <polygon points="0,0 500,0 300,500 0,400" fill="rgba(0,0,0,0.12)" />
-          <polygon points="600,0 1440,0 1440,350 800,450" fill="rgba(0,0,0,0.08)" />
-          <polygon points="200,400 700,300 900,700 400,900 0,900 0,600" fill="rgba(0,0,0,0.06)" />
-          <polygon points="1000,200 1440,100 1440,600 1100,700 900,500" fill="rgba(0,0,0,0.10)" />
-          <polygon points="0,700 300,500 600,800 400,900 0,900" fill="rgba(255,120,50,0.08)" />
-        </g>
-        {/* Subtle texture */}
-        <rect width="1440" height="900" opacity="0.03" filter="url(#heroNoise)" />
-      </svg>
+      {/* Gradient background SVG */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: 'url(/hero-gradient.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+
+      {/* Orange tint overlay to dominate */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: '#d95a3a', opacity: 0.55 }} />
 
       {/* Subtle scrim for bottom legibility */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/15 pointer-events-none" />
 
       <Navbar />
 
@@ -390,11 +368,13 @@ function Hero() {
                       color: 'white',
                       opacity: isStroke
                         ? (isIdle ? 1 : (highlighted ? 1 : 0.25))
-                        : (isIdle ? 0.65 : (highlighted ? 0.65 : 0.15)),
+                        : (isIdle ? 0.60 : (highlighted ? 0.60 : 0.15)),
+                      textShadow: isStroke
+                        ? (isTubelight
+                          ? '0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.2)'
+                          : '0 0 20px rgba(255,255,255,0.25), 0 0 40px rgba(255,255,255,0.1)')
+                        : undefined,
                       transition: isTubelight ? 'none' : 'opacity 0.3s ease',
-                      ...(isTubelight ? {
-                        textShadow: '0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.2)',
-                      } : {}),
                     }}
                   >
                     {w.word}
@@ -432,14 +412,18 @@ function Hero() {
           {/* CTAs */}
           <div className="flex items-center gap-3 mt-9">
             <button
-              className="font-inter font-bold text-[15px] text-[#b5271c] px-7 py-[13px] rounded-[10px] transition-all hover:brightness-105 hover:scale-[1.02] active:scale-[0.98]"
-              style={{ background: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.30)' }}
+              className="font-inter font-semibold text-[15px] text-[#b5271c] px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+              style={{ background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = '0 10px 32px rgba(0,0,0,0.18)'}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}
             >
               Schedule a Demo
             </button>
             <button
-              className="flex items-center gap-2 font-inter font-semibold text-[15px] text-white px-7 py-[13px] rounded-[10px] transition-all hover:bg-white/15"
-              style={{ border: '1px solid rgba(255,255,255,0.45)' }}
+              className="flex items-center gap-2 font-inter font-semibold text-[15px] text-white px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+              style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}
             >
               <svg width="8" height="10" viewBox="0 0 10 12" fill="currentColor"><path d="M0 0L10 6L0 12V0Z"/></svg>
               See How It Works
@@ -776,7 +760,7 @@ function Capabilities() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="bg-[#f8f5f0] relative"
+      className="bg-[#f8f5f0] relative pt-24"
       onMouseMove={dotGrid.onMouseMove}
       onMouseLeave={dotGrid.onMouseLeave}
     >
@@ -908,21 +892,24 @@ const AGENTS = [
     title: 'Lead Intake Specialist',
     img: '/agent-dominic.png',
     glowColor: 'rgba(253, 120, 50, 0.5)',
-    gradient: 'linear-gradient(145deg, #2a150a88 0%, #fd500030 100%)',
+    number: '001',
+    dotColor: '#fd5000',
   },
   {
     name: 'Nova',
     title: 'Scheduling Coordinator',
     img: '/agent-nova.png',
     glowColor: 'rgba(125, 190, 255, 0.5)',
-    gradient: 'linear-gradient(145deg, #0a1a2a88 0%, #71C4FF30 100%)',
+    number: '002',
+    dotColor: '#3b82f6',
   },
   {
     name: 'Scott',
     title: 'Storm Surge Responder',
     img: '/agent-scott.png',
     glowColor: 'rgba(255, 160, 80, 0.5)',
-    gradient: 'linear-gradient(145deg, #1a0f0588 0%, #ff8c3030 100%)',
+    number: '003',
+    dotColor: '#a855f7',
   },
 ]
 
@@ -950,6 +937,8 @@ function MeetAgents() {
                 name={agent.name}
                 title={agent.title}
                 status="Online"
+                number={agent.number}
+                dotColor={agent.dotColor}
                 contactText="View Agent"
                 avatarUrl={agent.img}
                 enableTilt={true}
@@ -1543,10 +1532,10 @@ function CaseStudy() {
                 )}
               </div>
               <div className="grid grid-cols-3 border-t border-white/10">
-                {CS_STATS.slice(0, 3).map((s, i) => (
-                  <div key={s.label} className={`px-5 py-6 ${i < 2 ? 'border-r border-white/10' : ''}`}>
-                    <div className="font-jakarta font-extrabold text-white text-[28px] leading-none tracking-[-0.04em]">{s.num}</div>
-                    <div className="font-inter text-[11px] mt-1.5 leading-snug" style={{ color: '#9A9A9A' }}>{s.label}</div>
+                {CS_STATS.map((s, i) => (
+                  <div key={s.label} className={`px-5 py-5 ${(i % 3) < 2 ? 'border-r border-white/10' : ''} ${i < 3 ? 'border-b border-white/10' : ''}`}>
+                    <div className="font-jakarta font-extrabold text-white text-[24px] leading-none tracking-[-0.04em]">{s.num}</div>
+                    <div className="font-inter text-[10px] mt-1.5 leading-snug" style={{ color: '#9A9A9A' }}>{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -1587,14 +1576,6 @@ function CaseStudy() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-3 border-t border-[#ede8e2]" style={{ background: '#fafaf8' }}>
-                {CS_STATS.slice(3).map((s, i) => (
-                  <div key={s.label} className={`px-5 py-6 ${i < 2 ? 'border-r border-[#ede8e2]' : ''}`}>
-                    <div className="font-jakarta font-extrabold text-[#fd5000] text-[28px] leading-none tracking-[-0.04em]">{s.num}</div>
-                    <div className="font-inter text-[#ABABAB] text-[11px] mt-1.5 leading-snug">{s.label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
 
           </div>
@@ -1608,7 +1589,7 @@ function CaseStudy() {
 /* ─────────────────────────── CTA SECTION ─────────────────────────── */
 function CTASection() {
   return (
-    <div id="cta" className="relative overflow-hidden text-center py-[108px] px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
+    <div id="cta" className="relative overflow-hidden text-center py-24 px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,0,0,0.2), transparent)' }} />
       {/* Diagonal line pattern overlay */}
       <div
@@ -1624,10 +1605,16 @@ function CTASection() {
             See the Zuper CSR Agent handle a live workflow customized with your company name, services, and real availability.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://www.zuper.co/demo" className="bg-white text-[#fd5000] px-8 py-4 rounded-[8px] text-[15px] font-bold shadow-[0_4px_20px_rgba(0,0,0,0.18)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.22)] transition-all">
+            <a href="https://www.zuper.co/demo" className="bg-white text-[#fd5000] px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+              style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
+              onMouseEnter={e => e.currentTarget.style.boxShadow = '0 10px 32px rgba(0,0,0,0.18)'}
+              onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}>
               Schedule a Demo
             </a>
-            <a href="#workflows" className="border-2 border-white/65 text-white px-8 py-4 rounded-[8px] text-[15px] font-semibold hover:border-white hover:bg-white/10 transition-all">
+            <a href="#workflows" className="text-white px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+              style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}>
               Watch Sample Calls
             </a>
           </div>
@@ -1639,28 +1626,85 @@ function CTASection() {
 
 /* ─────────────────────────── FOOTER ─────────────────────────── */
 function Footer() {
-  const footerLinks = ['Solutions', 'Industries', 'Resources', 'Company', 'Privacy', 'Terms']
+  const productLinks = ['CSR Agent', 'Workflows', 'Integrations', 'Pricing']
+  const companyLinks = ['About', 'Careers', 'Blog', 'Contact']
+  const legalLinks = ['Privacy Policy', 'Terms of Service', 'Security']
+
   return (
-    <footer className="bg-white border-t border-[#e8e0d5]">
-      <div className="max-w-[1200px] mx-auto px-12 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Brand */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="w-8 h-8 rounded-[8px] bg-[#fd5000] flex items-center justify-center shadow-[0_2px_8px_rgba(253,80,0,0.30)]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M14 2L4 14h7l-1 8 10-12h-7l1-8z"/></svg>
-          </div>
+    <footer className="bg-[#191919]">
+      <div className="max-w-[1280px] mx-auto px-12">
+
+        {/* Top section */}
+        <div className="py-16 grid grid-cols-[1.5fr_1fr_1fr_1fr] gap-12">
+
+          {/* Brand column */}
           <div>
-            <div className="font-inter font-bold text-[#191919] text-[14px] leading-tight">Zuper CSR Agent</div>
-            <div className="font-['Space_Mono',monospace] text-[10px] text-[#ABABAB] tracking-[0.08em] uppercase">AI Operating System for the Trades</div>
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-8 h-8 rounded-[8px] bg-[#fd5000] flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M14 2L4 14h7l-1 8 10-12h-7l1-8z"/></svg>
+              </div>
+              <span className="font-jakarta font-extrabold text-white text-[22px] tracking-[-0.03em]">zuper</span>
+            </div>
+            <p className="font-inter text-[14px] text-[#888] leading-[1.7] mb-6 max-w-[280px]">
+              AI-powered CSR that handles overflow calls, after-hours inquiries, and storm surge — so your roofing business never misses a lead.
+            </p>
+            <div className="flex items-center gap-3">
+              {['twitter', 'linkedin', 'youtube'].map(platform => (
+                <a key={platform} href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:-translate-y-[1px]"
+                  style={{ background: 'rgba(255,255,255,0.06)' }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(253,80,0,0.15)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {platform === 'twitter' && <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />}
+                    {platform === 'linkedin' && <><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></>}
+                    {platform === 'youtube' && <><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z" /><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></>}
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Product links */}
+          <div>
+            <h4 className="font-jakarta font-bold text-white text-[13px] tracking-[0.04em] uppercase mb-5">Product</h4>
+            <ul className="flex flex-col gap-3">
+              {productLinks.map(l => (
+                <li key={l}><a href="#" className="font-inter text-[14px] text-[#888] hover:text-white transition-colors">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company links */}
+          <div>
+            <h4 className="font-jakarta font-bold text-white text-[13px] tracking-[0.04em] uppercase mb-5">Company</h4>
+            <ul className="flex flex-col gap-3">
+              {companyLinks.map(l => (
+                <li key={l}><a href="#" className="font-inter text-[14px] text-[#888] hover:text-white transition-colors">{l}</a></li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal links */}
+          <div>
+            <h4 className="font-jakarta font-bold text-white text-[13px] tracking-[0.04em] uppercase mb-5">Legal</h4>
+            <ul className="flex flex-col gap-3">
+              {legalLinks.map(l => (
+                <li key={l}><a href="#" className="font-inter text-[14px] text-[#888] hover:text-white transition-colors">{l}</a></li>
+              ))}
+            </ul>
           </div>
         </div>
-        {/* Nav links */}
-        <nav className="hidden md:flex items-center gap-5">
-          {footerLinks.map(l => (
-            <a key={l} href="#" className="font-inter text-[13px] text-[#7A7A7A] hover:text-[#191919] transition-colors">{l}</a>
-          ))}
-        </nav>
-        {/* Copyright */}
-        <div className="font-['Space_Mono',monospace] text-[11px] text-[#ABABAB]">© 2025 Zuper Inc.</div>
+
+        {/* Bottom bar */}
+        <div className="py-6 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="font-['Space_Mono',monospace] text-[11px] text-[#555]">
+            © 2025 Zuper Inc. All rights reserved.
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-[5px] h-[5px] rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 4px #4ade80' }} />
+            <span className="font-['Space_Mono',monospace] text-[10px] text-[#555]">All systems operational</span>
+          </div>
+        </div>
       </div>
     </footer>
   )

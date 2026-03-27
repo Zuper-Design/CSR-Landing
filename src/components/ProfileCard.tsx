@@ -4,6 +4,8 @@ interface ProfileCardProps {
   name: string
   title: string
   status?: string
+  number?: string
+  dotColor?: string
   contactText?: string
   avatarUrl: string
   showUserInfo?: boolean
@@ -17,7 +19,8 @@ interface ProfileCardProps {
 export default function ProfileCard({
   name,
   title,
-  status = 'Online',
+  number = '001',
+  dotColor = '#22c55e',
   contactText = 'View Agent',
   avatarUrl,
   showUserInfo = true,
@@ -111,16 +114,17 @@ export default function ProfileCard({
         {/* Info section at bottom */}
         {showUserInfo && (
           <div className="relative z-30 px-6 pt-4 pb-5" style={{ background: 'white' }}>
-            {/* Badge — top right */}
-            <div className="flex justify-end mb-2">
-              <span className="text-[11px] font-medium px-3 py-1 rounded-full"
-                style={{ fontFamily: 'Space Mono, monospace', color: '#fd5000', border: '1.5px solid #fd5000' }}>
-                {status === 'Online' ? 'Z-367' : status}
-              </span>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-bold text-[26px] text-[#191919] tracking-[-0.03em] leading-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
+                {name}
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="w-[7px] h-[7px] rounded-full shrink-0" style={{ background: dotColor, boxShadow: `0 0 6px ${dotColor}` }} />
+                <span className="text-[12px] font-medium text-[#bbb]" style={{ fontFamily: 'Space Mono, monospace' }}>
+                  {number}
+                </span>
+              </div>
             </div>
-            <h3 className="font-bold text-[26px] text-[#191919] tracking-[-0.03em] leading-tight" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              {name}
-            </h3>
             <p className="text-[15px] mt-1 mb-4" style={{ fontFamily: 'Inter, sans-serif', color: '#fd5000' }}>{title}</p>
             <button
               onClick={onContactClick}
