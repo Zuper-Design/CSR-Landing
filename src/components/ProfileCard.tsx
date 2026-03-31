@@ -21,11 +21,9 @@ export default function ProfileCard({
   title,
   number = '001',
   dotColor = '#22c55e',
-  contactText = 'View Agent',
   avatarUrl,
   showUserInfo = true,
   enableTilt = true,
-  onContactClick,
   behindGlowColor = 'rgba(253, 80, 0, 0.4)',
   behindGlowEnabled = true,
 }: ProfileCardProps) {
@@ -125,21 +123,7 @@ export default function ProfileCard({
                 </span>
               </div>
             </div>
-            <p className="text-[15px] mt-1 mb-4" style={{ fontFamily: 'Inter, sans-serif', color: '#fd5000' }}>{title}</p>
-            <button
-              onClick={onContactClick}
-              className="w-full flex items-center justify-center gap-2 font-semibold text-[13px] py-3 rounded-[12px] text-white transition-all hover:brightness-110 active:scale-[0.98]"
-              style={{
-                fontFamily: 'Inter, sans-serif',
-                background: '#fd5000',
-                boxShadow: '0 4px 16px rgba(253,80,0,0.3)',
-              }}
-            >
-              {contactText}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
+            <p className="text-[13px] mt-1" style={{ fontFamily: 'Inter, sans-serif', color: '#888', lineHeight: 1.5 }}>{title}</p>
           </div>
         )}
       </div>

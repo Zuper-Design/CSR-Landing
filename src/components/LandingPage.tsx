@@ -1,5 +1,19 @@
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, ClipboardList, CalendarCheck, MessageSquare, Activity, BookOpen, Zap, Check, TrendingUp, BarChart2, Users, Link2, CloudLightning } from 'lucide-react'
+import { ChevronDown, FileText, Calendar, MessageCircle, Radio, HelpCircle, BoltIcon, Check as LucideCheck, ArrowUpRight, BarChart3, UsersRound, CloudRain, Workflow } from 'lucide-react'
+
+// Aliases for backward compat
+const ClipboardList = FileText
+const CalendarCheck = Calendar
+const MessageSquare = MessageCircle
+const Activity = Radio
+const BookOpen = HelpCircle
+const Zap = BoltIcon
+const Check = LucideCheck
+const TrendingUp = ArrowUpRight
+const BarChart2 = BarChart3
+const Users = UsersRound
+const Link2 = Workflow
+const CloudLightning = CloudRain
 import { assets } from '../assets'
 import ProfileCard from './ProfileCard'
 
@@ -16,26 +30,34 @@ import ProfileCard from './ProfileCard'
 ────────────────────────────────────────────────────────────────────────────── */
 
 /* ── shared primitives ── */
-function Chip({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-3 py-[5px] rounded-[88px] text-[11px] font-['Space_Mono',monospace] font-medium text-[#fd5000] whitespace-nowrap ${className}`}
-      style={{ background: 'rgba(255,236,227,0.7)', border: '0.4px solid #ffb694' }}
-    >
-      {children}
-    </span>
-  )
-}
 
 function SectionEyebrow({ label }: { icon?: string; label: string }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 px-4 py-[6px] rounded-full text-[11px] font-['Space_Mono',monospace] font-medium tracking-[0.06em] uppercase"
+      className="inline-flex items-center gap-2 px-4 py-[6px] rounded-full text-[11px] font-['Space_Mono',monospace] font-medium tracking-[0.06em] uppercase"
       style={{ background: 'rgba(253,80,0,0.06)', color: '#fd5000' }}
     >
-      <span className="w-[5px] h-[5px] rounded-full bg-[#fd5000]" />
+      <span className="relative flex items-center justify-center">
+        <span className="w-[5px] h-[5px] rounded-full bg-[#fd5000]" />
+        <span className="absolute w-[5px] h-[5px] rounded-full bg-[#fd5000] animate-ping opacity-40" />
+      </span>
       {label}
     </span>
+  )
+}
+
+function GridLines() {
+  return (
+    <div className="absolute inset-0 pointer-events-none z-0" style={{ overflow: 'hidden' }}>
+      {/* Vertical left */}
+      <div className="absolute top-0 bottom-0" style={{ left: 140, width: 1, background: '#d7d7d7', opacity: 0.5 }} />
+      {/* Vertical right */}
+      <div className="absolute top-0 bottom-0" style={{ right: 140, width: 1, background: '#d7d7d7', opacity: 0.5 }} />
+      {/* Horizontal top */}
+      <div className="absolute left-0 right-0" style={{ top: 0, height: 0.5, background: '#d7d7d7', opacity: 0.5 }} />
+      {/* Horizontal bottom */}
+      <div className="absolute left-0 right-0" style={{ bottom: 0, height: 0.5, background: '#d7d7d7', opacity: 0.5 }} />
+    </div>
   )
 }
 
@@ -95,8 +117,8 @@ function RevealOnScroll({ children, delay = 0, className = '' }: {
   return (
     <div ref={ref} className={className} style={{
       opacity: vis ? 1 : 0,
-      transform: vis ? 'translateY(0)' : 'translateY(22px)',
-      transition: `opacity 0.55s ease ${delay}ms, transform 0.55s ease ${delay}ms`,
+      transform: vis ? 'translateY(0) scale(1)' : 'translateY(28px) scale(0.98)',
+      transition: `opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
     }}>
       {children}
     </div>
@@ -115,10 +137,10 @@ function Navbar() {
         <a href="/" className="flex items-center shrink-0">
           <img src={assets.logo} alt="Zuper" className="h-7 w-auto object-contain object-left" style={{ maxWidth: 110 }} />
         </a>
-        <nav className="hidden lg:flex items-center justify-center gap-1">
+        <nav className="hidden lg:flex items-center justify-center gap-0.5">
           {navLinks.map((link) => (
-            <button key={link} className="flex items-center gap-1 px-4 py-2 font-inter font-medium text-[#f8f5f1] text-[15px] hover:opacity-80 transition-opacity whitespace-nowrap">
-              {link}<ChevronDown size={12} className="opacity-70 mt-0.5" />
+            <button key={link} className="flex items-center gap-1 px-4 py-2 font-inter font-medium text-white/85 text-[15px] rounded-[8px] whitespace-nowrap transition-all duration-300 hover:text-white hover:bg-white/[0.06]">
+              {link}<ChevronDown size={12} className="opacity-50 mt-0.5 transition-transform duration-300 group-hover:rotate-180" />
             </button>
           ))}
         </nav>
@@ -405,12 +427,13 @@ function Hero() {
 
           <p className="font-inter leading-[1.7] mt-6" style={{
             fontSize: 16, maxWidth: 460, color: '#D4D4D4',
+            animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both',
           }}>
             Your AI-powered CSR handles overflow calls, after-hours inquiries, and storm surge — so your roofing business never loses revenue to voicemail.
           </p>
 
           {/* CTAs */}
-          <div className="flex items-center gap-3 mt-9">
+          <div className="flex items-center gap-3 mt-9" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.65s both' }}>
             <button
               className="font-inter font-semibold text-[15px] text-[#b5271c] px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
@@ -431,22 +454,14 @@ function Hero() {
           </div>
 
           {/* Social proof — #BCBCBC on dark ≈ 7.6:1 ✓ */}
-          <div className="flex items-center gap-2.5 mt-7">
-            <div className="flex -space-x-2">
-              {[
-                { bg: '#fd5000', icon: '🏠' },
-                { bg: '#6366f1', icon: '⚡' },
-                { bg: '#0ea5e9', icon: '🔨' },
-                { bg: '#e11d48', icon: '🏗' },
-              ].map((a, i) => (
-                <div key={i} className="w-6 h-6 rounded-full border-[1.5px] border-white/40 flex items-center justify-center"
-                  style={{ background: a.bg, fontSize: 10 }}>
-                  {a.icon}
-                </div>
+          <div className="flex items-center gap-2.5 mt-7" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
+            <div className="flex -space-x-1.5">
+              {['/logo-maven.png', '/logo-aa.png', '/logo-bmr.png'].map((src, i) => (
+                <img key={i} src={src} alt="" className="w-7 h-7 rounded-full object-cover bg-white border-2 border-white/40" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }} />
               ))}
             </div>
             <p className="font-inter text-[13px]" style={{ color: '#BCBCBC' }}>
-              Trusted by <span className="font-semibold text-white">500+</span> roofing companies
+              Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span>, <span className="font-semibold text-white">Brothers Metal</span> & 50+ others
             </p>
           </div>
         </div>
@@ -523,7 +538,7 @@ function Hero() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 6px #4ade80' }} />
                 {/* white on #0C0806 → ~20:1 ✓ */}
-                <span className="font-inter text-[12px] font-semibold text-white tracking-wide uppercase">Live Demo</span>
+                <span className="font-inter text-[12px] font-semibold text-white tracking-wide uppercase">AI Agent Demo</span>
               </div>
               {/* #8A8A8A on #0C0806 ≈ 5.1:1 ✓ */}
               <span className="font-['Space_Mono',monospace] text-[11px]" style={{ color: '#8A8A8A' }}>
@@ -539,33 +554,39 @@ function Hero() {
               @keyframes orbGlow{0%,100%{box-shadow:0 0 20px rgba(253,80,0,0.15), 0 0 60px rgba(253,80,0,0.08)}50%{box-shadow:0 0 30px rgba(253,80,0,0.30), 0 0 80px rgba(253,80,0,0.15)}}
             `}</style>
 
-            {/* Orb — animated breathing glow */}
+            {/* Orb — looping video */}
             <div className="flex items-center justify-center px-8 py-3">
               <div className="relative">
-                {/* Breathing glow */}
+                {/* Glow behind orb */}
                 <div className="absolute inset-0 rounded-full" style={{
-                  background: 'radial-gradient(circle, rgba(253,80,0,0.35) 0%, transparent 70%)',
-                  transform: 'scale(1.3)',
+                  background: 'radial-gradient(circle, rgba(253,80,0,0.30) 0%, transparent 70%)',
+                  transform: 'scale(1.4)',
                   animation: playing ? 'orbBreath 2s ease-in-out infinite' : 'orbBreath 3.5s ease-in-out infinite',
                 }} />
-                {/* Pulse rings — always visible, faster when playing */}
+                {/* Pulse rings */}
                 {[0, 0.8, 1.6].map((d,i) => (
                   <div key={i} className="absolute inset-0 rounded-full" style={{
-                    border: `1.5px solid rgba(253,80,0,${playing ? 0.3 : 0.15})`,
+                    border: `1.5px solid rgba(253,80,0,${playing ? 0.3 : 0.12})`,
                     animation: `${playing ? 'orbPulseRing' : 'orbIdlePulse'} ${playing ? 2.1 : 3.5}s ease-out infinite ${d}s`,
                   }} />
                 ))}
-                <img
-                  src={assets.agentOverlay}
-                  alt="AI voice agent"
+                {/* Video orb */}
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="relative"
                   style={{
-                    width: 200, height: 200, borderRadius: '50%', objectFit: 'cover', position: 'relative',
+                    width: 200, height: 200, borderRadius: '50%', objectFit: 'cover',
                     filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.50))',
                     animation: playing ? 'none' : 'orbGlow 3.5s ease-in-out infinite',
                     boxShadow: playing ? '0 0 0 3px rgba(253,80,0,0.35), 0 0 30px rgba(253,80,0,0.20)' : undefined,
                     transition: 'box-shadow 0.4s ease',
                   }}
-                />
+                >
+                  <source src="/orb-loop.mp4" type="video/mp4" />
+                </video>
               </div>
             </div>
 
@@ -650,12 +671,12 @@ function Hero() {
         className="absolute bottom-0 left-0 right-0 z-10"
         style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(14px)', borderTop: '1px solid rgba(255,255,255,0.12)' }}
       >
-        <div className="max-w-[1240px] mx-auto px-10 grid grid-cols-4 divide-x divide-white/15">
-          {HERO_STATS.map(([v, l]) => (
-            <div key={l} className="py-5 flex flex-col items-center gap-[4px]">
-              {/* white on rgba(0,0,0,0.55)+dark photo ≈ #0A0A0A effective → ~20:1 ✓ */}
+        <div className="max-w-[1240px] mx-auto px-10 grid grid-cols-4 divide-x divide-white/10">
+          {HERO_STATS.map(([v, l], i) => (
+            <div key={l} className="py-5 flex flex-col items-center gap-[4px]" style={{
+              animation: `smoothFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) ${0.8 + i * 0.1}s both`,
+            }}>
               <span className="font-jakarta font-extrabold text-white text-[20px] leading-none tracking-[-0.03em]">{v}</span>
-              {/* #A8A8A8 on #0A0A0A ≈ 6.2:1 ✓ */}
               <span className="font-inter text-[11px] tracking-[0.03em]" style={{ color: '#A8A8A8' }}>{l}</span>
             </div>
           ))}
@@ -684,7 +705,8 @@ const CHANNELS = [
 
 function ChannelBand() {
   return (
-    <div className="bg-white border-y border-[#ede8e2]">
+    <div className="bg-white border-y border-[#ede8e2] relative">
+      <GridLines />
       <div className="max-w-[1240px] mx-auto px-12 py-5 flex items-center justify-center gap-3 flex-wrap">
         <span className="font-['Space_Mono',monospace] text-[10px] tracking-[0.14em] uppercase font-semibold text-[#ABABAB] mr-2 whitespace-nowrap">
           Works Across
@@ -716,12 +738,12 @@ function ChannelBand() {
 
 /* ─────────────────────────── CAPABILITIES ─────────────────────────── */
 const CAPS = [
-  { tag: 'Lead Intake',      Icon: ClipboardList, title: 'Intake & Qualification',     desc: 'Captures name, address, damage type, insurance carrier, and urgency — routed straight into your Zuper pipeline.' },
-  { tag: 'Scheduling',       Icon: CalendarCheck,  title: 'Appointment Booking',        desc: 'Checks real-time crew availability, offers slots, and confirms inspections with no dispatcher required.' },
-  { tag: 'Sales Support',    Icon: MessageSquare,  title: 'Estimation & Quote Queries', desc: 'Answers pricing and scope questions instantly. Flags complex deals for your sales team to own and close.' },
-  { tag: 'Customer Service', Icon: Activity,       title: 'Job Status Updates',         desc: 'Pulls live job data from Zuper and communicates progress, schedule changes, and next steps to homeowners.' },
-  { tag: 'FAQ Handling',     Icon: BookOpen,       title: 'Business & Services FAQ',    desc: 'Handles services, coverage areas, warranties, insurance claims, and financing — consistently, every time.' },
-  { tag: 'Storm Response',   Icon: Zap,            title: 'Emergency Triage',           desc: 'Identifies storm, hail, and water urgency. Escalates critical cases to on-call crews while capturing full intake.' },
+  { tag: 'Lead Intake',      Icon: ClipboardList, title: 'Intake & Qualification',     desc: 'Captures name, address, damage type, insurance carrier, and urgency — routed straight into your Zuper pipeline.', color: '#fd5000' },
+  { tag: 'Scheduling',       Icon: CalendarCheck,  title: 'Appointment Booking',        desc: 'Checks real-time crew availability, offers slots, and confirms inspections with no dispatcher required.', color: '#2563eb' },
+  { tag: 'Sales Support',    Icon: MessageSquare,  title: 'Estimation & Quote Queries', desc: 'Answers pricing and scope questions instantly. Flags complex deals for your sales team to own and close.', color: '#059669' },
+  { tag: 'Customer Service', Icon: Activity,       title: 'Job Status Updates',         desc: 'Pulls live job data from Zuper and communicates progress, schedule changes, and next steps to homeowners.', color: '#7c3aed' },
+  { tag: 'FAQ Handling',     Icon: BookOpen,       title: 'Business & Services FAQ',    desc: 'Handles services, coverage areas, warranties, insurance claims, and financing — consistently, every time.', color: '#d97706' },
+  { tag: 'Storm Response',   Icon: Zap,            title: 'Emergency Triage',           desc: 'Identifies storm, hail, and water urgency. Escalates critical cases to on-call crews while capturing full intake.', color: '#e11d48' },
 ]
 
 // Fixed card height + gap to calculate exact scroll needed
@@ -765,6 +787,7 @@ function Capabilities() {
       onMouseLeave={dotGrid.onMouseLeave}
     >
       <DotGridBg mouse={dotGrid.mouse} />
+      <GridLines />
       {/* Scroll runway: viewport + extra scroll for remaining cards */}
       <div className="relative z-10" style={{ height: `calc(100vh + ${CAP_SCROLL}px)` }}>
         {/* Sticky container — locks to viewport */}
@@ -807,14 +830,14 @@ function Capabilities() {
                       transition: 'opacity 0.2s ease-out',
                     }}
                   />
-                  <div className="absolute bottom-0 left-0 right-0 px-5 pt-10 pb-5"
-                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.40) 55%, transparent 100%)' }}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="w-[6px] h-[6px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 5px #4ade80' }} />
-                      <span className="font-['Space_Mono',monospace] text-[10px] font-medium text-white/70 tracking-[0.12em] uppercase">Live · Available 24/7</span>
+                  <div className="absolute bottom-0 left-0 right-0 px-6 pt-14 pb-6"
+                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.50) 50%, transparent 100%)' }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="w-[8px] h-[8px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 8px #4ade80' }} />
+                      <span className="font-['Space_Mono',monospace] text-[11px] font-medium text-white/80 tracking-[0.12em] uppercase">Live · Available 24/7</span>
                     </div>
-                    <p className="font-jakarta font-bold text-white text-[16px] leading-tight tracking-[-0.01em]">Zuper CSR Agent</p>
-                    <p className="font-inter text-[12px] mt-0.5" style={{ color: '#C8C8C8' }}>Handles calls, texts &amp; storm surge — automatically.</p>
+                    <p className="font-jakarta font-extrabold text-white text-[22px] leading-tight tracking-[-0.02em]">Nova — CSR Agent</p>
+                    <p className="font-inter text-[13px] mt-1" style={{ color: '#ddd' }}>Handles calls, texts &amp; storm surge — automatically.</p>
                   </div>
                 </div>
               </div>
@@ -851,9 +874,9 @@ function Capabilities() {
                       {/* icon */}
                       <div
                         className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0"
-                        style={{ background: 'linear-gradient(135deg, rgba(253,80,0,0.15) 0%, rgba(253,80,0,0.07) 100%)' }}
+                        style={{ background: `linear-gradient(135deg, ${c.color}18 0%, ${c.color}0a 100%)` }}
                       >
-                        <c.Icon size={22} strokeWidth={1.7} color="#fd5000" />
+                        <c.Icon size={22} strokeWidth={1.7} color={c.color} />
                       </div>
 
                       {/* content */}
@@ -867,8 +890,8 @@ function Capabilities() {
                           </span>
                         </div>
                         <p className="font-inter text-[14px] text-[#7A7A7A] leading-[1.65] mb-3">{c.desc}</p>
-                        <span className="inline-flex items-center font-['Space_Mono',monospace] text-[11px] font-medium text-[#fd5000] px-3 py-[4px] rounded-full"
-                          style={{ background: 'rgba(253,80,0,0.07)', border: '0.5px solid rgba(253,80,0,0.18)' }}>
+                        <span className="inline-flex items-center font-['Space_Mono',monospace] text-[11px] font-medium px-3 py-[4px] rounded-full"
+                          style={{ background: `${c.color}0d`, color: c.color }}>
                           {c.tag}
                         </span>
                       </div>
@@ -889,23 +912,23 @@ function Capabilities() {
 const AGENTS = [
   {
     name: 'Dominic',
-    title: 'Lead Intake Specialist',
+    title: 'Captures every inbound lead and routes it to your pipeline instantly.',
     img: '/agent-dominic.png',
     glowColor: 'rgba(253, 120, 50, 0.5)',
     number: '001',
     dotColor: '#fd5000',
   },
   {
-    name: 'Nova',
-    title: 'Scheduling Coordinator',
+    name: 'Aria',
+    title: 'Books inspections and manages crew scheduling without a dispatcher.',
     img: '/agent-nova.png',
     glowColor: 'rgba(125, 190, 255, 0.5)',
     number: '002',
     dotColor: '#3b82f6',
   },
   {
-    name: 'Scott',
-    title: 'Storm Surge Responder',
+    name: 'Luna',
+    title: 'Triages emergency calls during peak weather and escalates critical cases.',
     img: '/agent-scott.png',
     glowColor: 'rgba(255, 160, 80, 0.5)',
     number: '003',
@@ -915,40 +938,86 @@ const AGENTS = [
 
 function MeetAgents() {
   const dotGrid = useDotGrid()
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [spread, setSpread] = useState(0)
+  const SCROLL_RUNWAY = 500
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = sectionRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const vh = window.innerHeight
+      // Start animation as soon as section enters viewport from bottom
+      // Progress 0 → 1 over SCROLL_RUNWAY pixels of scroll after section top enters view
+      const entered = vh - rect.top
+      const progress = Math.max(0, Math.min(1, entered / (vh * 0.5 + SCROLL_RUNWAY)))
+      setSpread(progress)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <div className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
+    <div ref={sectionRef} className="bg-[#f8f5f0] relative" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
       <DotGridBg mouse={dotGrid.mouse} />
-      <div className="max-w-[1120px] mx-auto px-12 relative z-10">
-        <RevealOnScroll className="text-center mb-14">
-          <SectionEyebrow icon="🤖" label="Agents" />
-          <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
-            Meet Your <span className="text-[#fd5000]">AI Team</span>
-          </h2>
-          <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[480px] mx-auto leading-[1.7]">
-            Three specialized agents, each trained for a different part of your roofing workflow.
-          </p>
-        </RevealOnScroll>
+      <GridLines />
 
-        <div className="grid grid-cols-3 gap-8">
-          {AGENTS.map((agent, i) => (
-            <RevealOnScroll key={agent.name} delay={i * 100}>
-              <ProfileCard
-                name={agent.name}
-                title={agent.title}
-                status="Online"
-                number={agent.number}
-                dotColor={agent.dotColor}
-                contactText="View Agent"
-                avatarUrl={agent.img}
-                enableTilt={true}
-                behindGlowColor={agent.glowColor}
-                behindGlowEnabled
+      {/* Scroll runway — section stays pinned while cards spread */}
+      <div style={{ height: `calc(100vh + ${SCROLL_RUNWAY}px)` }}>
+        <div className="sticky top-0" style={{ height: '100vh', overflow: 'hidden' }}>
+          <div className="max-w-[1120px] mx-auto px-12 relative z-10 h-full flex flex-col justify-center">
 
-                onContactClick={() => console.log(`View ${agent.name}`)}
-              />
-            </RevealOnScroll>
-          ))}
+            <div className="text-center mb-14">
+              <SectionEyebrow icon="🤖" label="Agents" />
+              <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
+                Meet Your <span className="text-[#fd5000]">AI Team</span>
+              </h2>
+              <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[480px] mx-auto leading-[1.7]">
+                Three specialized agents, each trained for a different part of your roofing workflow.
+              </p>
+            </div>
+
+            <div className="relative flex justify-center" style={{ perspective: 1200, height: 480 }}>
+              {AGENTS.map((agent, i) => {
+                const isCenter = i === 1
+                const isLeft = i === 0
+
+                // All three cards are absolutely positioned, center card on top
+                // Side cards start hidden behind center, fan out on scroll
+                const tx = isCenter ? 0 : isLeft ? -360 * spread : 360 * spread
+                const tz = isCenter ? 0 : -50 * (1 - spread)
+                const ry = isCenter ? 0 : isLeft ? 25 * (1 - spread) : -25 * (1 - spread)
+                const s = isCenter ? 1 : 0.85 + spread * 0.15
+                const o = isCenter ? 1 : spread * 1
+
+                return (
+                <div key={agent.name} className="absolute" style={{
+                  width: 320,
+                  top: 0,
+                  left: '50%',
+                  marginLeft: -160,
+                  transform: `translateX(${tx}px) translateZ(${tz}px) rotateY(${ry}deg) scale(${s})`,
+                  opacity: o,
+                  zIndex: isCenter ? 3 : 1,
+                }}>
+                  <ProfileCard
+                    name={agent.name}
+                    title={agent.title}
+                    status="Online"
+                    number={agent.number}
+                    dotColor={agent.dotColor}
+                    avatarUrl={agent.img}
+                    enableTilt={true}
+                    behindGlowColor={agent.glowColor}
+                    behindGlowEnabled
+                  />
+                </div>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -957,9 +1026,165 @@ function MeetAgents() {
 
 /* AgentCard replaced by ProfileCard component */
 
+/* ─────────────────────────── VOICE LANGUAGES ─────────────────────────── */
+const VOICES = [
+  { lang: 'English', accent: '#fd5000', colors: ['#fd5000'] },
+  { lang: 'Spanish', accent: '#0066ff', colors: ['#0066ff'] },
+  { lang: 'Tamil', accent: '#00b368', colors: ['#00b368'] },
+  { lang: 'French', accent: '#8b5cf6', colors: ['#8b5cf6'] },
+]
+
+function VoiceCard({ colors, spinning }: { accent: string; colors: string[]; spinning: boolean; onToggle: () => void }) {
+  const uid = colors[0].replace('#', '')
+  return (
+    <div className="relative flex flex-col items-center">
+      <style>{`@keyframes vinylSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}`}</style>
+      <div className="relative" style={{ width: 140, height: 140 }}>
+        {/* Drop shadow underneath */}
+        <div className="absolute rounded-full" style={{
+          inset: 4, bottom: 0, top: 8,
+          background: 'rgba(0,0,0,0.12)',
+          filter: 'blur(8px)',
+        }} />
+        <svg viewBox="0 0 200 200" className="relative w-full h-full" style={{
+          animation: spinning ? 'vinylSpin 3s linear infinite' : 'none',
+          transition: spinning ? 'none' : 'transform 2s cubic-bezier(0.1,0.7,0.3,1)',
+        }}>
+          <defs>
+            <clipPath id={`lbl${uid}`}><circle cx="100" cy="100" r="34" /></clipPath>
+            <radialGradient id={`rg${uid}`} cx="38%" cy="35%">
+              <stop offset="0%" stopColor="white" stopOpacity="0.12" />
+              <stop offset="60%" stopColor="white" stopOpacity="0" />
+            </radialGradient>
+            <linearGradient id={`shine${uid}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="white" stopOpacity="0.08" />
+              <stop offset="50%" stopColor="white" stopOpacity="0" />
+              <stop offset="100%" stopColor="white" stopOpacity="0.03" />
+            </linearGradient>
+          </defs>
+
+          {/* Base disc — flat */}
+          <circle cx="100" cy="100" r="99" fill="#222" />
+
+          {/* Outer edge */}
+          <circle cx="100" cy="100" r="99" fill="none" stroke="#333" strokeWidth="1" />
+
+          {/* Grooves — lots of visible lines like a real record */}
+          {Array.from({ length: 30 }).map((_, i) => {
+            const r = 95 - i * 1.9
+            if (r <= 36) return null
+            const bright = i % 5 === 0 ? 0.09 : i % 3 === 0 ? 0.06 : 0.035
+            return <circle key={i} cx="100" cy="100" r={r} fill="none" stroke={`rgba(255,255,255,${bright})`} strokeWidth="0.6" />
+          })}
+
+          {/* Light reflection — bright groove fans on opposite sides, only when spinning */}
+          {/* Top-left fan */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const r = 90 - i * 6
+            if (r <= 36) return null
+            return <path key={`tl${i}`} d={`M${100 + r * Math.cos(3.6)} ${100 + r * Math.sin(3.6)} A${r} ${r} 0 0 1 ${100 + r * Math.cos(4.4)} ${100 + r * Math.sin(4.4)}`}
+              fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" strokeLinecap="round"
+              style={{ opacity: spinning ? 1 : 0, transition: `opacity 0.5s ease ${i * 0.03}s` }} />
+          })}
+          {/* Bottom-right fan — symmetrical */}
+          {Array.from({ length: 8 }).map((_, i) => {
+            const r = 90 - i * 6
+            if (r <= 36) return null
+            return <path key={`br${i}`} d={`M${100 + r * Math.cos(0.5)} ${100 + r * Math.sin(0.5)} A${r} ${r} 0 0 1 ${100 + r * Math.cos(1.3)} ${100 + r * Math.sin(1.3)}`}
+              fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" strokeLinecap="round"
+              style={{ opacity: spinning ? 1 : 0, transition: `opacity 0.5s ease ${i * 0.03}s` }} />
+          })}
+
+
+          {/* Dead wax / run-out area */}
+          <circle cx="100" cy="100" r="37" fill="#222" />
+          <circle cx="100" cy="100" r="37" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+          <circle cx="100" cy="100" r="36" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+
+          {/* Label — single solid color */}
+          <circle cx="100" cy="100" r="34" fill={colors[0]} />
+          {/* Label grooves — dark rings for vinyl feel */}
+          <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(0,0,0,0.12)" strokeWidth="0.4" />
+          <circle cx="100" cy="100" r="26" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="0.3" />
+          <circle cx="100" cy="100" r="22" fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="0.4" />
+          <circle cx="100" cy="100" r="18" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="0.3" />
+          {/* Label shine */}
+          <circle cx="100" cy="100" r="34" fill={`url(#rg${uid})`} />
+
+          {/* Label edge — crisp ring */}
+          <circle cx="100" cy="100" r="34" fill="none" stroke="rgba(0,0,0,0.15)" strokeWidth="0.8" />
+
+          {/* Center hole with shadow ring */}
+          <circle cx="100" cy="100" r="7.5" fill="#0a0a0a" />
+          <circle cx="100" cy="100" r="6" fill="#f8f5f0" />
+          <circle cx="100" cy="100" r="6" fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="0.5" />
+          {/* Tiny spindle pip */}
+          <circle cx="100" cy="100" r="1.5" fill="#ccc" />
+        </svg>
+      </div>
+    </div>
+  )
+}
+
+function VoiceLanguages() {
+  const dotGrid = useDotGrid()
+  const [activeIdx, setActiveIdx] = useState(-1)
+
+  return (
+    <div className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
+      <DotGridBg mouse={dotGrid.mouse} />
+      <GridLines />
+      <div className="max-w-[1120px] mx-auto px-12 relative z-10">
+        <RevealOnScroll className="text-center mb-14">
+          <SectionEyebrow icon="" label="Voices" />
+          <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
+            Support 100+ languages with<br /><span className="text-[#fd5000]">localized voice.</span>
+          </h2>
+        </RevealOnScroll>
+
+        <div className="grid grid-cols-4 gap-7">
+          {VOICES.map((v, i) => (
+            <RevealOnScroll key={v.lang} delay={i * 80}>
+              <div className="rounded-[20px] overflow-hidden cursor-pointer group"
+                style={{
+                  background: 'white',
+                  boxShadow: activeIdx === i ? '0 12px 32px rgba(0,0,0,0.08)' : '0 4px 20px rgba(0,0,0,0.05)',
+                  transform: activeIdx === i ? 'translateY(-4px)' : 'translateY(0)',
+                  transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
+                }}
+                onMouseEnter={e => { if (activeIdx !== i) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(0,0,0,0.07)' } }}
+                onMouseLeave={e => { if (activeIdx !== i) { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)' } }}
+                onClick={() => setActiveIdx(activeIdx === i ? -1 : i)}
+              >
+                <div className="flex items-center justify-center pt-12 pb-10">
+                  <VoiceCard accent={v.accent} colors={v.colors} spinning={activeIdx === i} onToggle={() => setActiveIdx(activeIdx === i ? -1 : i)} />
+                </div>
+                <div className="px-6 pb-6 flex items-center justify-between">
+                  <span className="font-jakarta font-bold text-[16px] text-[#191919]">{v.lang}</span>
+                  <button onClick={(e) => { e.stopPropagation(); setActiveIdx(activeIdx === i ? -1 : i) }}
+                    className="play-btn w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300"
+                    style={{ background: activeIdx === i ? '#191919' : '#f0ede8' }}
+                  >
+                    {activeIdx === i ? (
+                      <svg width="10" height="10" viewBox="0 0 10 10" style={{ fill: 'white' }}><rect x="1" y="0" width="3" height="10" rx="0.5"/><rect x="6" y="0" width="3" height="10" rx="0.5"/></svg>
+                    ) : (
+                      <svg width="10" height="10" viewBox="0 0 10 12" fill="#666" className="play-icon transition-colors duration-300" style={{ marginLeft: 1 }}><path d="M0 0L10 6L0 12Z"/></svg>
+                    )}
+                    <style>{`.group:hover .play-btn:not([style*="#191919"]){background:#fd5000 !important;box-shadow:0 3px 12px rgba(253,80,0,0.25)}.group:hover .play-icon{fill:white !important}`}</style>
+                  </button>
+                </div>
+              </div>
+            </RevealOnScroll>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ─────────────────────────── WORKFLOWS ─────────────────────────── */
-interface Step { title: string; desc: string }
-interface Message { role: 'ai' | 'cu'; who: string; text: string; tag?: string; highlight?: boolean }
+interface Step { title: string; desc: string; doneAt?: number }
+interface Message { role: 'ai' | 'cu'; who: string; text: string; tag?: string; highlight?: boolean; time?: number }
 interface WorkflowPanel {
   badge: string; badgeColor: 'green' | 'orange' | 'red'
   tabName: string; tabNote: string
@@ -971,27 +1196,42 @@ interface WorkflowPanel {
 const WORKFLOWS: WorkflowPanel[] = [
   {
     badge: 'Business Hours', badgeColor: 'green',
-    tabName: 'Regular Hour Lead Intake', tabNote: 'Overflow when team is busy',
-    h3: 'Overflow Coverage During Business Hours',
-    desc: "When your team is tied up, the CSR Agent picks up instantly — no hold music, no voicemail. It qualifies the lead, captures full intake, and books the inspection before the homeowner considers calling a competitor.",
+    tabName: 'Regular Hour Lead Intake', tabNote: 'New roof inspection booking',
+    h3: 'Full Roof Replacement Intake',
+    desc: "Nova handles the full intake — greets Isaac, confirms the address, qualifies the job type, and books the inspection. No hold music, no voicemail, no missed opportunity.",
     steps: [
-      { title: 'Instant Pickup',      desc: 'Greets the caller as your company within 2 seconds. No hold time.' },
-      { title: 'Identify Intent',     desc: "Determines if it's a new lead, existing job query, or general question." },
-      { title: 'Qualify the Lead',    desc: 'Captures address, damage type, insurance carrier, and urgency.' },
-      { title: 'Book the Inspection', desc: 'Offers available slots and confirms the appointment directly in Zuper.' },
-      { title: 'Push to Pipeline',    desc: 'Creates a qualified lead record in your Zuper Lead Intake pipeline automatically.' },
+      { title: 'Instant Pickup',       desc: 'Greets Isaac by name within 2 seconds as Brothers Metal Roofing.', doneAt: 6000 },
+      { title: 'Identify Intent',      desc: 'Determines Isaac is calling about a new roof inspection.', doneAt: 15000 },
+      { title: 'Confirm Address',      desc: 'Verifies property at 5265 Sebring-Warner Road, Greenville, Ohio 45331.', doneAt: 28000 },
+      { title: 'Qualify the Job',      desc: 'Confirms homeowner status and that it\'s a full roof replacement.', doneAt: 76000 },
+      { title: 'Book the Inspection',  desc: 'Schedules Monday, November 24th at 3 PM and confirms.', doneAt: 107000 },
     ],
-    callAvatar: '🏠', callName: 'Marcus T. — (614) 555-0182', callInfo: 'Today · 2:34 PM · Business Hours Overflow', callDur: '2:18',
+    callAvatar: '🏠', callName: 'Isaac — Brothers Metal Roofing', callInfo: 'Today · 2:34 PM · New Roof Inspection', callDur: '2:18',
     messages: [
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Thank you for calling Summit Roofing! This is Aria. Our team is with other customers right now, but I can get you sorted. How can I help today?" },
-      { role: 'cu', who: 'Marcus', text: "Hi, some shingles went missing after that windstorm last week. I need someone to come take a look." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Wind damage can be serious — let's get an inspection scheduled. Can I get the property address?", tag: 'Qualifying' },
-      { role: 'cu', who: 'Marcus', text: "4821 Oakwood Drive, Columbus, Ohio 43214." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Got it. Are you planning to file an insurance claim or looking for a cash estimate?", tag: 'Insurance Check' },
-      { role: 'cu', who: 'Marcus', text: "Probably insurance — I have State Farm." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "We work with State Farm regularly. I have Thursday at 9 AM or Friday at 2 PM — which works better?", tag: 'Booking' },
-      { role: 'cu', who: 'Marcus', text: "Thursday morning is perfect." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "You're all set, Marcus — Thursday at 9 AM. Confirmation text coming shortly. Our inspector will reach out the morning of. Anything else I can help with?", tag: 'Confirmed ✓', highlight: true },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Hi there, Isaac. You've reached Brothers Metal Roofing. This is Nova. I'm here to help you get the support you need.", time: 2000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Are you calling about a new roof inspection, an existing project, or something else today?", time: 9000 },
+      { role: 'cu', who: 'Isaac', text: "New roof inspection.", time: 15000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "I have your property address as 5265 Sebring-Warner Road, Greenville, Ohio 45331. Should we use this for your booking?", tag: 'Address Confirm', time: 17000 },
+      { role: 'cu', who: 'Isaac', text: "Yes, that's correct.", time: 28000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Are you the homeowner?", time: 29000 },
+      { role: 'cu', who: 'Isaac', text: "Yes.", time: 32000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Thanks for confirming. Just to clarify, are you the homeowner of the property?", tag: 'Qualifying', time: 34000 },
+      { role: 'cu', who: 'Isaac', text: "Yes.", time: 40000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Great. And could you tell me a bit about the issue you'd like us to inspect? For example, is it a leak, damage, or something else?", time: 41000 },
+      { role: 'cu', who: 'Isaac', text: "Um, I want a new roof.", time: 55000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Understood. You're looking to get a new roof. Could you share a bit more detail? For example, are there specific concerns like old shingles, storm damage, or is it just time for a full replacement?", time: 59000 },
+      { role: 'cu', who: 'Isaac', text: "It's time for a full replacement.", time: 76000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Thanks for that. When would be the best date and time for us to come out and do the inspection?", tag: 'Booking', time: 79000 },
+      { role: 'cu', who: 'Isaac', text: "Um, Monday afternoon at approximately 3 o'clock.", time: 89000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Got it. Monday afternoon at around 3 o'clock. That would be November 24th. Does that sound right to you?", time: 95000 },
+      { role: 'cu', who: 'Isaac', text: "Yes.", time: 101000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "All right, let me get that set up for you now. This will just take a moment.", time: 102000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Your roof inspection is all set for Monday, November 24th at 3 PM. We'll see you then for the full roof replacement inspection.", tag: 'Confirmed ✓', highlight: true, time: 107000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "If anything changes or you need more help, just let me know.", time: 115000 },
+      { role: 'cu', who: 'Isaac', text: "All right, thank you.", time: 120000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "You're very welcome. We look forward to helping you with your new roof. Have a great day, Isaac.", time: 123000 },
+      { role: 'cu', who: 'Isaac', text: "Thank you.", time: 129000 },
+      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Take care, Isaac. If you need anything else, just reach out. Bye for now.", time: 131000 },
     ],
   },
   {
@@ -1048,7 +1288,7 @@ const BADGE_STYLES: Record<string, string> = {
   red:    'bg-[rgba(239,68,68,0.12)] text-[#DC2626]',
 }
 
-const MSG_INTERVAL_MS = 1400
+// Message interval is now dynamic per panel: totalDurMs / totalMsgs
 
 function parseDurMs(dur: string) {
   const [m, s] = dur.split(':').map(Number)
@@ -1067,21 +1307,53 @@ function Workflows() {
   const [elapsedMs, setElapsedMs] = useState(0)
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const transcriptRef = useRef<HTMLDivElement>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const panel = WORKFLOWS[active]
+
+  // Create audio element once
+  useEffect(() => {
+    audioRef.current = new Audio('/roofing-audio-01.mp3')
+    audioRef.current.preload = 'auto'
+    return () => { audioRef.current?.pause(); audioRef.current = null }
+  }, [])
 
   const totalDurMs = parseDurMs(panel.callDur)
   const totalMsgs = panel.messages.length
   const totalSteps = panel.steps.length
-  const visibleMsgs = Math.min(totalMsgs, Math.floor(elapsedMs / MSG_INTERVAL_MS) + (elapsedMs > 0 ? 1 : 0))
+  // If messages have timestamps, use them; otherwise fall back to even spacing
+  const hasTimestamps = panel.messages[0]?.time != null
+  const visibleMsgs = hasTimestamps
+    ? panel.messages.filter(m => m.time != null && m.time <= elapsedMs).length
+    : Math.min(totalMsgs, Math.floor(elapsedMs / (totalDurMs / totalMsgs)) + (elapsedMs > 0 ? 1 : 0))
   const ratio = Math.min(1, elapsedMs / totalDurMs)
-  const checkedCount = Math.floor(visibleMsgs * totalSteps / totalMsgs)
+  const hasStepTimestamps = panel.steps[0]?.doneAt != null
+  const checkedCount = hasStepTimestamps
+    ? panel.steps.filter(s => s.doneAt != null && s.doneAt <= elapsedMs).length
+    : Math.floor(visibleMsgs * totalSteps / totalMsgs)
 
   // Reset on tab change
   useEffect(() => {
     setPlaying(false)
     setElapsedMs(0)
     if (tickRef.current) clearInterval(tickRef.current)
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0 }
   }, [active])
+
+  // Sync audio with play state (only on tab 0 — Isaac)
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (playing && active === 0) {
+      audio.play().catch(() => {})
+      // Sync elapsed time from audio position
+      const syncInterval = setInterval(() => {
+        if (audio.currentTime) setElapsedMs(Math.floor(audio.currentTime * 1000))
+      }, 200)
+      return () => clearInterval(syncInterval)
+    } else {
+      audio.pause()
+    }
+  }, [playing, active])
 
   // Tick engine
   useEffect(() => {
@@ -1093,6 +1365,7 @@ function Workflows() {
         if (next >= totalDurMs) {
           clearInterval(tickRef.current!)
           setPlaying(false)
+          if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0 }
           return totalDurMs
         }
         return next
@@ -1116,6 +1389,7 @@ function Workflows() {
   return (
     <section id="workflows" className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
       <DotGridBg mouse={dotGrid.mouse} />
+      <GridLines />
       <div className="max-w-[1320px] mx-auto px-12 relative z-10">
 
         {/* Header */}
@@ -1136,13 +1410,14 @@ function Workflows() {
             <button
               key={i}
               onClick={() => { setActive(i); setPlaying(false) }}
-              className="relative text-left rounded-[18px] px-6 py-5 flex flex-col gap-1.5 transition-all cursor-pointer"
+              className="relative text-left rounded-[18px] px-6 py-5 flex flex-col gap-1.5 cursor-pointer"
               style={{
                 background: 'white',
                 boxShadow: active === i
                   ? '0 8px 28px rgba(0,0,0,0.08), 0 0 0 2px #fd5000'
                   : '0 2px 10px rgba(0,0,0,0.04)',
-                transform: active === i ? 'translateY(-2px)' : 'translateY(0)',
+                transform: active === i ? 'translateY(-3px) scale(1.01)' : 'translateY(0) scale(1)',
+                transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)',
               }}
             >
               <span className={`text-[10px] font-semibold tracking-[0.08em] uppercase px-2.5 py-0.5 rounded-full w-fit font-['Space_Mono',monospace] ${BADGE_STYLES[wf.badgeColor]}`}>{wf.badge}</span>
@@ -1152,8 +1427,17 @@ function Workflows() {
           ))}
         </div>
 
+        <style>{`
+          @keyframes playerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+          @keyframes waveSmooth{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
+        `}</style>
+
         {/* Main workflow card */}
         <div className="bg-white rounded-[24px] overflow-hidden" style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+          <style>{`
+            @keyframes playerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+            @keyframes waveSmooth{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
+          `}</style>
 
           {/* Body */}
           <div className="grid grid-cols-[1fr_440px]" style={{ height: 580 }}>
@@ -1172,8 +1456,8 @@ function Workflows() {
                       <div
                         className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-all"
                         style={done
-                          ? { background: '#22C55E', border: '1px solid #16A34A' }
-                          : { background: 'rgba(253,80,0,0.08)', color: '#fd5000', border: '1px solid rgba(253,80,0,0.15)' }}
+                          ? { background: '#22C55E' }
+                          : { background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}
                       >
                         {done
                           ? <Check size={12} strokeWidth={2.5} color="white" />
@@ -1203,22 +1487,29 @@ function Workflows() {
                   <div className="font-inter text-[13px] font-semibold text-[#191919] truncate leading-tight">{panel.callName}</div>
                   <div className="font-inter text-[11px] text-[#BFBFBF] mt-0.5">{panel.callInfo}</div>
                 </div>
-                <Chip>{panel.callDur}</Chip>
+                <span className="font-['Space_Mono',monospace] text-[10px] text-[#999]">{panel.callDur}</span>
               </div>
 
-              {/* Scrollable transcript — always full, active message highlighted */}
+              {/* Scrollable transcript */}
               <div ref={transcriptRef} className="flex-1 overflow-y-auto p-5 space-y-3" style={{ minHeight: 0 }}>
                 {panel.messages.map((m, i) => {
                   const isActive = elapsedMs > 0 && i === visibleMsgs - 1
                   const isPast   = elapsedMs > 0 && i < visibleMsgs - 1
+                  const msgDuration = hasTimestamps && i < panel.messages.length - 1 && panel.messages[i + 1].time != null && m.time != null
+                    ? panel.messages[i + 1].time! - m.time!
+                    : 3000
+                  const msgElapsed = isActive && m.time != null ? elapsedMs - m.time : msgDuration
+                  const charProgress = isActive ? Math.min(m.text.length, Math.floor((msgElapsed / msgDuration) * m.text.length * 1.5)) : m.text.length
                   return (
-                  <div key={i} className="flex gap-3 transition-opacity duration-500"
-                    style={{ opacity: elapsedMs === 0 ? 1 : isPast ? 0.38 : isActive ? 1 : 0.18 }}>
+                  <div key={i}
+                    ref={isActive ? (el) => { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }) } : undefined}
+                    className="flex gap-3 transition-opacity duration-500"
+                    style={{ opacity: elapsedMs === 0 ? 1 : isPast ? 1 : isActive ? 1 : 0.15 }}>
                     <div
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5 font-inter"
                       style={m.role === 'ai'
-                        ? { background: 'rgba(253,80,0,0.10)', color: '#fd5000', border: '1px solid rgba(253,80,0,0.15)' }
-                        : { background: '#f0ede8', color: '#888', border: '1px solid #e5e0d8' }}
+                        ? { background: 'rgba(253,80,0,0.10)', color: '#fd5000' }
+                        : { background: '#f0ede8', color: '#888' }}
                     >
                       {m.role === 'ai' ? 'AI' : 'CU'}
                     </div>
@@ -1226,12 +1517,14 @@ function Workflows() {
                       <div className={`font-inter text-[10px] font-semibold uppercase tracking-[0.08em] mb-1 ${m.role === 'ai' ? 'text-[#fd5000]' : 'text-[#ABABAB]'}`}>
                         {m.who}
                       </div>
-                      <div className={`font-inter text-[13px] leading-[1.65] ${m.highlight ? 'text-[#191919] font-medium' : 'text-[#5A5A5A]'}`}>
-                        {m.text}
+                      <div className={`font-inter text-[13px] leading-[1.65] ${isActive ? 'text-[#191919]' : m.highlight ? 'text-[#191919] font-medium' : 'text-[#5A5A5A]'}`}>
+                        {isActive ? (
+                          <>{m.text.slice(0, charProgress)}<span className="text-[#ccc]">{m.text.slice(charProgress)}</span></>
+                        ) : m.text}
                       </div>
                       {m.tag && (
                         <span className="inline-flex mt-1.5 font-['Space_Mono',monospace] text-[10px] font-medium px-[9px] py-[4px] rounded-full"
-                          style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000', border: '1px solid rgba(253,80,0,0.25)' }}>
+                          style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}>
                           {m.tag}
                         </span>
                       )}
@@ -1244,8 +1537,7 @@ function Workflows() {
               {/* Fade gradient above floating player */}
               <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none" style={{ height: 120, background: 'linear-gradient(to top, #faf7f4 0%, #faf7f4 20%, transparent 100%)' }} />
 
-              {/* Floating player card — bottom of right panel */}
-              <style>{`@keyframes playerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}`}</style>
+              {/* Floating player card */}
               <div className="absolute bottom-5 left-5 right-5 z-20" style={{ animation: 'playerFloat 3s ease-in-out infinite' }}>
                 <div className="rounded-[16px] px-4 py-3.5 flex items-center gap-3"
                   style={{
@@ -1255,7 +1547,7 @@ function Workflows() {
                 >
                   <button
                     onClick={() => setPlaying(p => !p)}
-                    className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+                    className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
                     style={{
                       background: playing ? '#191919' : '#fd5000',
                       boxShadow: playing ? '0 3px 10px rgba(0,0,0,0.15)' : '0 3px 12px rgba(253,80,0,0.30)',
@@ -1270,7 +1562,13 @@ function Workflows() {
                     <div className="flex items-center gap-[2px] h-8 overflow-hidden">
                       {bars.map((b, i) => (
                         <div key={i} className="flex-1 rounded-full"
-                          style={{ height: `${b.h}%`, background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.45)') : 'rgba(0,0,0,0.07)' }} />
+                          style={{
+                            height: `${b.h}%`,
+                            background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.45)') : 'rgba(0,0,0,0.07)',
+                            transformOrigin: 'bottom',
+                            animation: playing && b.filled ? `waveSmooth ${2.5 + Math.sin(i * 0.3) * 1}s ease-in-out ${i * 0.08}s infinite` : 'none',
+                            transition: 'background 0.3s ease',
+                          }} />
                       ))}
                     </div>
                   </div>
@@ -1302,113 +1600,321 @@ const RM_ITEMS = [
 function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: boolean }) {
   const c = item.color
 
-  // Higher Close Rates — check circle ticking animation
+  const cardStyle: React.CSSProperties = { background: 'white', borderRadius: 4, boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }
+
+  // Higher Close Rates — single card with call info + waveform + status
   if (item.title.includes('Close')) return (
-    <svg viewBox="0 0 100 100" className="mx-auto" style={{ width: 90, height: 90 }}>
-      {/* Circle draws in */}
-      <circle cx="50" cy="50" r="38" fill="none" stroke={`${c}20`} strokeWidth="4" />
-      <circle cx="50" cy="50" r="38" fill="none" stroke={c} strokeWidth="4"
-        strokeLinecap="round" strokeDasharray="240" strokeDashoffset="240" transform="rotate(-90 50 50)">
-        <animate attributeName="stroke-dashoffset" values="240;0" dur="1s" fill="freeze" repeatCount="indefinite" begin="0s;2.5s" />
-      </circle>
-      {/* Check draws in after circle */}
-      <path d="M32 52 L45 64 L68 38" fill="none" stroke={c} strokeWidth="5"
-        strokeLinecap="round" strokeLinejoin="round" strokeDasharray="60" strokeDashoffset="60">
-        <animate attributeName="stroke-dashoffset" values="60;0" dur="0.4s" begin="1s;3.5s" fill="freeze" repeatCount="indefinite" />
-      </path>
-      {/* Soft pulse after complete */}
-      <circle cx="50" cy="50" r="38" fill="none" stroke={c} strokeWidth="2" opacity="0">
-        <animate attributeName="r" values="38;48" dur="0.6s" begin="1.4s;3.9s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.4;0" dur="0.6s" begin="1.4s;3.9s" repeatCount="indefinite" />
-      </circle>
-    </svg>
+    <div className="w-full flex flex-col gap-2">
+      <style>{`
+        @keyframes closeWave{0%,100%{transform:scaleY(0.3)}50%{transform:scaleY(1)}}
+        @keyframes closeRing{0%{transform:scale(0.8);opacity:0.25}100%{transform:scale(1.6);opacity:0}}
+        @keyframes closeListen{0%,42%{opacity:1}48%,100%{opacity:0}}
+        @keyframes closeCaptured{0%,48%{opacity:0}55%,100%{opacity:1}}
+      `}</style>
+      <style>{`
+        @keyframes closeCardIn{0%,2%{opacity:0;transform:translateY(12px)}8%,85%{opacity:1;transform:translateY(0)}93%,100%{opacity:0;transform:translateY(-5px)}}
+        @keyframes closeTagIn{0%,12%{opacity:0;transform:translateY(8px)}18%,85%{opacity:1;transform:translateY(0)}93%,100%{opacity:0;transform:translateY(-5px)}}
+        @keyframes closeListenTag{0%,18%{opacity:1}40%,100%{opacity:0}}
+        @keyframes closeCapturedTag{0%,40%{opacity:0}50%,85%{opacity:1}93%,100%{opacity:0}}
+      `}</style>
+      {/* Single compact card — call info + wave inline */}
+      <div className="px-2.5 py-2 flex items-center gap-2" style={{ ...cardStyle, animation: 'closeCardIn 5s cubic-bezier(0.4,0,0.2,1) infinite' }}>
+        <div className="relative shrink-0">
+          <div className="absolute inset-0 rounded-full" style={{ border: `1px solid ${c}18`, animation: 'closeRing 2.5s ease-out infinite' }} />
+          <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: c }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-5.16-5.16A19.79 19.79 0 013 5.18 2 2 0 015.18 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.92z"/></svg>
+          </div>
+        </div>
+        <div className="shrink-0">
+          <div className="font-inter text-[8px] font-semibold text-[#191919] leading-tight">Isaac</div>
+          <div className="font-inter text-[7px] text-[#bbb]">Greenville, OH</div>
+        </div>
+        <div className="flex-1 flex items-center justify-center gap-[0.5px]" style={{ height: 16 }}>
+          {Array.from({ length: 36 }).map((_, i) => (
+            <div key={i} className="rounded-full" style={{
+              width: 1.5,
+              height: Math.min(3 + Math.abs(Math.sin(i * 0.4) * 8 + Math.cos(i * 0.8) * 5), 16),
+              background: `${c}80`,
+              transformOrigin: 'center',
+              animation: `closeWave ${1.6 + Math.sin(i * 0.2) * 0.5}s cubic-bezier(0.4,0,0.6,1) ${i * 0.025}s infinite`,
+            }} />
+          ))}
+        </div>
+        <span className="font-['Space_Mono',monospace] text-[7px] text-[#ccc] shrink-0">0:42</span>
+      </div>
+      {/* Status swap */}
+      <div className="relative h-7 flex items-center justify-center" style={{ animation: 'closeTagIn 5s cubic-bezier(0.4,0,0.2,1) infinite' }}>
+        <div className="absolute flex items-center gap-1.5 px-3 py-1 rounded-[3px]" style={{ ...cardStyle, animation: 'closeListenTag 5s ease infinite' }}>
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: c }} />
+          <span className="font-inter text-[9px] font-medium" style={{ color: c }}>Listening...</span>
+        </div>
+        <div className="absolute flex items-center gap-1.5 px-3 py-1 rounded-[3px]" style={{ ...cardStyle, animation: 'closeCapturedTag 5s ease infinite' }}>
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span className="font-inter text-[9px] font-medium" style={{ color: c }}>Lead Captured</span>
+        </div>
+      </div>
+    </div>
   )
 
-  // Shorter Response — minimal pulse dot
+  // Shorter Response — user msg → typing → AI reply → fade out → loop
   if (item.title.includes('Response')) return (
-    <svg viewBox="0 0 200 80" className="w-full" style={{ height: 80 }}>
-      <line x1="20" y1="40" x2="180" y2="40" stroke="#e5e5e5" strokeWidth="2" strokeLinecap="round" />
-      <line x1="20" y1="40" x2="170" y2="40" stroke={c} strokeWidth="2" strokeLinecap="round">
-        <animate attributeName="x2" values="20;170;20" dur="3s" repeatCount="indefinite" />
-      </line>
-      <circle cx="170" cy="40" r="5" fill={c}>
-        <animate attributeName="cx" values="20;170;20" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite" />
-      </circle>
-    </svg>
+    <div className="w-full flex flex-col gap-2">
+      <style>{`
+        @keyframes chatUserIn{0%,2%{opacity:0;transform:translateY(10px)}8%,82%{opacity:1;transform:translateY(0)}92%,100%{opacity:0;transform:translateY(-4px)}}
+        @keyframes chatTyping{0%,12%{opacity:0;transform:translateY(8px)}18%,38%{opacity:1;transform:translateY(0)}44%,100%{opacity:0;transform:translateY(0)}}
+        @keyframes chatAiIn{0%,42%{opacity:0;transform:translateY(8px)}48%,82%{opacity:1;transform:translateY(0)}92%,100%{opacity:0;transform:translateY(-4px)}}
+        @keyframes chatBadgeIn{0%,52%{opacity:0;transform:translateY(6px)}58%,82%{opacity:1;transform:translateY(0)}92%,100%{opacity:0;transform:translateY(-4px)}}
+        @keyframes typingDot{0%,80%,100%{opacity:0.25}40%{opacity:0.9}}
+      `}</style>
+      {/* User message */}
+      <div className="flex items-end gap-1.5" style={{ animation: 'chatUserIn 6s cubic-bezier(0.4,0,0.2,1) infinite' }}>
+        <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[7px] font-bold text-white" style={{ background: '#555' }}>I</div>
+        <div className="px-2.5 py-1.5" style={{ ...cardStyle, borderRadius: '4px 4px 4px 1px' }}>
+          <span className="font-inter text-[9px] text-[#666]">I need a roof inspection...</span>
+        </div>
+      </div>
+      {/* Typing indicator */}
+      <div className="flex items-end gap-1.5 justify-end" style={{ animation: 'chatTyping 6s cubic-bezier(0.4,0,0.2,1) infinite' }}>
+        <div className="px-3 py-2 flex gap-1" style={{ background: `${c}0c`, borderRadius: '4px 4px 1px 4px' }}>
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: c, animation: 'typingDot 0.8s ease infinite' }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: c, animation: 'typingDot 0.8s ease 0.2s infinite' }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: c, animation: 'typingDot 0.8s ease 0.4s infinite' }} />
+        </div>
+        <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[7px] font-bold text-white" style={{ background: c }}>N</div>
+      </div>
+      {/* AI response */}
+      <div className="flex items-end gap-1.5 justify-end" style={{ animation: 'chatAiIn 6s cubic-bezier(0.4,0,0.2,1) infinite' }}>
+        <div className="px-2.5 py-1.5" style={{ background: `${c}0c`, borderRadius: '4px 4px 1px 4px' }}>
+          <span className="font-inter text-[9px]" style={{ color: c }}>Let me schedule that right away.</span>
+        </div>
+        <div className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[7px] font-bold text-white" style={{ background: c }}>N</div>
+      </div>
+      {/* Speed badge */}
+      <div className="flex justify-end" style={{ animation: 'chatBadgeIn 6s cubic-bezier(0.4,0,0.2,1) infinite' }}>
+        <span className="font-['Space_Mono',monospace] text-[8px] px-2 py-0.5" style={{ ...cardStyle, color: c }}>{'<'}2s response</span>
+      </div>
+    </div>
   )
 
-  // Storm Surge — clean bar chart with subtle breathing
+  // Storm Surge — smooth animated surge visualization
   if (item.title.includes('Storm')) return (
-    <svg viewBox="0 0 200 80" className="w-full" style={{ height: 80 }}>
-      {[12, 16, 14, 20, 30, 50, 72, 68, 55, 38, 25, 18].map((h, i) => (
-        <rect key={i} x={8 + i * 16} y={80 - h} width="10" height={h} rx="2" fill={h > 45 ? c : `${c}30`}>
-          <animate attributeName="height" values={`${h * 0.7};${h};${h * 0.7}`} dur={`${2 + i * 0.1}s`} repeatCount="indefinite" />
-          <animate attributeName="y" values={`${80 - h * 0.7};${80 - h};${80 - h * 0.7}`} dur={`${2 + i * 0.1}s`} repeatCount="indefinite" />
-        </rect>
-      ))}
-    </svg>
+    <div className="w-full flex flex-col gap-2">
+      <style>{`
+        @keyframes stormPulse{0%,100%{opacity:0.7}50%{opacity:1}}
+        @keyframes stormBar{0%,100%{transform:scaleY(0.3)}50%{transform:scaleY(1)}}
+        @keyframes stormSurge{0%{transform:scaleY(0.2);opacity:0.3}40%,60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(0.2);opacity:0.3}}
+        @keyframes stormCount{0%,15%{opacity:0;transform:translateY(4px)}25%,85%{opacity:1;transform:translateY(0)}95%,100%{opacity:0;transform:translateY(-4px)}}
+      `}</style>
+      {/* Top row — alert + live counter */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5 px-2 py-1" style={{ ...cardStyle }}>
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: c, animation: 'stormPulse 1.2s ease infinite' }} />
+          <span className="font-['Space_Mono',monospace] text-[8px] font-medium" style={{ color: c }}>SURGE</span>
+        </div>
+        <div className="flex items-center gap-1 px-2 py-1" style={cardStyle}>
+          <span className="font-['Space_Mono',monospace] text-[9px] font-bold" style={{ color: c, animation: 'stormCount 4s ease infinite' }}>458%</span>
+        </div>
+      </div>
+      {/* Smooth bar chart with surge effect */}
+      <div className="flex items-end gap-[2.5px] h-14 px-0.5">
+        {[8, 10, 9, 14, 22, 38, 60, 90, 100, 85, 65, 45, 30, 18, 12, 10].map((h, i) => {
+          const isSurge = h > 55
+          return (
+            <div key={i} className="flex-1 rounded-t-[3px]" style={{
+              height: `${h}%`,
+              background: isSurge
+                ? `linear-gradient(to top, ${c}, ${c}88)`
+                : `${c}18`,
+              transformOrigin: 'bottom',
+              animation: isSurge
+                ? `stormSurge ${4 + i * 0.1}s cubic-bezier(0.4,0,0.2,1) ${i * 0.08}s infinite`
+                : `stormBar ${3.5 + i * 0.12}s ease-in-out ${i * 0.06}s infinite`,
+              transition: 'height 0.3s ease',
+            }} />
+          )
+        })}
+      </div>
+      {/* Bottom — active calls row */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <div className="flex -space-x-1">
+            {[c, '#3b82f6', '#8b5cf6'].map((bg, i) => (
+              <div key={i} className="w-4 h-4 rounded-full border-[1.5px] border-[#f7f4f0] flex items-center justify-center text-[6px] font-bold text-white" style={{ background: bg }}>{String.fromCharCode(65 + i)}</div>
+            ))}
+          </div>
+          <span className="font-inter text-[7px] text-[#bbb]">+9 active</span>
+        </div>
+      </div>
+    </div>
   )
 
-  // Pipeline — horizontal progress segments
+  // Pipeline — mini kanban with staggered card entrance
   if (item.title.includes('Pipeline')) return (
-    <svg viewBox="0 0 200 80" className="w-full" style={{ height: 80 }}>
-      {[0, 1, 2].map(i => (
-        <g key={i}>
-          <rect x="20" y={10 + i * 24} width="160" height="16" rx="8" fill="#eee" />
-          <rect x="20" y={10 + i * 24} width="0" height="16" rx="8" fill={[c, '#3b82f6', '#8b5cf6'][i]} opacity="0.6">
-            <animate attributeName="width" values={`0;${140 - i * 25}`} dur="1.5s" begin={`${i * 0.2}s`} fill="freeze" />
-          </rect>
-          <circle cx="0" cy={18 + i * 24} r="4" fill={[c, '#3b82f6', '#8b5cf6'][i]} opacity="0.6">
-            <animate attributeName="cx" values="20;{160 - i * 25}" dur="1.5s" begin={`${i * 0.2}s`} fill="freeze" />
-            <animate attributeName="r" values="3;4;3" dur="2s" begin="1.5s" repeatCount="indefinite" />
-          </circle>
-        </g>
+    <div className="w-full flex gap-1.5">
+      <style>{`
+        @keyframes pipeCardIn{0%,var(--start){opacity:0;transform:translateY(8px)}var(--show),85%{opacity:1;transform:translateY(0)}93%,100%{opacity:0;transform:translateY(-4px)}}
+        @keyframes pipeSlide{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes pipeLoop{0%,3%{opacity:0;transform:translateY(8px)}8%,82%{opacity:1;transform:translateY(0)}90%,100%{opacity:0;transform:translateY(-4px)}}
+      `}</style>
+      {[
+        { label: 'New', n: 3, color: c },
+        { label: 'Qualified', n: 2, color: '#3b82f6' },
+        { label: 'Booked', n: 2, color: '#22c55e' },
+      ].map((col, ci) => (
+        <div key={ci} className="flex-1 flex flex-col gap-1">
+          <div className="flex items-center gap-1 mb-0.5">
+            <div className="w-1.5 h-1.5 rounded-[2px]" style={{ background: col.color }} />
+            <span className="font-inter text-[7px] font-semibold text-[#aaa]">{col.label}</span>
+          </div>
+          {Array.from({ length: Math.min(col.n, 3) }).map((_, i) => {
+            const delay = ci * 0.25 + i * 0.15
+            return (
+              <div key={i} className="rounded-[3px] p-1.5" style={{
+                ...cardStyle,
+                borderRadius: 3,
+                animation: `pipeLoop 5s cubic-bezier(0.4,0,0.2,1) ${delay}s infinite`,
+              }}>
+                <div className="h-1 rounded-[1px]" style={{ background: '#e8e5e0', width: `${60 + i * 12}%` }} />
+                <div className="h-1 rounded-[1px] mt-0.5" style={{ background: '#f2f0ec', width: `${35 + i * 10}%` }} />
+              </div>
+            )
+          })}
+        </div>
       ))}
-    </svg>
+    </div>
   )
 
-  // Revenue Per CSR — donut ring
+  // Revenue Per CSR — AI vs Team animated comparison
   if (item.title.includes('Revenue')) return (
-    <svg viewBox="0 0 100 100" className="mx-auto" style={{ width: 90, height: 90 }}>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#eee" strokeWidth="8" />
-      <circle cx="50" cy="50" r="38" fill="none" stroke={c} strokeWidth="8"
-        strokeLinecap="round" strokeDasharray="190 50" transform="rotate(-90 50 50)">
-        <animate attributeName="stroke-dasharray" values="0 240;190 50" dur="1.5s" fill="freeze" />
-      </circle>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="#e5e5e5" strokeWidth="8"
-        strokeLinecap="round" strokeDasharray="50 190" strokeDashoffset="-190" transform="rotate(-90 50 50)" />
-    </svg>
+    <div className="w-full flex flex-col gap-3">
+      <style>{`
+        @keyframes revBarFill{0%,5%{width:0}25%,80%{width:78%}90%,100%{width:0}}
+        @keyframes revTeamFill{0%,5%{width:0}25%,80%{width:22%}90%,100%{width:0}}
+        @keyframes revCardIn{0%,8%{opacity:0;transform:translateY(6px)}18%,80%{opacity:1;transform:translateY(0)}90%,100%{opacity:0;transform:translateY(-4px)}}
+      `}</style>
+      {/* AI bar */}
+      <div className="flex items-center gap-2">
+        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: c }}>
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: '#eee' }}>
+          <div className="h-full rounded-[2px]" style={{ background: c, animation: 'revBarFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
+        </div>
+        <span className="font-['Space_Mono',monospace] text-[8px] font-bold shrink-0" style={{ color: c }}>78%</span>
+      </div>
+      {/* Team bar */}
+      <div className="flex items-center gap-2">
+        <div className="flex -space-x-1 shrink-0">
+          {[c, '#3b82f6'].map((bg, i) => (
+            <div key={i} className="w-2.5 h-2.5 rounded-full border border-[#f7f4f0]" style={{ background: bg, opacity: 0.4 }} />
+          ))}
+        </div>
+        <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: '#eee' }}>
+          <div className="h-full rounded-[2px]" style={{ background: '#bbb', animation: 'revTeamFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
+        </div>
+        <span className="font-['Space_Mono',monospace] text-[8px] font-bold text-[#bbb] shrink-0">22%</span>
+      </div>
+      {/* Metric cards */}
+      <div className="flex gap-1.5">
+        {[{ v: '40h', l: 'Saved/wk', icon: '⏱' }, { v: '+23%', l: 'Revenue', icon: '📈' }].map((m, i) => (
+          <div key={m.l} className="flex-1 p-1.5 flex items-center gap-1.5 rounded-[3px]" style={{
+            ...cardStyle, borderRadius: 3,
+            animation: `revCardIn 5s cubic-bezier(0.4,0,0.2,1) ${0.5 + i * 0.2}s infinite`,
+          }}>
+            <span className="text-[9px]">{m.icon}</span>
+            <div>
+              <div className="font-['Space_Mono',monospace] text-[9px] font-bold leading-none" style={{ color: c }}>{m.v}</div>
+              <div className="font-inter text-[6px] text-[#bbb] leading-none mt-0.5">{m.l}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 
-  // Zero Tool Sprawl — connected nodes
+  // Zero Tool Sprawl — workflow pipeline with staggered reveal
   return (
-    <svg viewBox="0 0 200 80" className="w-full" style={{ height: 80 }}>
-      {[[30, 40], [80, 40], [130, 40], [180, 40]].map(([x, y], i) => (
-        <g key={i}>
-          {i < 3 && (
-            <line x1={x + 8} y1={y} x2={x + 42} y2={y} stroke={`${c}25`} strokeWidth="2">
-              <animate attributeName="stroke" values={`${c}15;${c}40;${c}15`} dur="3s" begin={`${i * 0.3}s`} repeatCount="indefinite" />
-            </line>
-          )}
-          <circle cx={x} cy={y} r="8" fill={`${c}10`} stroke={`${c}30`} strokeWidth="1.5">
-            <animate attributeName="r" values="7;9;7" dur={`${2.5 + i * 0.2}s`} repeatCount="indefinite" />
-          </circle>
-          <circle cx={x} cy={y} r="3" fill={c} opacity="0.5">
-            <animate attributeName="opacity" values="0.3;0.7;0.3" dur={`${2 + i * 0.3}s`} repeatCount="indefinite" />
-          </circle>
-        </g>
-      ))}
-    </svg>
+    <div className="w-full flex flex-col gap-2">
+      <style>{`
+        @keyframes flowNodeIn{0%,3%{opacity:0;transform:scale(0.8)}8%,85%{opacity:1;transform:scale(1)}93%,100%{opacity:0;transform:scale(0.8)}}
+        @keyframes flowLineGrow{0%,5%{transform:scaleX(0)}12%,85%{transform:scaleX(1)}93%,100%{transform:scaleX(0)}}
+        @keyframes flowDotTravel{0%{left:-4px;opacity:0}10%{opacity:0.8}50%{opacity:1}90%{opacity:0.8}100%{left:calc(100% - 4px);opacity:0}}
+      `}</style>
+      {/* Main flow row */}
+      <div className="flex items-center w-full">
+        {[
+          { label: 'Call', color: '#059669', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-5.16-5.16A19.79 19.79 0 013 5.18 2 2 0 015.18 3h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.92z"/></svg> },
+          { label: 'Qualify', color: '#4f46e5', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg> },
+          { label: 'Book', color: '#d97706', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
+          { label: 'Pipeline', color: '#2563eb', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> },
+        ].map((step, i) => (
+          <div key={i} className="flex items-center" style={{ flex: i < 3 ? '1' : '0 0 auto' }}>
+            {/* Node */}
+            <div className="flex flex-col items-center gap-1" style={{ animation: `flowNodeIn 6s cubic-bezier(0.4,0,0.2,1) ${i * 0.3}s infinite` }}>
+              <div className="w-9 h-9 flex items-center justify-center" style={{ ...cardStyle, borderRadius: 10 }}>
+                {step.icon}
+              </div>
+              <span className="font-inter text-[7px] text-[#aaa]">{step.label}</span>
+            </div>
+            {/* Connector */}
+            {i < 3 && (
+              <div className="flex-1 mx-1 relative" style={{ height: 8, marginTop: -10 }}>
+                {/* Line */}
+                <div className="absolute top-1/2 left-0 right-0 h-[1.5px] origin-left" style={{
+                  background: `${c}20`,
+                  animation: `flowLineGrow 6s cubic-bezier(0.4,0,0.2,1) ${i * 0.3 + 0.15}s infinite`,
+                  transformOrigin: 'left',
+                }} />
+                {/* Traveling dot */}
+                <div className="absolute top-1/2 -mt-[2.5px] w-[5px] h-[5px] rounded-full" style={{
+                  background: c,
+                  boxShadow: `0 0 4px ${c}40`,
+                  animation: `flowDotTravel ${1.8 + i * 0.1}s cubic-bezier(0.4,0,0.6,1) ${i * 0.3 + 0.4}s infinite`,
+                }} />
+                {/* Arrow tip */}
+                <div className="absolute top-1/2 right-0 -mt-[3px]" style={{
+                  width: 0, height: 0,
+                  borderTop: '3px solid transparent',
+                  borderBottom: '3px solid transparent',
+                  borderLeft: `4px solid ${c}30`,
+                  animation: `flowNodeIn 6s cubic-bezier(0.4,0,0.2,1) ${i * 0.3 + 0.2}s infinite`,
+                }} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {/* Bottom status */}
+      <div className="flex items-center justify-center">
+        <div className="flex items-center gap-1.5 px-2.5 py-1" style={{ ...cardStyle, animation: `flowNodeIn 6s cubic-bezier(0.4,0,0.2,1) 1.5s infinite` }}>
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: c }} />
+          <span className="font-inter text-[8px] font-medium" style={{ color: c }}>One workflow · Zero tools</span>
+        </div>
+      </div>
+    </div>
   )
 }
 
 function RMCard({ item, i }: { item: typeof RM_ITEMS[number]; i: number }) {
   const [hovered, setHovered] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setVisible(true) },
+      { threshold: 0.3 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   return (
     <RevealOnScroll delay={(i % 3) * 70} className="h-full">
       <div
+        ref={cardRef}
         className="rounded-[20px] cursor-default overflow-hidden h-full flex flex-col"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -1422,19 +1928,23 @@ function RMCard({ item, i }: { item: typeof RM_ITEMS[number]; i: number }) {
         {/* Title + description on top */}
         <div className="px-6 pt-6 pb-4">
           <h3 className="font-jakarta font-bold text-[16px] text-[#191919] tracking-[-0.01em] mb-2">{item.title}</h3>
-          <p className="font-inter text-[13px] text-[#888] leading-[1.65]">{item.desc}</p>
+          <p className="font-inter text-[13px] text-[#999] leading-[1.6]">{item.desc}</p>
         </div>
 
-        {/* Illustration area at bottom */}
+        {/* Illustration area at bottom — enters from bottom when visible */}
         <div
-          className="flex-1 flex items-center justify-center mx-4 mb-4 rounded-[14px] overflow-hidden"
+          className="flex-1 flex items-center justify-center mx-3 mb-3 rounded-[12px] overflow-hidden"
           style={{
             background: '#f7f4f0',
-            padding: '20px 24px',
-            minHeight: 160,
+            padding: '14px 16px',
+            minHeight: 145,
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateY(0)' : 'translateY(20px)',
+            transition: `opacity 0.6s cubic-bezier(0.16,1,0.3,1) ${0.2 + (i % 3) * 0.15}s, transform 0.6s cubic-bezier(0.16,1,0.3,1) ${0.2 + (i % 3) * 0.15}s`,
+            animationPlayState: visible ? 'running' : 'paused',
           }}
         >
-          <RMCardIllustration item={item} hovered={hovered} />
+          {visible && <RMCardIllustration item={item} hovered={hovered} />}
         </div>
       </div>
     </RevealOnScroll>
@@ -1451,6 +1961,7 @@ function RevenueMultiplier() {
       onMouseLeave={dotGrid.onMouseLeave}
     >
       <DotGridBg mouse={dotGrid.mouse} />
+      <GridLines />
       <div className="max-w-[1280px] mx-auto px-12 relative z-10">
         <RevealOnScroll className="text-center mb-14">
           <SectionEyebrow icon="📊" label="Impact" />
@@ -1490,15 +2001,16 @@ function CaseStudy() {
   return (
     <section id="case-study" className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
       <DotGridBg mouse={dotGrid.mouse} />
+      <GridLines />
       <div className="max-w-[1200px] mx-auto px-12 relative z-10">
 
         <RevealOnScroll className="mb-12">
           <SectionEyebrow icon="📖" label="Customer Story" />
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mt-4">
+          <div className="mt-4">
             <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.035em]">
               Proven in a <span className="text-[#fd5000]">real storm surge.</span>
             </h2>
-            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[320px] lg:text-right shrink-0">
+            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[520px] mt-3">
               A&A Roofing. December 2025. 458% call surge. Zero missed leads.
             </p>
           </div>
@@ -1531,9 +2043,9 @@ function CaseStudy() {
                   </div>
                 )}
               </div>
-              <div className="grid grid-cols-3 border-t border-white/10">
-                {CS_STATS.map((s, i) => (
-                  <div key={s.label} className={`px-5 py-5 ${(i % 3) < 2 ? 'border-r border-white/10' : ''} ${i < 3 ? 'border-b border-white/10' : ''}`}>
+              <div className="flex border-t border-white/10">
+                {CS_STATS.slice(0, 3).map((s, i) => (
+                  <div key={s.label} className={`flex-1 px-5 py-5 ${i < 2 ? 'border-r border-white/10' : ''}`}>
                     <div className="font-jakarta font-extrabold text-white text-[24px] leading-none tracking-[-0.04em]">{s.num}</div>
                     <div className="font-inter text-[10px] mt-1.5 leading-snug" style={{ color: '#9A9A9A' }}>{s.label}</div>
                   </div>
@@ -1602,7 +2114,7 @@ function CTASection() {
             Ready to never miss<br />another lead?
           </h2>
           <p className="text-[18px] font-light max-w-[480px] mx-auto mb-11 leading-[1.65]" style={{ color: '#E8E8E8' }}>
-            See the Zuper CSR Agent handle a live workflow customized with your company name, services, and real availability.
+            See Nova handle a live workflow customized with your company name, services, and real availability.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a href="https://www.zuper.co/demo" className="bg-white text-[#fd5000] px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
@@ -1718,6 +2230,7 @@ export default function LandingPage() {
       <ChannelBand />
       <Capabilities />
       <MeetAgents />
+      <VoiceLanguages />
       <Workflows />
       <RevenueMultiplier />
       <CaseStudy />
