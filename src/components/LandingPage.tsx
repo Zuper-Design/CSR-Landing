@@ -161,7 +161,7 @@ function Navbar() {
             Schedule Demo
           </button>
         </div>
-        <button className="lg:hidden text-white p-2 justify-self-end" onClick={() => setMenuOpen(!menuOpen)}>
+        <button aria-label="Toggle navigation menu" className="lg:hidden text-white p-2 justify-self-end" onClick={() => setMenuOpen(!menuOpen)}>
           <div className="space-y-1.5">
             <span className="block w-6 h-0.5 bg-white" /><span className="block w-6 h-0.5 bg-white" /><span className="block w-6 h-0.5 bg-white" />
           </div>
@@ -458,8 +458,8 @@ function Hero() {
           {/* Social proof — #BCBCBC on dark ≈ 7.6:1 ✓ */}
           <div className="flex items-center gap-2.5 mt-4 md:mt-7" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
             <div className="flex -space-x-1.5">
-              {['/logo-maven.png', '/logo-aa.png', '/logo-bmr.png'].map((src, i) => (
-                <img key={i} src={src} alt="" className="w-7 h-7 rounded-full object-cover bg-white border-2 border-white/40" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }} />
+              {['/logo-maven.png', '/logo-aa.png', '/logo-bmr.png'].map((src) => (
+                <img key={src} src={src} alt="Client logo" className="w-7 h-7 rounded-full object-cover bg-white border-2 border-white/40" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }} />
               ))}
             </div>
             <p className="font-inter text-[11px] md:text-[13px]" style={{ color: '#BCBCBC' }}>
@@ -482,6 +482,7 @@ function Hero() {
               <p className="font-inter text-[10px] text-white/50">Handles calls & storm surge</p>
             </div>
             <button
+              aria-label={playing ? 'Pause demo' : 'Play demo'}
               onClick={() => setPlaying(p => !p)}
               className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000' }}
@@ -551,7 +552,7 @@ function Hero() {
 
           {/* Main glass card */}
           <div
-            className="flex flex-col rounded-[22px] overflow-hidden relative"
+            className="flex flex-col rounded-[22px] relative"
             style={{
               background: 'rgba(12,8,6,0.62)',
               border: '1px solid rgba(255,255,255,0.22)',
@@ -663,6 +664,7 @@ function Hero() {
             {/* Play / Stop button */}
             <div className="px-4 pb-4">
               <button
+                aria-label={playing ? 'Stop call playback' : 'Play call demo'}
                 onClick={() => { setPlaying(p => !p); if (playing) { setActiveMsg(-1); setActiveWordIdx(-1); setElapsed(0) } }}
                 className="w-full flex items-center justify-center gap-2.5 font-inter font-semibold text-[14px] rounded-[12px] py-3 transition-all hover:brightness-110 active:scale-[0.98] text-white"
                 style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000', border: `1px solid ${playing ? 'rgba(255,255,255,0.25)' : '#fd5000'}`, boxShadow: playing ? 'none' : '0 4px 18px rgba(253,80,0,0.35)', transition: 'all 0.3s ease' }}
@@ -830,8 +832,11 @@ function Capabilities() {
 
     const onWheel = (e: WheelEvent) => {
       if (halfHeightRef.current <= 0) return
-      e.preventDefault()
-      userVelocityRef.current += e.deltaY * 0.4
+      // Only prevent page scroll if mostly vertical and cards are in view
+      if (inViewRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault()
+        userVelocityRef.current += e.deltaY * 0.4
+      }
     }
 
     vp.addEventListener('wheel', onWheel, { passive: false })
@@ -1652,7 +1657,7 @@ function GetStarted() {
                   {/* Left content or spacer */}
                   <div className="w-1/2 pr-12 flex justify-end">
                     {isLeft && (
-                      <div ref={el => { stepRefs.current[i] = el }} className="w-[360px] rounded-[20px]"
+                      <div ref={el => { stepRefs.current[i] = el }} className="w-full max-w-[360px] rounded-[20px]"
                         style={{
                           opacity: 0,
                           transform: 'translateX(40px) translateY(12px) scale(0.95)',
@@ -1726,7 +1731,7 @@ function GetStarted() {
                   {/* Right content or spacer */}
                   <div className="w-1/2 pl-12">
                     {!isLeft && (
-                      <div ref={el => { stepRefs.current[i] = el }} className="w-[360px] rounded-[20px]"
+                      <div ref={el => { stepRefs.current[i] = el }} className="w-full max-w-[360px] rounded-[20px]"
                         style={{
                           opacity: 0,
                           transform: 'translateX(-40px) translateY(12px) scale(0.95)',
@@ -1927,6 +1932,14 @@ function Workflows() {
     ? panel.steps.filter(s => s.doneAt != null && s.doneAt <= elapsedMs).length
     : Math.floor(visibleMsgs * totalSteps / totalMsgs)
 
+  // Escape key closes mobile modal
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { setMobileOpen(false); setPlaying(false) } }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [mobileOpen])
+
   // Reset on tab change
   useEffect(() => {
     setPlaying(false)
@@ -2038,7 +2051,7 @@ function Workflows() {
               {/* Modal header */}
               <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
                 <h3 className="font-jakarta font-bold text-[16px] text-[#191919]">{panel.h3}</h3>
-                <button onClick={() => { setMobileOpen(false); setPlaying(false) }} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: '#f5f2ee' }}>
+                <button aria-label="Close modal" onClick={() => { setMobileOpen(false); setPlaying(false) }} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: '#f5f2ee' }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
               </div>
@@ -2117,13 +2130,9 @@ function Workflows() {
 
         {/* Main workflow card — desktop only */}
         <div className="hidden lg:block rounded-[28px] overflow-hidden" style={{ background: 'white', boxShadow: '0 4px 32px rgba(0,0,0,0.08)' }}>
-          <style>{`
-            @keyframes playerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-            @keyframes waveSmooth{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
-          `}</style>
 
           {/* Body */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-0 overflow-hidden" style={{ height: 600 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-0 overflow-hidden" style={{ minHeight: 580, height: 600, maxHeight: '80vh' }}>
 
             {/* Left — title + checklist on white bg */}
             <div className="flex flex-col overflow-hidden bg-white p-6">
@@ -2302,7 +2311,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         </div>
         <div className="shrink-0">
           <div className="font-inter text-[8px] font-semibold text-[#191919] leading-tight">Isaac</div>
-          <div className="font-inter text-[7px] text-[#767676]">Greenville, OH</div>
+          <div className="font-inter text-[8px] text-[#636363]">Greenville, OH</div>
         </div>
         <div className="flex-1 flex items-center justify-center gap-[0.5px]" style={{ height: 16 }}>
           {Array.from({ length: 36 }).map((_, i) => (
@@ -2315,7 +2324,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
             }} />
           ))}
         </div>
-        <span className="font-['Space_Mono',monospace] text-[7px] text-[#767676] shrink-0">0:42</span>
+        <span className="font-['Space_Mono',monospace] text-[8px] text-[#636363] shrink-0">0:42</span>
       </div>
       {/* Status swap */}
       <div className="relative h-7 flex items-center justify-center" style={{ animation: 'closeTagIn 5s cubic-bezier(0.4,0,0.2,1) infinite' }}>
@@ -2417,7 +2426,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
               <div key={i} className="w-4 h-4 rounded-full border-[1.5px] border-[#f7f4f0] flex items-center justify-center text-[6px] font-bold text-white" style={{ background: bg }}>{String.fromCharCode(65 + i)}</div>
             ))}
           </div>
-          <span className="font-inter text-[7px] text-[#767676]">+9 active</span>
+          <span className="font-inter text-[8px] text-[#636363]">+9 active</span>
         </div>
       </div>
     </div>
@@ -2439,7 +2448,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         <div key={ci} className="flex-1 flex flex-col gap-1">
           <div className="flex items-center gap-1 mb-0.5">
             <div className="w-1.5 h-1.5 rounded-[2px]" style={{ background: col.color }} />
-            <span className="font-inter text-[7px] font-semibold text-[#717171]">{col.label}</span>
+            <span className="font-inter text-[8px] font-semibold text-[#636363]">{col.label}</span>
           </div>
           {Array.from({ length: Math.min(col.n, 3) }).map((_, i) => {
             const delay = ci * 0.25 + i * 0.15
@@ -2499,7 +2508,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
             <span className="text-[9px]">{m.icon}</span>
             <div>
               <div className="font-['Space_Mono',monospace] text-[9px] font-bold leading-none" style={{ color: c }}>{m.v}</div>
-              <div className="font-inter text-[6px] text-[#767676] leading-none mt-0.5">{m.l}</div>
+              <div className="font-inter text-[8px] text-[#636363] leading-none mt-0.5">{m.l}</div>
             </div>
           </div>
         ))}
@@ -2529,7 +2538,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
               <div className="w-9 h-9 flex items-center justify-center" style={{ ...cardStyle, borderRadius: 10 }}>
                 {step.icon}
               </div>
-              <span className="font-inter text-[7px] text-[#717171]">{step.label}</span>
+              <span className="font-inter text-[8px] text-[#636363]">{step.label}</span>
             </div>
             {/* Connector */}
             {i < 3 && (
