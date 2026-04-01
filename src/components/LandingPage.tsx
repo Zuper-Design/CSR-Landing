@@ -2031,7 +2031,7 @@ function Workflows() {
               }}
             >
               <span className={`text-[10px] font-semibold tracking-[0.08em] uppercase px-2.5 py-0.5 rounded-full w-fit font-['Space_Mono',monospace] ${BADGE_STYLES[wf.badgeColor]}`}>{wf.badge}</span>
-              <span className="font-inter text-[14px] font-bold text-[#191919] leading-snug mt-0.5">{wf.tabName}</span>
+              <span className="font-jakarta text-[14px] font-bold text-[#191919] leading-snug mt-0.5">{wf.tabName}</span>
               <span className="font-inter text-[12px] text-[#ABABAB]">{wf.tabNote}</span>
               {/* Mobile arrow hint */}
               <svg className="md:hidden absolute right-5 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -2759,7 +2759,7 @@ function CaseStudy() {
                   </span>
                 </div>
                 <blockquote className="flex-1" style={{ borderLeft: '3px solid #fd5000', paddingLeft: 20 }}>
-                  <span className="font-jakarta font-extrabold text-[#fd5000] text-[52px] leading-[0.6] block mb-3 select-none" style={{ fontFamily: 'Georgia, serif' }}>"</span>
+                  <span className="font-jakarta font-extrabold text-[#fd5000] text-[52px] leading-[0.6] block mb-3 select-none">"</span>
                   <p className="font-jakarta font-bold text-[#191919] text-[20px] leading-[1.4] tracking-[-0.02em]">
                     When the storm hit, we didn't miss a single call. Nova handled the surge and we captured every opportunity — without adding a single person to the team.
                   </p>
@@ -2905,17 +2905,17 @@ function CTASection() {
           <h2 className="font-jakarta font-extrabold text-white text-[clamp(34px,4.5vw,58px)] leading-[1.1] tracking-[-0.04em] max-w-[680px] mx-auto mb-4">
             Ready to never miss<br />another lead?
           </h2>
-          <p className="text-[18px] font-light max-w-[480px] mx-auto mb-11 leading-[1.65]" style={{ color: '#E8E8E8' }}>
+          <p className="font-inter text-[18px] font-light max-w-[480px] mx-auto mb-11 leading-[1.65]" style={{ color: '#E8E8E8' }}>
             See Nova handle a live workflow customized with your company name, services, and real availability.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="https://www.zuper.co/demo" className="bg-white text-[#fd5000] px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+            <a href="https://www.zuper.co/demo" className="font-inter bg-white text-[#fd5000] px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = '0 10px 32px rgba(0,0,0,0.18)'}
               onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}>
               Schedule a Demo
             </a>
-            <a href="#workflows" className="text-white px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+            <a href="#workflows" className="font-inter text-white px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
               onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}>
