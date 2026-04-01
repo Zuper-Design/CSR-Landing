@@ -1818,7 +1818,7 @@ function Workflows() {
           `}</style>
 
           {/* Body */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px]" style={{ minHeight: 580 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px]" style={{ height: 580 }}>
 
             {/* Left — steps */}
             <div className="flex flex-col overflow-hidden">
@@ -1826,7 +1826,7 @@ function Workflows() {
                 <h3 className="font-jakarta font-bold text-[#191919] text-[20px] leading-[1.2] tracking-[-0.02em] mb-2">{panel.h3}</h3>
                 <p className="font-inter text-[13.5px] text-[#7A7A7A] leading-[1.7]">{panel.desc}</p>
               </div>
-              <ul className="divide-y divide-[#f5f0ea]">
+              <ul className="divide-y divide-[#f5f0ea] flex-1 overflow-y-auto">
                 {panel.steps.map((s, i) => {
                   const done = i < checkedCount
                   return (
