@@ -47,15 +47,26 @@ function SectionTextBg({ children }: { children: React.ReactNode }) {
   )
 }
 
+const EYEBROW_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
+  Capabilities:     { bg: '#eef4ff', text: '#2563eb', dot: '#2563eb' },
+  'Get Started':    { bg: '#fff3ed', text: '#c2410c', dot: '#fd5000' },
+  Workflows:        { bg: '#f0e8ff', text: '#7c3aed', dot: '#7c3aed' },
+  Impact:           { bg: '#e8f5ec', text: '#15803d', dot: '#22c55e' },
+  'Customer Story': { bg: '#fef3e0', text: '#92400e', dot: '#d97706' },
+  Agents:           { bg: '#fee8ed', text: '#be123c', dot: '#e11d48' },
+  Voices:           { bg: '#f0f8fe', text: '#0369a1', dot: '#0ea5e9' },
+}
+
 function SectionEyebrow({ label }: { icon?: string; label: string }) {
+  const colors = EYEBROW_COLORS[label] || { bg: '#fff3ed', text: '#c2410c', dot: '#fd5000' }
   return (
     <span
-      className="inline-flex items-center gap-2 px-4 py-[6px] rounded-full text-[11px] font-['Space_Mono',monospace] font-medium tracking-[0.06em] uppercase"
-      style={{ background: '#fff3ed', color: '#fd5000' }}
+      className="inline-flex items-center gap-2 px-4 py-[7px] rounded-full text-[12px] font-['Space_Mono',monospace] font-semibold tracking-[0.06em] uppercase"
+      style={{ background: colors.bg, color: colors.text }}
     >
       <span className="relative flex items-center justify-center">
-        <span className="w-[5px] h-[5px] rounded-full bg-[#fd5000]" />
-        <span className="absolute w-[5px] h-[5px] rounded-full bg-[#fd5000] animate-ping opacity-40" />
+        <span className="w-[6px] h-[6px] rounded-full" style={{ background: colors.dot }} />
+        <span className="absolute w-[6px] h-[6px] rounded-full animate-ping opacity-40" style={{ background: colors.dot }} />
       </span>
       {label}
     </span>
@@ -66,13 +77,13 @@ function GridLines() {
   return (
     <div className="absolute inset-0 pointer-events-none z-0 hidden md:block" style={{ overflow: 'hidden' }}>
       {/* Vertical left */}
-      <div className="absolute top-0 bottom-0" style={{ left: 140, width: 1, background: '#d7d7d7', opacity: 0.5 }} />
+      <div className="absolute top-0 bottom-0" style={{ left: 140, width: 1, background: '#b0b0b0', opacity: 0.5 }} />
       {/* Vertical right */}
-      <div className="absolute top-0 bottom-0" style={{ right: 140, width: 1, background: '#d7d7d7', opacity: 0.5 }} />
+      <div className="absolute top-0 bottom-0" style={{ right: 140, width: 1, background: '#b0b0b0', opacity: 0.5 }} />
       {/* Horizontal top */}
-      <div className="absolute left-0 right-0" style={{ top: 0, height: 0.5, background: '#d7d7d7', opacity: 0.5 }} />
+      <div className="absolute left-0 right-0" style={{ top: 0, height: 0.5, background: '#b0b0b0', opacity: 0.5 }} />
       {/* Horizontal bottom */}
-      <div className="absolute left-0 right-0" style={{ bottom: 0, height: 0.5, background: '#d7d7d7', opacity: 0.5 }} />
+      <div className="absolute left-0 right-0" style={{ bottom: 0, height: 0.5, background: '#b0b0b0', opacity: 0.5 }} />
     </div>
   )
 }
@@ -347,7 +358,7 @@ function Hero() {
 
       {/* ── Main content ── */}
       <div
-        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[160px] pb-[60px] md:pb-[96px]"
+        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[160px] pb-[100px] md:pb-[160px]"
       >
 
         {/* Left copy */}
@@ -770,9 +781,8 @@ function Capabilities() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
-  const [colorOpacity, setColorOpacity] = useState(0)
-  const [cardTranslate, setCardTranslate] = useState(0)
-  const [maxScroll, setMaxScroll] = useState(500)
+  const cardsInnerRef = useRef<HTMLDivElement[]>([])
+  const colorLayerRef = useRef<HTMLImageElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -782,39 +792,128 @@ function Capabilities() {
     return () => window.removeEventListener('resize', check)
   }, [])
 
-  // Dynamically measure overflow
+  // Auto-scroll cards — seamless infinite loop, pause on hover
+  const hoveredRef = useRef(false)
+  const inViewRef = useRef(false)
+  const halfHeightRef = useRef(0)
+
+  // Measure half-height (one set of cards) for seamless loop reset
   useEffect(() => {
+    if (isMobile) return
     const measure = () => {
       const cards = cardsRef.current
-      const viewport = viewportRef.current
-      if (!cards || !viewport) return
-      const overflow = cards.scrollHeight - viewport.clientHeight
-      setMaxScroll(Math.max(0, overflow))
+      if (!cards) return
+      // One set = CAPS.length cards
+      const gap = 16 // gap-4 = 16px
+      const children = cards.children
+      const oneSet = Math.floor(children.length / 3)
+      let h = 0
+      for (let i = 0; i < oneSet; i++) {
+        h += (children[i] as HTMLElement).offsetHeight + gap
+      }
+      halfHeightRef.current = h // total height of one full set including gaps
     }
     measure()
-    requestAnimationFrame(measure)
     const t = setTimeout(measure, 500)
     window.addEventListener('resize', measure)
     return () => { window.removeEventListener('resize', measure); clearTimeout(t) }
-  }, [])
+  }, [isMobile])
+
+  const offsetRef = useRef(0)
+  const userVelocityRef = useRef(0)
+
+  // Wheel handler — adds velocity on top of auto-scroll
+  useEffect(() => {
+    if (isMobile) return
+    const vp = viewportRef.current
+    if (!vp) return
+
+    const onWheel = (e: WheelEvent) => {
+      if (halfHeightRef.current <= 0) return
+      e.preventDefault()
+      userVelocityRef.current += e.deltaY * 0.4
+    }
+
+    vp.addEventListener('wheel', onWheel, { passive: false })
+    return () => vp.removeEventListener('wheel', onWheel)
+  }, [isMobile])
 
   useEffect(() => {
-    const onScroll = () => {
-      const section = sectionRef.current
-      if (!section) return
-      const rect = section.getBoundingClientRect()
-      const entered = -rect.top
-      const clamped = Math.max(0, entered)
+    if (isMobile) return
+    let rafId = 0
+    const SPEED = 0.7
+    let lastTime = 0
 
-      setCardTranslate(Math.min(clamped, maxScroll))
+    const obs = new IntersectionObserver(
+      ([e]) => { inViewRef.current = e.isIntersecting },
+      { threshold: 0.1 }
+    )
+    if (sectionRef.current) obs.observe(sectionRef.current)
 
-      const opacity = Math.min(1, Math.max(0, clamped / 150))
-      setColorOpacity(opacity)
+    const update = (time: number) => {
+      const dt = lastTime ? Math.min(time - lastTime, 32) : 16
+      lastTime = time
+
+      const cards = cardsRef.current
+      const viewport = viewportRef.current
+
+      if (halfHeightRef.current > 0) {
+        // Auto-scroll (always running when in view)
+        if (inViewRef.current) {
+          offsetRef.current += SPEED * (dt / 16)
+        }
+
+        // User scroll velocity — decays smoothly
+        if (Math.abs(userVelocityRef.current) > 0.1) {
+          offsetRef.current += userVelocityRef.current * 0.15
+          userVelocityRef.current *= 0.92 // friction
+        } else {
+          userVelocityRef.current = 0
+        }
+
+        // Wrap seamlessly using modulo
+        const half = halfHeightRef.current
+        offsetRef.current = ((offsetRef.current % half) + half) % half
+      }
+
+      // Color overlay — fully visible once section top reaches viewport
+      if (sectionRef.current && colorLayerRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect()
+        const progress = Math.min(1, Math.max(0, 1 - rect.top / 200))
+        colorLayerRef.current.style.opacity = String(progress)
+      }
+
+      if (cards) {
+        cards.style.transform = `translate3d(0, -${offsetRef.current}px, 0)`
+      }
+
+      // Per-card fade at viewport edges (opacity only, no transform)
+      if (viewport) {
+        const vpTop = viewport.getBoundingClientRect().top
+        const vpBottom = viewport.getBoundingClientRect().bottom
+        const fadeZone = 70
+
+        for (const card of cardsInnerRef.current) {
+          if (!card) continue
+          const cardRect = card.getBoundingClientRect()
+          const cardMid = (cardRect.top + cardRect.bottom) / 2
+          const fromTop = cardMid - vpTop
+          const fromBottom = vpBottom - cardMid
+
+          let opacity = 1
+          if (fromTop < fadeZone) opacity = Math.max(0, fromTop / fadeZone)
+          else if (fromBottom < fadeZone) opacity = Math.max(0, fromBottom / fadeZone)
+
+          card.style.opacity = String(opacity)
+        }
+      }
+
+      rafId = requestAnimationFrame(update)
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [maxScroll])
+
+    rafId = requestAnimationFrame(update)
+    return () => { cancelAnimationFrame(rafId); obs.disconnect() }
+  }, [isMobile])
 
   return (
     <section
@@ -824,14 +923,12 @@ function Capabilities() {
     >
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      {/* Scroll runway: viewport + extra scroll for remaining cards — disabled on mobile */}
-      <div className="relative z-10" style={{ height: isMobile ? 'auto' : `calc(100vh + ${maxScroll}px)` }}>
-        {/* Sticky container — locks to viewport on desktop, normal flow on mobile */}
-        <div className={isMobile ? '' : 'sticky top-0'} style={{ height: isMobile ? 'auto' : '100vh', overflow: 'hidden' }}>
+      <div className="relative z-10" style={{ height: isMobile ? 'auto' : '100vh' }}>
+        <div style={{ height: isMobile ? 'auto' : '100vh', overflow: 'hidden' }}>
           <div className="max-w-[1240px] mx-auto px-5 md:px-12 h-full flex flex-col" style={{ paddingTop: 48, paddingBottom: 40 }}>
 
-            {/* ── Title ── */}
-            <div className="mb-6 shrink-0">
+            {/* ── Mobile title ── */}
+            <div className="lg:hidden mb-6 shrink-0">
               <SectionTextBg>
                 <SectionEyebrow icon="⚡" label="Capabilities" />
                 <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
@@ -844,12 +941,27 @@ function Capabilities() {
               </SectionTextBg>
             </div>
 
-            {/* ── Body: image left + cards right ── */}
+            {/* ── Body: left column (title + image) + right column (cards) ── */}
             <div className="flex gap-8 items-stretch flex-1 min-h-0">
 
-              {/* Left: big image */}
-              <div className="hidden lg:block shrink-0" style={{ width: 480 }}>
-                <div className="rounded-[24px] overflow-hidden h-full" style={{ position: 'relative', boxShadow: '0 8px 48px rgba(0,0,0,0.13)' }}>
+              {/* Left: title + image stacked */}
+              <div className="hidden lg:flex flex-col shrink-0 gap-5" style={{ width: 480 }}>
+                {/* Title area */}
+                <div className="shrink-0">
+                  <SectionTextBg>
+                    <SectionEyebrow icon="⚡" label="Capabilities" />
+                    <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
+                      Not a chatbot.<br />
+                      <span className="text-[#fd5000]">A roofing expert.</span>
+                    </h2>
+                    <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3 max-w-[400px]">
+                      Trained on roofing workflows.<br />Ready to qualify, book, and convert — across calls and text.
+                    </p>
+                  </SectionTextBg>
+                </div>
+
+                {/* Image */}
+                <div className="rounded-[24px] overflow-hidden flex-1 min-h-0" style={{ position: 'relative', boxShadow: '0 8px 48px rgba(0,0,0,0.13)' }}>
                   <img
                     src={assets.csrAgentDesk}
                     alt="CSR Agent"
@@ -857,6 +969,7 @@ function Capabilities() {
                     style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'scale(1.15)' }}
                   />
                   <img
+                    ref={colorLayerRef}
                     src={assets.csrAgentColor}
                     alt=""
                     aria-hidden
@@ -864,8 +977,7 @@ function Capabilities() {
                       objectFit: 'cover', objectPosition: 'center top',
                       position: 'absolute', inset: 0, width: '100%', height: '100%',
                       transform: 'scale(1.15)',
-                      opacity: colorOpacity,
-                      transition: 'opacity 0.2s ease-out',
+                      opacity: 0,
                     }}
                   />
                   <div className="absolute bottom-0 left-0 right-0 px-6 pt-14 pb-6"
@@ -880,34 +992,38 @@ function Capabilities() {
                 </div>
               </div>
 
-              {/* Right: cards — clips to ~3 visible, scroll drives translateY */}
-              <div ref={viewportRef} className="flex-1 relative overflow-hidden">
+              {/* Right: cards — infinite auto-scroll with edge fading, pauses on hover */}
+              <div ref={viewportRef} className="flex-1 relative overflow-hidden"
+                onMouseEnter={() => { hoveredRef.current = true }}
+                onMouseLeave={() => { hoveredRef.current = false }}
+              >
+                {/* Top fade mask */}
+                {!isMobile && <div className="absolute top-0 left-0 right-0 h-16 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, #f8f5f0, transparent)' }} />}
+                {/* Bottom fade mask */}
+                {!isMobile && <div className="absolute bottom-0 left-0 right-0 h-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, #f8f5f0, transparent)' }} />}
                 <div
                   ref={cardsRef}
                   className={`flex flex-col gap-4 ${isMobile ? '' : 'absolute left-0 right-0'}`}
                   style={isMobile ? {} : {
                     top: 0,
-                    transform: `translateY(-${cardTranslate}px)`,
                     willChange: 'transform',
                   }}
                 >
-                  {CAPS.map((c, i) => (
+                  {/* Render cards twice for seamless infinite loop */}
+                  {[...CAPS, ...(isMobile ? [] : [...CAPS, ...CAPS])].map((c, i) => (
                     <div
-                      key={c.title}
+                      ref={el => { if (el) cardsInnerRef.current[i] = el }}
+                      key={`${c.title}-${i}`}
                       className="group bg-white rounded-[20px] px-7 py-8 flex items-start gap-5 cursor-default"
                       style={{
                         boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
-                        transition: 'box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease',
+                        transition: 'box-shadow 0.3s ease',
                       }}
                       onMouseEnter={e => {
-                        const el = e.currentTarget
-                        el.style.boxShadow = '0 12px 32px rgba(0,0,0,0.10)'
-                        el.style.transform = 'translateY(-2px)'
+                        e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.10)'
                       }}
                       onMouseLeave={e => {
-                        const el = e.currentTarget
-                        el.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)'
-                        el.style.transform = 'translateY(0)'
+                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.06)'
                       }}
                     >
                       {/* icon */}
@@ -1226,27 +1342,18 @@ const STEPS: { num: string; title: string; desc: string; tag: string; icon: Reac
   { num: '01', title: 'Agent profile', desc: 'Name your agent, set her personality, and define her expertise areas.', tag: 'Identity',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
     illustration: (
-      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-[14px] font-bold"
-            style={{ background: 'linear-gradient(145deg, #ff7a35, #e04500)', boxShadow: '0 4px 12px rgba(253,80,0,0.2), inset 0 1px 2px rgba(255,255,255,0.2)' }}>N</div>
-          <div>
-            <div className="font-jakarta font-bold text-[13px] text-[#191919]">Nova</div>
-            <div className="font-inter text-[10px] text-[#bbb]">CSR Agent · Roofing</div>
+      <div className="flex items-center justify-center p-5" style={{ height: 220, backgroundImage: 'url(/agent-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        {/* ID card */}
+        <div className="rounded-[12px] overflow-hidden w-full max-w-[200px]" style={{ background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
+          <div className="relative" style={{ height: 110, background: 'linear-gradient(145deg, #e8dff8, #f3eeff)' }}>
+            <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
           </div>
-        </div>
-        <div className="flex flex-col gap-2.5 rounded-[10px] p-3" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
-          <div className="flex items-center justify-between">
-            <span className="font-inter text-[10px] text-[#999]">Personality</span>
-            <div className="flex gap-1">{['Friendly', 'Professional'].map(t => <span key={t} className="text-[8px] px-2 py-0.5 rounded-full font-medium" style={{ background: '#fff3ed', color: '#fd5000' }}>{t}</span>)}</div>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-inter text-[10px] text-[#999]">Voice</span>
-            <span className="font-inter text-[10px] font-medium text-[#191919]">Female · English</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-inter text-[10px] text-[#999]">Tone</span>
-            <span className="font-inter text-[10px] font-medium text-[#191919]">Warm & helpful</span>
+          <div className="px-3 py-2.5 text-center">
+            <div className="flex items-center justify-center gap-1.5">
+              <span className="font-jakarta font-bold text-[12px] text-[#191919]">Nova</span>
+              <span className="w-[5px] h-[5px] rounded-full bg-[#22c55e] shrink-0" style={{ boxShadow: '0 0 4px #22c55e' }} />
+            </div>
+            <p className="font-inter text-[9px] text-[#6b6b6b] mt-0.5">CSR Agent · Roofing</p>
           </div>
         </div>
       </div>
@@ -1255,24 +1362,23 @@ const STEPS: { num: string; title: string; desc: string; tag: string; icon: Reac
   { num: '02', title: 'Superpowers', desc: 'Toggle capabilities — answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
     illustration: (
-      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
-        <div className="flex flex-col gap-3 rounded-[10px] p-3" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
-          {[
-            { label: 'Answer calls', on: true, icon: '📞' },
-            { label: 'Book inspections', on: true, icon: '📅' },
-            { label: 'Share updates', on: true, icon: '📊' },
-            { label: 'Reschedule', on: false, icon: '🔄' },
-          ].map(cap => (
-            <div key={cap.label} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px]">{cap.icon}</span>
+      <div className="p-5 flex items-center" style={{ height: 220, backgroundImage: 'url(/sp-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="rounded-[10px] p-3.5 w-full" style={{ background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div className="flex flex-col gap-3">
+            {[
+              { label: 'Answer calls', on: true },
+              { label: 'Book inspections', on: true },
+              { label: 'Share updates', on: true },
+              { label: 'Reschedule', on: false },
+            ].map(cap => (
+              <div key={cap.label} className="flex items-center justify-between">
                 <span className="font-inter text-[11px] text-[#555]">{cap.label}</span>
+                <div className="w-8 h-[18px] rounded-full flex items-center px-[3px] transition-all" style={{ background: cap.on ? '#fd5000' : '#e5e0d8' }}>
+                  <div className="w-3 h-3 rounded-full bg-white" style={{ marginLeft: cap.on ? 12 : 0, transition: 'margin 0.3s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }} />
+                </div>
               </div>
-              <div className="w-8 h-[18px] rounded-full flex items-center px-[3px] transition-all" style={{ background: cap.on ? '#fd5000' : '#e5e0d8' }}>
-                <div className="w-3 h-3 rounded-full bg-white" style={{ marginLeft: cap.on ? 12 : 0, transition: 'margin 0.3s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }} />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     ),
@@ -1280,27 +1386,27 @@ const STEPS: { num: string; title: string; desc: string; tag: string; icon: Reac
   { num: '03', title: 'Knowledge base', desc: 'Upload your docs, FAQs, and SOPs. Nova learns your business in minutes.', tag: 'Intelligence',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>,
     illustration: (
-      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
-        <div className="flex flex-col gap-2.5">
+      <div className="p-5 relative overflow-hidden flex items-center" style={{ height: 220, backgroundImage: 'url(/kb-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="flex flex-col gap-2.5 relative z-10 w-full">
           {[
             { name: 'Service_FAQ.pdf', size: '2.4 MB', done: true },
             { name: 'Pricing_Guide.pdf', size: '1.1 MB', done: true },
             { name: 'Company_SOPs.doc', size: '840 KB', done: false },
           ].map(f => (
-            <div key={f.name} className="flex items-center gap-3 rounded-[10px] p-2.5" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
-              <div className="w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0" style={{ background: f.done ? '#f0fdf4' : '#fff7ed' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={f.done ? '#22c55e' : '#fd5000'} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <div key={f.name} className="flex items-center gap-3 rounded-[10px] p-2.5" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+              <div className="w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0" style={{ background: f.done ? '#e8f5ec' : '#fff0e8' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={f.done ? '#15803d' : '#c2410c'} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-inter text-[11px] font-medium text-[#191919] truncate">{f.name}</div>
-                <div className="font-inter text-[9px] text-[#bbb]">{f.size}</div>
+                <div className="font-inter text-[9px] text-[#777]">{f.size}</div>
               </div>
               {f.done ? (
-                <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#f0fdf4' }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#e8f5ec' }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
                 </div>
               ) : (
-                <div className="w-5 h-5 rounded-full border-2 border-[#fd5000] border-t-transparent animate-spin" />
+                <div className="w-5 h-5 rounded-full border-2 border-[#c2410c] border-t-transparent animate-spin" />
               )}
             </div>
           ))}
@@ -1311,34 +1417,33 @@ const STEPS: { num: string; title: string; desc: string; tag: string; icon: Reac
   { num: '04', title: 'Add to route', desc: 'Connect your phone lines and channels. Nova starts answering immediately.', tag: 'Deployment',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>,
     illustration: (
-      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 8px #22c55e' }} />
-              <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-ping opacity-30" />
+      <div className="p-5 flex items-center" style={{ height: 220, backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <div className="rounded-[10px] p-3.5 w-full" style={{ background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 8px #22c55e' }} />
+                <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-ping opacity-30" />
+              </div>
+              <span className="font-['Space_Mono',monospace] text-[10px] text-[#15803d] font-medium">LIVE</span>
             </div>
-            <span className="font-['Space_Mono',monospace] text-[10px] text-[#22c55e] font-medium">LIVE</span>
+            <span className="font-inter text-[9px] text-[#767676]">Just now</span>
           </div>
-          <span className="font-inter text-[9px] text-[#bbb]">Just now</span>
-        </div>
-        <div className="flex flex-col gap-2 rounded-[10px] p-3" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
-          {[
-            { ch: '📞', label: 'Main Line', status: 'Connected', color: '#22c55e' },
-            { ch: '💬', label: 'SMS', status: 'Connected', color: '#22c55e' },
-            { ch: '🌐', label: 'Web Chat', status: 'Ready', color: '#d97706' },
-          ].map(r => (
-            <div key={r.label} className="flex items-center justify-between py-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px]">{r.ch}</span>
+          <div className="flex flex-col gap-2.5">
+            {[
+              { label: 'Main Line', status: 'Connected', color: '#15803d' },
+              { label: 'SMS', status: 'Connected', color: '#15803d' },
+              { label: 'Web Chat', status: 'Ready', color: '#92400e' },
+            ].map(r => (
+              <div key={r.label} className="flex items-center justify-between">
                 <span className="font-inter text-[11px] text-[#555]">{r.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: r.color }} />
+                  <span className="font-inter text-[9px] font-medium" style={{ color: r.color }}>{r.status}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full" style={{ background: r.color }} />
-                <span className="font-inter text-[9px] font-medium" style={{ color: r.color }}>{r.status}</span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     ),
@@ -1346,6 +1451,113 @@ const STEPS: { num: string; title: string; desc: string; tag: string; icon: Reac
 ]
 
 function GetStarted() {
+  const timelineRef = useRef<HTMLDivElement>(null)
+  const lineTrackRef = useRef<HTMLDivElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
+  const tipRef = useRef<HTMLDivElement>(null)
+  const progressVal = useRef(0)
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([])
+  const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const badgeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const badgeTextRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const iconRefs = useRef<(HTMLDivElement | null)[]>([])
+  const prevActive = useRef<boolean[]>(STEPS.map(() => false))
+
+  // Butter-smooth scroll: direct DOM updates in rAF, no React re-renders
+  useEffect(() => {
+    let rafId = 0
+    let currentProgress = 0
+    let targetProgress = 0
+
+    const update = () => {
+      const el = timelineRef.current
+      if (el) {
+        const rect = el.getBoundingClientRect()
+        const vh = window.innerHeight
+        const entered = vh - rect.top
+        const total = rect.height + vh * 0.5
+        targetProgress = Math.max(0, Math.min(1, entered / total))
+      }
+
+      // Lerp for silky smooth movement
+      currentProgress += (targetProgress - currentProgress) * 0.12
+      // Snap if very close
+      if (Math.abs(currentProgress - targetProgress) < 0.001) currentProgress = targetProgress
+      progressVal.current = currentProgress
+
+      // Update progress line directly
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleY(${currentProgress})`
+      }
+      // Position tip at the bottom edge of the filled line
+      if (tipRef.current && lineTrackRef.current) {
+        const trackH = lineTrackRef.current.offsetHeight
+        const tipY = currentProgress * trackH
+        tipRef.current.style.transform = `translateY(${tipY}px)`
+        tipRef.current.style.opacity = currentProgress > 0.02 ? '1' : '0'
+      }
+
+      // Update step activations
+      for (let i = 0; i < STEPS.length; i++) {
+        const threshold = (i + 0.5) / STEPS.length
+        const isActive = currentProgress >= threshold
+        const wasActive = prevActive.current[i]
+        if (isActive === wasActive) continue
+        prevActive.current[i] = isActive
+
+        // Card
+        const card = stepRefs.current[i]
+        if (card) {
+          const isLeft = i % 2 === 0
+          card.style.opacity = isActive ? '1' : '0'
+          card.style.transform = isActive
+            ? 'translateX(0) translateY(0) scale(1)'
+            : `translateX(${isLeft ? '40px' : '-40px'}) translateY(12px) scale(0.95)`
+          card.style.boxShadow = isActive
+            ? '0 12px 40px rgba(0,0,0,0.10)'
+            : '0 2px 12px rgba(0,0,0,0.02)'
+        }
+
+        // Node wrapper
+        const node = nodeRefs.current[i]
+        if (node) {
+          node.style.transform = isActive ? 'translateX(-50%) scale(1)' : 'translateX(-50%) scale(0.7)'
+          node.style.opacity = isActive ? '1' : '0.35'
+        }
+
+        // Badge
+        const badge = badgeRefs.current[i]
+        if (badge) {
+          badge.style.background = isActive ? 'linear-gradient(180deg, #ff8c42, #fd5000)' : 'white'
+          badge.style.boxShadow = isActive
+            ? '0 4px 14px rgba(253,80,0,0.35), 0 1px 0 0 rgba(255,180,120,0.4) inset'
+            : '0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)'
+        }
+        const badgeText = badgeTextRefs.current[i]
+        if (badgeText) {
+          badgeText.style.color = isActive ? 'white' : '#c0b8ae'
+        }
+
+        // Icon node
+        const icon = iconRefs.current[i]
+        if (icon) {
+          icon.style.background = isActive
+            ? 'linear-gradient(180deg, #ff8c42, #fd5000, #d94400)'
+            : 'linear-gradient(180deg, #e8e4dc, #d5d0c8)'
+          icon.style.boxShadow = isActive
+            ? '0 1px 0 0 rgba(255,200,150,0.5) inset, 0 -2px 6px rgba(0,0,0,0.2) inset, 0 8px 20px rgba(253,80,0,0.3), 0 2px 6px rgba(253,80,0,0.15)'
+            : '0 1px 0 0 rgba(255,255,255,0.6) inset, 0 -2px 4px rgba(0,0,0,0.08) inset, 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)'
+          icon.style.border = isActive ? '1px solid rgba(255,180,120,0.4)' : '1px solid rgba(255,255,255,0.35)'
+        }
+      }
+
+      rafId = requestAnimationFrame(update)
+    }
+
+    rafId = requestAnimationFrame(update)
+    return () => cancelAnimationFrame(rafId)
+  }, [])
+
   return (
     <section className="py-24 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
@@ -1364,9 +1576,41 @@ function GetStarted() {
         </RevealOnScroll>
 
         {/* Vertical timeline — alternating sides */}
-        <div className="relative">
+        <div ref={timelineRef} className="relative">
           {/* Center vertical line — hidden on mobile */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[2px] rounded-full hidden md:block" style={{ background: '#e8e3dc' }} />
+          <div ref={lineTrackRef} className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[2px] rounded-full hidden md:block" style={{ background: '#e8e3dc' }}>
+            {/* Progress fill */}
+            <div ref={progressRef} className="w-full rounded-full" style={{
+              height: '100%',
+              background: 'linear-gradient(to bottom, #fd5000, #ff8c5a)',
+              transformOrigin: 'top center',
+              transform: 'scaleY(0)',
+              willChange: 'transform',
+            }} />
+
+            {/* Glowing tip — outside scaleY so it stays circular */}
+            <div ref={tipRef} className="absolute left-1/2 pointer-events-none" style={{
+              top: 0, opacity: 0, willChange: 'transform',
+            }}>
+              {/* Outer soft pulse */}
+              <div style={{
+                position: 'absolute', left: '50%', top: '50%',
+                width: 24, height: 24, borderRadius: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: 'radial-gradient(circle, rgba(253,80,0,0.35) 0%, transparent 70%)',
+                animation: 'timelineTipGlow 2s ease-in-out infinite',
+              }} />
+              {/* Core dot */}
+              <div style={{
+                position: 'absolute', left: '50%', top: '50%',
+                width: 8, height: 8, borderRadius: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: 'radial-gradient(circle, #fff 10%, #ffbc6b 50%, #fd5000 100%)',
+                boxShadow: '0 0 6px 2px rgba(253,80,0,0.6), 0 0 14px 4px rgba(253,80,0,0.25)',
+                animation: 'timelineTipCore 1.5s ease-in-out infinite',
+              }} />
+            </div>
+          </div>
 
           {STEPS.map((step, i) => {
             const isLeft = i % 2 === 0
@@ -1374,7 +1618,11 @@ function GetStarted() {
               <RevealOnScroll key={step.num} delay={i * 120}>
                 {/* Mobile: stacked single column */}
                 <div className="md:hidden flex flex-col items-center mb-12 last:mb-0">
-                  <div className="flex items-center gap-3 mb-4">
+                  <div className="flex flex-col items-center gap-2 mb-4">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center"
+                      style={{ background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                      <span className="font-['Space_Mono',monospace] text-[10px] font-bold" style={{ color: '#fd5000' }}>{step.num}</span>
+                    </div>
                     <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-white shrink-0"
                       style={{
                         background: 'linear-gradient(145deg, #ff7a35, #e04500)',
@@ -1383,17 +1631,16 @@ function GetStarted() {
                       }}>
                       {step.icon}
                     </div>
-                    <span className="font-jakarta font-extrabold text-[11px] text-[#ccc] tracking-[0.04em]">{step.num}</span>
                   </div>
                   <div className="w-full max-w-[400px] rounded-[20px] overflow-hidden"
                     style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}>
                     <div className="px-6 pt-6 pb-4">
-                      <span className="inline-block font-['Space_Mono',monospace] text-[9px] font-medium tracking-[0.06em] uppercase px-2.5 py-[3px] rounded-[4px] mb-3"
-                        style={{ background: '#fff3ed', color: '#fd5000' }}>
+                      <span className="inline-block font-['Space_Mono',monospace] text-[10px] font-semibold tracking-[0.06em] uppercase px-3 py-[4px] rounded-[6px] mb-3"
+                        style={{ background: '#ffe8db', color: '#b93500' }}>
                         {step.tag}
                       </span>
                       <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
-                      <p className="font-inter text-[13.5px] text-[#999] leading-[1.65]">{step.desc}</p>
+                      <p className="font-inter text-[13.5px] text-[#6b6b6b] leading-[1.65]">{step.desc}</p>
                     </div>
                     <div className="px-4 pb-4">{step.illustration}</div>
                   </div>
@@ -1405,60 +1652,118 @@ function GetStarted() {
                   {/* Left content or spacer */}
                   <div className="w-1/2 pr-12 flex justify-end">
                     {isLeft && (
-                      <div className="max-w-[360px] rounded-[20px] p-0 transition-all duration-400 text-right overflow-hidden"
-                        style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.08)' }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.05)' }}
+                      <div ref={el => { stepRefs.current[i] = el }} className="w-[360px] rounded-[20px]"
+                        style={{
+                          opacity: 0,
+                          transform: 'translateX(40px) translateY(12px) scale(0.95)',
+                          transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+                          willChange: 'transform, opacity',
+                          perspective: 800,
+                        }}
                       >
-                        <div className="px-6 pt-6 pb-4">
-                          <span className="inline-block font-['Space_Mono',monospace] text-[9px] font-medium tracking-[0.06em] uppercase px-2.5 py-[3px] rounded-[4px] mb-3"
-                            style={{ background: '#fff3ed', color: '#fd5000' }}>
-                            {step.tag}
-                          </span>
-                          <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
-                          <p className="font-inter text-[13.5px] text-[#999] leading-[1.65]">{step.desc}</p>
+                        <div className="rounded-[20px] text-right overflow-hidden"
+                          style={{
+                            background: 'white',
+                            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                            transition: 'transform 0.15s ease-out, box-shadow 0.3s ease',
+                            transformStyle: 'preserve-3d',
+                          }}
+                          onMouseMove={e => {
+                            const rect = e.currentTarget.getBoundingClientRect()
+                            const x = (e.clientX - rect.left) / rect.width - 0.5
+                            const y = (e.clientY - rect.top) / rect.height - 0.5
+                            e.currentTarget.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`
+                            e.currentTarget.style.boxShadow = `0 8px 28px rgba(0,0,0,0.08)`
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.transform = 'rotateY(0deg) rotateX(0deg)'
+                            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.02)'
+                          }}
+                        >
+                          <div>{step.illustration}</div>
+                          <div className="px-6 pt-4 pb-5">
+                            <span className="inline-block font-['Space_Mono',monospace] text-[10px] font-semibold tracking-[0.06em] uppercase px-3 py-[4px] rounded-[6px] mb-3"
+                              style={{ background: '#ffe8db', color: '#b93500' }}>
+                              {step.tag}
+                            </span>
+                            <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
+                            <p className="font-inter text-[13.5px] text-[#6b6b6b] leading-[1.65]">{step.desc}</p>
+                          </div>
                         </div>
-                        <div className="px-4 pb-4">{step.illustration}</div>
                       </div>
                     )}
                   </div>
 
                   {/* Center node */}
-                  <div className="absolute left-1/2 -translate-x-1/2 z-10">
-                    <div className="w-14 h-14 rounded-[16px] flex items-center justify-center text-white transition-all duration-400"
+                  <div ref={el => { nodeRefs.current[i] = el }} className="absolute left-1/2 z-10 flex flex-col items-center" style={{
+                    transform: 'translateX(-50%) scale(0.7)',
+                    opacity: 0.35,
+                    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                    willChange: 'transform, opacity',
+                  }}>
+                    {/* Step number badge */}
+                    <div ref={el => { badgeRefs.current[i] = el }} className="mb-2 w-8 h-8 rounded-full flex items-center justify-center"
                       style={{
-                        background: 'linear-gradient(145deg, #ff7a35, #e04500)',
-                        boxShadow: '0 8px 20px rgba(253,80,0,0.25), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.12)',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        background: 'white',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
+                        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}>
+                      <span ref={el => { badgeTextRefs.current[i] = el }} className="font-['Space_Mono',monospace] text-[10px] font-bold" style={{ color: '#c0b8ae', transition: 'color 0.5s ease' }}>{step.num}</span>
+                    </div>
+                    {/* Icon node */}
+                    <div ref={el => { iconRefs.current[i] = el }} className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center text-white"
+                      style={{
+                        background: 'linear-gradient(180deg, #e8e4dc, #d5d0c8)',
+                        boxShadow: '0 1px 0 0 rgba(255,255,255,0.6) inset, 0 -2px 4px rgba(0,0,0,0.08) inset, 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
+                        border: '1px solid rgba(255,255,255,0.35)',
+                        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.12) translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 28px rgba(253,80,0,0.3), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.12)' }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(253,80,0,0.25), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.12)' }}
                     >
                       {step.icon}
-                    </div>
-                    {/* Step number below node */}
-                    <div className="text-center mt-2">
-                      <span className="font-jakarta font-extrabold text-[11px] text-[#ccc] tracking-[0.04em]">{step.num}</span>
                     </div>
                   </div>
 
                   {/* Right content or spacer */}
                   <div className="w-1/2 pl-12">
                     {!isLeft && (
-                      <div className="max-w-[360px] rounded-[20px] p-0 transition-all duration-400 overflow-hidden"
-                        style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.08)' }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.05)' }}
+                      <div ref={el => { stepRefs.current[i] = el }} className="w-[360px] rounded-[20px]"
+                        style={{
+                          opacity: 0,
+                          transform: 'translateX(-40px) translateY(12px) scale(0.95)',
+                          transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+                          willChange: 'transform, opacity',
+                          perspective: 800,
+                        }}
                       >
-                        <div className="px-6 pt-6 pb-4">
-                          <span className="inline-block font-['Space_Mono',monospace] text-[9px] font-medium tracking-[0.06em] uppercase px-2.5 py-[3px] rounded-[4px] mb-3"
-                            style={{ background: '#fff3ed', color: '#fd5000' }}>
-                            {step.tag}
-                          </span>
-                          <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
-                          <p className="font-inter text-[13.5px] text-[#999] leading-[1.65]">{step.desc}</p>
+                        <div className="rounded-[20px] overflow-hidden"
+                          style={{
+                            background: 'white',
+                            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                            transition: 'transform 0.15s ease-out, box-shadow 0.3s ease',
+                            transformStyle: 'preserve-3d',
+                          }}
+                          onMouseMove={e => {
+                            const rect = e.currentTarget.getBoundingClientRect()
+                            const x = (e.clientX - rect.left) / rect.width - 0.5
+                            const y = (e.clientY - rect.top) / rect.height - 0.5
+                            e.currentTarget.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`
+                            e.currentTarget.style.boxShadow = `0 8px 28px rgba(0,0,0,0.08)`
+                          }}
+                          onMouseLeave={e => {
+                            e.currentTarget.style.transform = 'rotateY(0deg) rotateX(0deg)'
+                            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.02)'
+                          }}
+                        >
+                          <div>{step.illustration}</div>
+                          <div className="px-6 pt-4 pb-5">
+                            <span className="inline-block font-['Space_Mono',monospace] text-[10px] font-semibold tracking-[0.06em] uppercase px-3 py-[4px] rounded-[6px] mb-3"
+                              style={{ background: '#ffe8db', color: '#b93500' }}>
+                              {step.tag}
+                            </span>
+                            <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
+                            <p className="font-inter text-[13.5px] text-[#6b6b6b] leading-[1.65]">{step.desc}</p>
+                          </div>
                         </div>
-                        <div className="px-4 pb-4">{step.illustration}</div>
                       </div>
                     )}
                   </div>
@@ -1745,10 +2050,10 @@ function Workflows() {
                   return (
                     <div key={si} className="flex items-center gap-1 shrink-0">
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold"
-                        style={done ? { background: '#22c55e', color: 'white' } : { background: '#f0ede8', color: '#999' }}>
+                        style={done ? { background: '#22c55e', color: 'white' } : { background: '#f0ede8', color: '#6b6b6b' }}>
                         {done ? <Check size={10} strokeWidth={3} color="white" /> : si + 1}
                       </div>
-                      <span className="font-inter text-[9px] text-[#999] max-w-[60px] truncate">{s.title}</span>
+                      <span className="font-inter text-[9px] text-[#6b6b6b] max-w-[60px] truncate">{s.title}</span>
                       {si < panel.steps.length - 1 && <div className="w-3 h-[1px]" style={{ background: '#e0dbd4' }} />}
                     </div>
                   )
@@ -1770,9 +2075,9 @@ function Workflows() {
                   </button>
                   <div className="flex-1">
                     <div className="font-inter text-[12px] font-semibold text-[#191919]">{panel.callName}</div>
-                    <div className="font-inter text-[10px] text-[#bbb]">{panel.callInfo}</div>
+                    <div className="font-inter text-[10px] text-[#767676]">{panel.callInfo}</div>
                   </div>
-                  <span className="font-['Space_Mono',monospace] text-[9px] text-[#999] tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
+                  <span className="font-['Space_Mono',monospace] text-[9px] text-[#6b6b6b] tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
                 <div className="flex items-center gap-[2px] h-5">
                   {bars.map((b, bi) => (
@@ -1794,7 +2099,7 @@ function Workflows() {
                     <div key={mi} className="flex gap-3 transition-opacity duration-500"
                       style={{ opacity: elapsedMs === 0 ? 1 : isPast ? 1 : isActive ? 1 : 0.15 }}>
                       <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 mt-0.5"
-                        style={m.role === 'ai' ? { background: 'rgba(253,80,0,0.10)', color: '#fd5000' } : { background: '#f0ede8', color: '#888' }}>
+                        style={m.role === 'ai' ? { background: 'rgba(253,80,0,0.10)', color: '#c2410c' } : { background: '#f0ede8', color: '#5c5c5c' }}>
                         {m.role === 'ai' ? 'AI' : 'CU'}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -1811,26 +2116,29 @@ function Workflows() {
         )}
 
         {/* Main workflow card — desktop only */}
-        <div className="hidden lg:block bg-white rounded-[24px] overflow-hidden" style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+        <div className="hidden lg:block rounded-[28px] overflow-hidden" style={{ background: 'white', boxShadow: '0 4px 32px rgba(0,0,0,0.08)' }}>
           <style>{`
             @keyframes playerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
             @keyframes waveSmooth{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
           `}</style>
 
           {/* Body */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px]" style={{ height: 580 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-0 overflow-hidden" style={{ height: 600 }}>
 
-            {/* Left — steps */}
-            <div className="flex flex-col overflow-hidden">
-              <div className="px-8 pt-8 pb-6 shrink-0" style={{ borderBottom: '1px solid #f0ebe3' }}>
+            {/* Left — title + checklist on white bg */}
+            <div className="flex flex-col overflow-hidden bg-white p-6">
+              <div className="pb-5 shrink-0">
                 <h3 className="font-jakarta font-bold text-[#191919] text-[20px] leading-[1.2] tracking-[-0.02em] mb-2">{panel.h3}</h3>
                 <p className="font-inter text-[13.5px] text-[#7A7A7A] leading-[1.7]">{panel.desc}</p>
               </div>
-              <ul className="divide-y divide-[#f5f0ea] flex-1 overflow-y-auto">
+              <div className="flex flex-col gap-3 flex-1 overflow-y-auto">
                 {panel.steps.map((s, i) => {
                   const done = i < checkedCount
                   return (
-                    <li key={i} className="flex items-start gap-4 px-8 py-5 transition-opacity" style={{ opacity: done ? 1 : elapsedMs === 0 ? 1 : 0.45 }}>
+                    <div key={i} className="flex items-start gap-4 px-5 py-4 rounded-[14px] transition-all" style={{
+                      background: done ? '#f0fdf4' : '#fcfbf9',
+                      opacity: done ? 1 : elapsedMs === 0 ? 1 : 0.5,
+                    }}>
                       <div
                         className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-all"
                         style={done
@@ -1843,20 +2151,28 @@ function Workflows() {
                         }
                       </div>
                       <div>
-                        <strong className={`font-inter block text-[13px] font-semibold mb-0.5 transition-colors ${done ? 'text-[#22C55E]' : 'text-[#191919]'}`}>{s.title}</strong>
-                        <span className="font-inter text-[12.5px] text-[#8A8A8A] leading-[1.55]">{s.desc}</span>
+                        <strong className={`font-inter block text-[13px] font-semibold mb-0.5 transition-colors ${done ? 'text-[#15803d]' : 'text-[#191919]'}`}>{s.title}</strong>
+                        <span className="font-inter text-[12.5px] text-[#7A7A7A] leading-[1.55]">{s.desc}</span>
                       </div>
-                    </li>
+                    </div>
                   )
                 })}
-              </ul>
+              </div>
             </div>
 
-            {/* Right — call card */}
-            <div className="relative flex flex-col overflow-hidden" style={{ background: '#faf7f4', borderLeft: '1px solid #f0ebe3' }}>
+            {/* Right — background image with white card inside, bleeds to edges */}
+            <div className="overflow-hidden p-6 flex flex-col" style={{
+              backgroundImage: 'url(/workflow-bg.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}>
+              <div className="bg-white overflow-hidden flex flex-col flex-1 min-h-0" style={{
+                boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+                borderRadius: 18,
+              }}>
 
               {/* Call header with player */}
-              <div className="px-5 py-4 bg-white shrink-0" style={{ borderBottom: '1px solid #f0ebe3' }}>
+              <div className="px-5 py-4 shrink-0" style={{ borderBottom: '1px solid #f0ebe3' }}>
                 <div className="flex items-center gap-3 mb-3">
                   <button
                     onClick={() => setPlaying(p => !p)}
@@ -1875,7 +2191,7 @@ function Workflows() {
                     <div className="font-inter text-[13px] font-semibold text-[#191919] truncate leading-tight">{panel.callName}</div>
                     <div className="font-inter text-[10px] text-[#BFBFBF] mt-0.5">{panel.callInfo}</div>
                   </div>
-                  <span className="font-['Space_Mono',monospace] text-[10px] text-[#999] shrink-0 tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
+                  <span className="font-['Space_Mono',monospace] text-[10px] text-[#6b6b6b] shrink-0 tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
                 {/* Waveform */}
                 <div className="flex items-center gap-[2px] h-7">
@@ -1910,8 +2226,8 @@ function Workflows() {
                     <div
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5 font-inter"
                       style={m.role === 'ai'
-                        ? { background: 'rgba(253,80,0,0.10)', color: '#fd5000' }
-                        : { background: '#f0ede8', color: '#888' }}
+                        ? { background: 'rgba(253,80,0,0.10)', color: '#c2410c' }
+                        : { background: '#f0ede8', color: '#5c5c5c' }}
                     >
                       {m.role === 'ai' ? 'AI' : 'CU'}
                     </div>
@@ -1936,8 +2252,8 @@ function Workflows() {
                 })}
               </div>
 
-
-            </div>
+              </div>{/* close white card */}
+            </div>{/* close bg wrapper */}
           </div>
         </div>
 
@@ -1948,12 +2264,12 @@ function Workflows() {
 
 /* ─────────────────────────── REVENUE MULTIPLIER ─────────────────────────── */
 const RM_ITEMS = [
-  { Icon: TrendingUp,     title: 'Higher Close Rates',       desc: 'Answer instantly while homeowner intent is at its peak. Never lose a warm lead to a competitor who picked up faster.', color: '#059669', iconBg: 'rgba(5,150,105,0.10)', iconBorder: 'rgba(5,150,105,0.20)' },
-  { Icon: Zap,            title: 'Shorter Response Windows', desc: "Speed-to-contact is the #1 driver of close rate in home services. You'll always be the fastest response — regardless of time of day.", color: '#4f46e5', iconBg: 'rgba(79,70,229,0.10)', iconBorder: 'rgba(79,70,229,0.20)' },
-  { Icon: CloudLightning, title: 'Storm Surge Readiness',    desc: 'When hail hits your market, volume spikes 10x overnight. Scale instantly with no overtime, hiring chaos, or capacity limits.', color: '#d97706', iconBg: 'rgba(217,119,6,0.10)', iconBorder: 'rgba(217,119,6,0.20)' },
-  { Icon: BarChart2,      title: 'Pipeline Stays Pristine',  desc: 'Every call creates a structured lead record in Zuper. Your team wakes up to a qualified pipeline — not a pile of voicemails to parse.', color: '#2563eb', iconBg: 'rgba(37,99,235,0.10)', iconBorder: 'rgba(37,99,235,0.20)' },
-  { Icon: Users,          title: 'Revenue Per CSR',          desc: 'Your team handles complex conversations and customer relationships. Routine intake and booking handled automatically.', color: '#e11d48', iconBg: 'rgba(225,29,72,0.10)', iconBorder: 'rgba(225,29,72,0.20)' },
-  { Icon: Link2,          title: 'Zero Tool Sprawl',         desc: 'Intake, qualification, booking, and pipeline updates all live in one connected Zuper workflow. No third-party glue required.', color: '#7c3aed', iconBg: 'rgba(124,58,237,0.10)', iconBorder: 'rgba(124,58,237,0.20)' },
+  { Icon: TrendingUp,     title: 'Higher Close Rates',       desc: 'Answer instantly while homeowner intent is at its peak. Never lose a warm lead to a competitor who picked up faster.', color: '#059669', iconBg: 'rgba(5,150,105,0.10)', iconBorder: 'rgba(5,150,105,0.20)', illusBg: 'linear-gradient(155deg, #f0faf5, #e8f5ee)' },
+  { Icon: Zap,            title: 'Shorter Response Windows', desc: "Speed-to-contact is the #1 driver of close rate in home services. You'll always be the fastest response — regardless of time of day.", color: '#4f46e5', iconBg: 'rgba(79,70,229,0.10)', iconBorder: 'rgba(79,70,229,0.20)', illusBg: 'linear-gradient(155deg, #f5f2ff, #eee8fc)' },
+  { Icon: CloudLightning, title: 'Storm Surge Readiness',    desc: 'When hail hits your market, volume spikes 10x overnight. Scale instantly with no overtime, hiring chaos, or capacity limits.', color: '#d97706', iconBg: 'rgba(217,119,6,0.10)', iconBorder: 'rgba(217,119,6,0.20)', illusBg: 'linear-gradient(155deg, #fef8ee, #fdf2e0)' },
+  { Icon: BarChart2,      title: 'Pipeline Stays Pristine',  desc: 'Every call creates a structured lead record in Zuper. Your team wakes up to a qualified pipeline — not a pile of voicemails to parse.', color: '#2563eb', iconBg: 'rgba(37,99,235,0.10)', iconBorder: 'rgba(37,99,235,0.20)', illusBg: 'linear-gradient(155deg, #f0f5ff, #e8effe)' },
+  { Icon: Users,          title: 'Revenue Per CSR',          desc: 'Your team handles complex conversations and customer relationships. Routine intake and booking handled automatically.', color: '#e11d48', iconBg: 'rgba(225,29,72,0.10)', iconBorder: 'rgba(225,29,72,0.20)', illusBg: 'linear-gradient(155deg, #fef2f4, #fde8ec)' },
+  { Icon: Link2,          title: 'Zero Tool Sprawl',         desc: 'Intake, qualification, booking, and pipeline updates all live in one connected Zuper workflow. No third-party glue required.', color: '#7c3aed', iconBg: 'rgba(124,58,237,0.10)', iconBorder: 'rgba(124,58,237,0.20)', illusBg: 'linear-gradient(155deg, #f6f2ff, #f0eafc)' },
 ]
 
 function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: boolean }) {
@@ -1986,7 +2302,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         </div>
         <div className="shrink-0">
           <div className="font-inter text-[8px] font-semibold text-[#191919] leading-tight">Isaac</div>
-          <div className="font-inter text-[7px] text-[#bbb]">Greenville, OH</div>
+          <div className="font-inter text-[7px] text-[#767676]">Greenville, OH</div>
         </div>
         <div className="flex-1 flex items-center justify-center gap-[0.5px]" style={{ height: 16 }}>
           {Array.from({ length: 36 }).map((_, i) => (
@@ -1999,7 +2315,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
             }} />
           ))}
         </div>
-        <span className="font-['Space_Mono',monospace] text-[7px] text-[#ccc] shrink-0">0:42</span>
+        <span className="font-['Space_Mono',monospace] text-[7px] text-[#767676] shrink-0">0:42</span>
       </div>
       {/* Status swap */}
       <div className="relative h-7 flex items-center justify-center" style={{ animation: 'closeTagIn 5s cubic-bezier(0.4,0,0.2,1) infinite' }}>
@@ -2101,7 +2417,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
               <div key={i} className="w-4 h-4 rounded-full border-[1.5px] border-[#f7f4f0] flex items-center justify-center text-[6px] font-bold text-white" style={{ background: bg }}>{String.fromCharCode(65 + i)}</div>
             ))}
           </div>
-          <span className="font-inter text-[7px] text-[#bbb]">+9 active</span>
+          <span className="font-inter text-[7px] text-[#767676]">+9 active</span>
         </div>
       </div>
     </div>
@@ -2123,7 +2439,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         <div key={ci} className="flex-1 flex flex-col gap-1">
           <div className="flex items-center gap-1 mb-0.5">
             <div className="w-1.5 h-1.5 rounded-[2px]" style={{ background: col.color }} />
-            <span className="font-inter text-[7px] font-semibold text-[#aaa]">{col.label}</span>
+            <span className="font-inter text-[7px] font-semibold text-[#717171]">{col.label}</span>
           </div>
           {Array.from({ length: Math.min(col.n, 3) }).map((_, i) => {
             const delay = ci * 0.25 + i * 0.15
@@ -2156,7 +2472,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: c }}>
           <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
-        <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: '#eee' }}>
+        <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: `${c}12` }}>
           <div className="h-full rounded-[2px]" style={{ background: c, animation: 'revBarFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
         </div>
         <span className="font-['Space_Mono',monospace] text-[8px] font-bold shrink-0" style={{ color: c }}>78%</span>
@@ -2168,10 +2484,10 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
             <div key={i} className="w-2.5 h-2.5 rounded-full border border-[#f7f4f0]" style={{ background: bg, opacity: 0.4 }} />
           ))}
         </div>
-        <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: '#eee' }}>
-          <div className="h-full rounded-[2px]" style={{ background: '#bbb', animation: 'revTeamFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
+        <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: '#e8e4e0' }}>
+          <div className="h-full rounded-[2px]" style={{ background: '#a8a4a0', animation: 'revTeamFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
         </div>
-        <span className="font-['Space_Mono',monospace] text-[8px] font-bold text-[#bbb] shrink-0">22%</span>
+        <span className="font-['Space_Mono',monospace] text-[8px] font-bold text-[#767676] shrink-0">22%</span>
       </div>
       {/* Metric cards */}
       <div className="flex gap-1.5">
@@ -2183,7 +2499,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
             <span className="text-[9px]">{m.icon}</span>
             <div>
               <div className="font-['Space_Mono',monospace] text-[9px] font-bold leading-none" style={{ color: c }}>{m.v}</div>
-              <div className="font-inter text-[6px] text-[#bbb] leading-none mt-0.5">{m.l}</div>
+              <div className="font-inter text-[6px] text-[#767676] leading-none mt-0.5">{m.l}</div>
             </div>
           </div>
         ))}
@@ -2213,7 +2529,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
               <div className="w-9 h-9 flex items-center justify-center" style={{ ...cardStyle, borderRadius: 10 }}>
                 {step.icon}
               </div>
-              <span className="font-inter text-[7px] text-[#aaa]">{step.label}</span>
+              <span className="font-inter text-[7px] text-[#717171]">{step.label}</span>
             </div>
             {/* Connector */}
             {i < 3 && (
@@ -2279,22 +2595,24 @@ function RMCard({ item, i }: { item: typeof RM_ITEMS[number]; i: number }) {
         onMouseLeave={() => setHovered(false)}
         style={{
           background: 'white',
-          boxShadow: hovered ? '0 16px 40px rgba(0,0,0,0.08)' : '0 4px 20px rgba(0,0,0,0.05)',
-          transform: hovered ? 'translateY(-5px)' : 'translateY(0)',
-          transition: 'all 0.4s ease',
+          boxShadow: hovered
+            ? `0 0 0 2px ${item.color}40, 0 0 24px ${item.color}20, 0 8px 24px rgba(0,0,0,0.06)`
+            : `0 0 0 1.5px ${item.color}18, 0 1px 4px rgba(0,0,0,0.03)`,
+          transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+          transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         {/* Title + description on top */}
         <div className="px-6 pt-6 pb-4">
           <h3 className="font-jakarta font-bold text-[16px] text-[#191919] tracking-[-0.01em] mb-2">{item.title}</h3>
-          <p className="font-inter text-[13px] text-[#999] leading-[1.6]">{item.desc}</p>
+          <p className="font-inter text-[13px] text-[#6b6b6b] leading-[1.6]">{item.desc}</p>
         </div>
 
         {/* Illustration area at bottom — enters from bottom when visible */}
         <div
           className="flex-1 flex items-center justify-center mx-3 mb-3 rounded-[12px] overflow-hidden"
           style={{
-            background: '#f7f4f0',
+            background: item.illusBg,
             padding: '14px 16px',
             minHeight: 145,
             opacity: visible ? 1 : 0,
@@ -2468,9 +2786,105 @@ function CaseStudy() {
 }
 
 /* ─────────────────────────── CTA SECTION ─────────────────────────── */
+function CTAConfetti({ trigger }: { trigger: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    if (!trigger) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const dpr = window.devicePixelRatio || 1
+    const rect = canvas.parentElement!.getBoundingClientRect()
+    canvas.width = rect.width * dpr
+    canvas.height = rect.height * dpr
+    canvas.style.width = `${rect.width}px`
+    canvas.style.height = `${rect.height}px`
+    ctx.scale(dpr, dpr)
+
+    const colors = ['#fff', '#FFD700', '#FF6B35', '#ff3e6c', '#4ade80', '#60a5fa', '#c084fc', '#fbbf24']
+    const particles: { x: number; y: number; vx: number; vy: number; w: number; h: number; color: string; rot: number; rotV: number; life: number; opacity: number }[] = []
+
+    // 160 particles — 80 from each side
+    for (let i = 0; i < 160; i++) {
+      const fromLeft = i < 80
+      particles.push({
+        x: fromLeft ? rect.width * 0.12 : rect.width * 0.88,
+        y: rect.height * 0.45 + (Math.random() - 0.5) * rect.height * 0.2,
+        vx: (fromLeft ? 1 : -1) * (2 + Math.random() * 7),
+        vy: -5 - Math.random() * 9,
+        w: 4 + Math.random() * 6,
+        h: 3 + Math.random() * 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rot: Math.random() * Math.PI * 2,
+        rotV: (Math.random() - 0.5) * 0.3,
+        life: 1,
+        opacity: 1,
+      })
+    }
+
+    let rafId = 0
+    // ~3 seconds at 60fps = ~180 frames, life decrements per frame
+    const lifeDecay = 1 / 180
+
+    const animate = () => {
+      ctx.clearRect(0, 0, rect.width, rect.height)
+      let alive = false
+
+      for (const p of particles) {
+        if (p.life <= 0) continue
+        alive = true
+        p.vy += 0.15
+        p.vx *= 0.988
+        p.x += p.vx
+        p.y += p.vy
+        p.rot += p.rotV
+        p.life -= lifeDecay
+        p.opacity = Math.min(1, p.life * 2.5)
+
+        ctx.save()
+        ctx.globalAlpha = p.opacity
+        ctx.translate(p.x, p.y)
+        ctx.rotate(p.rot)
+        ctx.fillStyle = p.color
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
+        ctx.restore()
+      }
+
+      if (alive) rafId = requestAnimationFrame(animate)
+    }
+    rafId = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(rafId)
+  }, [trigger])
+
+  return <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-20" />
+}
+
 function CTASection() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [confettiFired, setConfettiFired] = useState(false)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting && !confettiFired) {
+          setConfettiFired(true)
+          obs.disconnect()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [confettiFired])
+
   return (
-    <div id="cta" className="snap-section relative overflow-hidden text-center py-24 px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
+    <div ref={sectionRef} id="cta" className="snap-section relative overflow-hidden text-center py-24 px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
+      <CTAConfetti trigger={confettiFired} />
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,0,0,0.2), transparent)' }} />
       {/* Diagonal line pattern overlay */}
       <div

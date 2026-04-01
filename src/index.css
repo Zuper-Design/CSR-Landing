@@ -28,6 +28,17 @@
   50% { opacity: 0.7; }
 }
 
+/* Timeline progress tip */
+@keyframes timelineTipGlow {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+}
+
+@keyframes timelineTipCore {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 6px 2px rgba(253,80,0,0.6), 0 0 14px 4px rgba(253,80,0,0.25); }
+  50% { transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 10px 3px rgba(253,80,0,0.8), 0 0 20px 6px rgba(253,80,0,0.35); }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -48,9 +59,10 @@
   }
 
 
-  /* Scroll snap — proximity only snaps when close to section top */
+  /* Scroll snap — proximity snaps softly to section top */
   section, .snap-section {
     scroll-snap-align: start;
+    scroll-margin-top: 0;
   }
 
   /* Smoother transitions globally */

@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 400" fill="none">
+  <!-- Soft lavender pastel background -->
+  <rect width="320" height="400" fill="#F0E8FA"/>
+  <rect x="20" y="20" width="280" height="360" rx="24" fill="#DDD0F0" opacity="0.5"/>
+
+  <!-- Body / shoulders -->
+  <path d="M88 340 C88 290, 110 272, 160 260 C210 272, 232 290, 232 340 L232 400 L88 400 Z" fill="#1a1a1a"/>
+  <!-- Hoodie / collar detail -->
+  <path d="M130 274 L148 290 L160 282 L172 290 L190 274" stroke="#333" stroke-width="1.5" fill="none"/>
+  <!-- Zipper line -->
+  <line x1="160" y1="282" x2="160" y2="400" stroke="#333" stroke-width="1.2"/>
+
+  <!-- Neck -->
+  <ellipse cx="160" cy="256" rx="17" ry="11" fill="#8B6B4A"/>
+
+  <!-- Head -->
+  <ellipse cx="160" cy="200" rx="58" ry="62" fill="#8B6B4A"/>
+
+  <!-- Hair - curly / afro-textured, cropped sides -->
+  <path d="M100 190 C96 145, 120 108, 160 105 C200 108, 224 145, 220 190" fill="#1a1a1a"/>
+  <!-- Curly texture top -->
+  <circle cx="125" cy="128" r="14" fill="#1a1a1a"/>
+  <circle cx="148" cy="118" r="15" fill="#1a1a1a"/>
+  <circle cx="172" cy="118" r="15" fill="#1a1a1a"/>
+  <circle cx="195" cy="128" r="14" fill="#1a1a1a"/>
+  <circle cx="110" cy="145" r="12" fill="#1a1a1a"/>
+  <circle cx="210" cy="145" r="12" fill="#1a1a1a"/>
+  <circle cx="136" cy="112" r="10" fill="#1a1a1a"/>
+  <circle cx="184" cy="112" r="10" fill="#1a1a1a"/>
+  <circle cx="160" cy="108" r="12" fill="#1a1a1a"/>
+  <!-- Hair highlight -->
+  <circle cx="145" cy="122" r="6" fill="#333" opacity="0.4"/>
+  <circle cx="175" cy="120" r="5" fill="#333" opacity="0.4"/>
+
+  <!-- Fade on sides -->
+  <path d="M102 190 C100 175, 102 165, 108 158" stroke="#2a2a2a" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M218 190 C220 175, 218 165, 212 158" stroke="#2a2a2a" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.5"/>
+
+  <!-- Eyebrows -->
+  <path d="M130 192 C136 187, 146 187, 152 191" stroke="#1a1a1a" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  <path d="M168 191 C174 187, 184 187, 190 192" stroke="#1a1a1a" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+
+  <!-- Eyes -->
+  <ellipse cx="141" cy="206" rx="9" ry="9" fill="white"/>
+  <ellipse cx="141" cy="207" rx="5.5" ry="5.5" fill="#1a1a1a"/>
+  <circle cx="139" cy="205" r="2" fill="white"/>
+
+  <ellipse cx="179" cy="206" rx="9" ry="9" fill="white"/>
+  <ellipse cx="179" cy="207" rx="5.5" ry="5.5" fill="#1a1a1a"/>
+  <circle cx="177" cy="205" r="2" fill="white"/>
+
+  <!-- Nose -->
+  <path d="M155 222 C158 228, 163 230, 168 227" stroke="#6B4F35" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+  <!-- Confident grin -->
+  <path d="M140 240 C148 250, 172 250, 180 240" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+  <!-- Teeth hint -->
+  <path d="M148 243 L172 243" stroke="white" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Ears -->
+  <ellipse cx="102" cy="210" rx="7" ry="12" fill="#8B6B4A"/>
+  <ellipse cx="102" cy="210" rx="4" ry="7" fill="#755838"/>
+  <ellipse cx="218" cy="210" rx="7" ry="12" fill="#8B6B4A"/>
+  <ellipse cx="218" cy="210" rx="4" ry="7" fill="#755838"/>
+
+  <!-- Headset band -->
+  <path d="M98 195 C98 155, 122 128, 160 125 C198 128, 222 155, 222 195" stroke="#555" stroke-width="3.5" fill="none"/>
+  <!-- Headset ear right -->
+  <rect x="214" y="198" width="16" height="28" rx="6" fill="#555"/>
+  <rect x="222" y="202" width="6" height="18" rx="3" fill="#888"/>
+
+  <!-- Headset mic arm -->
+  <path d="M224 226 C224 246, 210 258, 190 260" stroke="#555" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Mic -->
+  <ellipse cx="188" cy="260" rx="7" ry="5" fill="#555"/>
+  <ellipse cx="188" cy="260" rx="4" ry="3" fill="#888"/>
+
+  <!-- Crossed arms -->
+  <g>
+    <!-- Left arm crossing -->
+    <path d="M88 340 C90 310, 105 290, 130 280 C145 275, 165 278, 180 285" stroke="#1a1a1a" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <!-- Right arm crossing -->
+    <path d="M232 340 C230 310, 215 290, 190 280 C175 275, 155 278, 140 285" stroke="#1a1a1a" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <!-- Hands -->
+    <path d="M175 282 C180 278, 188 280, 188 286 C188 290, 182 292, 178 290" fill="#8B6B4A" stroke="#755838" stroke-width="0.8"/>
+    <path d="M145 282 C140 278, 132 280, 132 286 C132 290, 138 292, 142 290" fill="#8B6B4A" stroke="#755838" stroke-width="0.8"/>
+  </g>
+</svg>
