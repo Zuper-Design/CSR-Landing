@@ -347,7 +347,7 @@ function Hero() {
 
       {/* ── Main content ── */}
       <div
-        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-14 justify-between pt-[100px] md:pt-[160px] pb-[96px]"
+        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-14 justify-between pt-[80px] md:pt-[160px] pb-[70px] md:pb-[96px]"
       >
 
         {/* Left copy */}
@@ -415,15 +415,15 @@ function Hero() {
             }
           `}</style>
 
-          <p className="font-inter leading-[1.7] mt-6" style={{
-            fontSize: 16, maxWidth: 460, color: '#D4D4D4',
+          <p className="font-inter leading-[1.7] mt-4 md:mt-6 text-[14px] md:text-[16px]" style={{
+            maxWidth: 460, color: '#D4D4D4',
             animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both',
           }}>
             Your AI-powered CSR handles overflow calls, after-hours inquiries, and storm surge — so your roofing business never loses revenue to voicemail.
           </p>
 
           {/* CTAs */}
-          <div className="flex items-center gap-3 mt-9" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.65s both' }}>
+          <div className="flex items-center gap-3 mt-5 md:mt-9" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.65s both' }}>
             <button
               className="font-inter font-semibold text-[15px] text-[#b5271c] px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
@@ -444,14 +444,15 @@ function Hero() {
           </div>
 
           {/* Social proof — #BCBCBC on dark ≈ 7.6:1 ✓ */}
-          <div className="flex items-center gap-2.5 mt-7" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
+          <div className="flex items-center gap-2.5 mt-4 md:mt-7" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
             <div className="flex -space-x-1.5">
               {['/logo-maven.png', '/logo-aa.png', '/logo-bmr.png'].map((src, i) => (
                 <img key={i} src={src} alt="" className="w-7 h-7 rounded-full object-cover bg-white border-2 border-white/40" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }} />
               ))}
             </div>
-            <p className="font-inter text-[13px]" style={{ color: '#BCBCBC' }}>
-              Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span>, <span className="font-semibold text-white">Brothers Metal</span> & 50+ others
+            <p className="font-inter text-[11px] md:text-[13px]" style={{ color: '#BCBCBC' }}>
+              <span className="hidden md:inline">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span>, <span className="font-semibold text-white">Brothers Metal</span> & 50+ others</span>
+              <span className="md:hidden">Trusted by <span className="font-semibold text-white">50+</span> companies</span>
             </p>
           </div>
         </div>
