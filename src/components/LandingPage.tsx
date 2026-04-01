@@ -457,45 +457,28 @@ function Hero() {
         </div>
 
         {/* Mobile compact demo card */}
-        <div className="lg:hidden mt-8 w-full" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
-          <div className="rounded-[18px] overflow-hidden" style={{ background: 'rgba(12,8,6,0.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 pt-4 pb-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 5px #4ade80' }} />
-                <span className="font-inter text-[11px] font-semibold text-white/80 uppercase tracking-wide">AI Agent Demo</span>
-              </div>
-              <span className="font-['Space_Mono',monospace] text-[10px] text-white/40">0:42</span>
+        <div className="lg:hidden mt-6 w-full" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
+          <div className="rounded-[14px] flex items-center gap-3 px-3 py-2.5" style={{ background: 'rgba(12,8,6,0.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+              <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+                <source src="/orb-loop.mp4" type="video/mp4" />
+              </video>
             </div>
-            {/* Orb + Info */}
-            <div className="flex items-center gap-4 px-4 py-3">
-              <div className="relative shrink-0">
-                <div className="w-14 h-14 rounded-full overflow-hidden">
-                  <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                    <source src="/orb-loop.mp4" type="video/mp4" />
-                  </video>
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-jakarta font-bold text-white text-[14px] leading-tight">Nova — CSR Agent</p>
-                <p className="font-inter text-[11px] text-white/50 mt-0.5">Handles calls & storm surge</p>
-              </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-jakarta font-bold text-white text-[12px] leading-tight">Nova — CSR Agent</p>
+              <p className="font-inter text-[10px] text-white/50">Handles calls & storm surge</p>
             </div>
-            {/* Play button */}
-            <div className="px-4 pb-4">
-              <button
-                onClick={() => setPlaying(p => !p)}
-                className="w-full flex items-center justify-center gap-2.5 font-inter font-semibold text-[13px] rounded-[10px] py-2.5 transition-all text-white"
-                style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000', border: `1px solid ${playing ? 'rgba(255,255,255,0.2)' : '#fd5000'}` }}
-              >
-                {playing ? (
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="white"><rect x="1" y="1" width="3" height="8" rx="0.5"/><rect x="6" y="1" width="3" height="8" rx="0.5"/></svg>
-                ) : (
-                  <svg width="8" height="10" viewBox="0 0 10 12" fill="white"><path d="M0 0L10 6L0 12V0Z"/></svg>
-                )}
-                {playing ? 'Stop' : 'Play Call'}
-              </button>
-            </div>
+            <button
+              onClick={() => setPlaying(p => !p)}
+              className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+              style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000' }}
+            >
+              {playing ? (
+                <svg width="9" height="9" viewBox="0 0 10 10" fill="white"><rect x="1" y="0" width="3" height="10" rx="0.5"/><rect x="6" y="0" width="3" height="10" rx="0.5"/></svg>
+              ) : (
+                <svg width="8" height="10" viewBox="0 0 10 12" fill="white" style={{ marginLeft: 1 }}><path d="M0 0L10 6L0 12V0Z"/></svg>
+              )}
+            </button>
           </div>
         </div>
 
