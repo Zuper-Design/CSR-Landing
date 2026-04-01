@@ -456,6 +456,49 @@ function Hero() {
           </div>
         </div>
 
+        {/* Mobile compact demo card */}
+        <div className="lg:hidden mt-8 w-full" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
+          <div className="rounded-[18px] overflow-hidden" style={{ background: 'rgba(12,8,6,0.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 pt-4 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 5px #4ade80' }} />
+                <span className="font-inter text-[11px] font-semibold text-white/80 uppercase tracking-wide">AI Agent Demo</span>
+              </div>
+              <span className="font-['Space_Mono',monospace] text-[10px] text-white/40">0:42</span>
+            </div>
+            {/* Orb + Info */}
+            <div className="flex items-center gap-4 px-4 py-3">
+              <div className="relative shrink-0">
+                <div className="w-14 h-14 rounded-full overflow-hidden">
+                  <video autoPlay loop muted playsInline className="w-full h-full object-cover">
+                    <source src="/orb-loop.mp4" type="video/mp4" />
+                  </video>
+                </div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-jakarta font-bold text-white text-[14px] leading-tight">Nova — CSR Agent</p>
+                <p className="font-inter text-[11px] text-white/50 mt-0.5">Handles calls & storm surge</p>
+              </div>
+            </div>
+            {/* Play button */}
+            <div className="px-4 pb-4">
+              <button
+                onClick={() => setPlaying(p => !p)}
+                className="w-full flex items-center justify-center gap-2.5 font-inter font-semibold text-[13px] rounded-[10px] py-2.5 transition-all text-white"
+                style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000', border: `1px solid ${playing ? 'rgba(255,255,255,0.2)' : '#fd5000'}` }}
+              >
+                {playing ? (
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="white"><rect x="1" y="1" width="3" height="8" rx="0.5"/><rect x="6" y="1" width="3" height="8" rx="0.5"/></svg>
+                ) : (
+                  <svg width="8" height="10" viewBox="0 0 10 12" fill="white"><path d="M0 0L10 6L0 12V0Z"/></svg>
+                )}
+                {playing ? 'Stop' : 'Play Call'}
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Right card stack — tilts toward cursor */}
         <div
           className="hidden lg:flex flex-col gap-3 shrink-0 relative"
@@ -1565,6 +1608,7 @@ function formatMs(ms: number) {
 function Workflows() {
 
   const [active, setActive] = useState(0)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [elapsedMs, setElapsedMs] = useState(0)
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -1667,13 +1711,12 @@ function Workflows() {
           </SectionTextBg>
         </RevealOnScroll>
 
-        {/* Outer card */}
         {/* Workflow selector cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
           {WORKFLOWS.map((wf, i) => (
             <button
               key={i}
-              onClick={() => { setActive(i); setPlaying(false) }}
+              onClick={() => { setActive(i); setPlaying(false); setMobileOpen(true) }}
               className="relative text-left rounded-[18px] px-6 py-5 flex flex-col gap-1.5 cursor-pointer"
               style={{
                 background: 'white',
@@ -1687,6 +1730,8 @@ function Workflows() {
               <span className={`text-[10px] font-semibold tracking-[0.08em] uppercase px-2.5 py-0.5 rounded-full w-fit font-['Space_Mono',monospace] ${BADGE_STYLES[wf.badgeColor]}`}>{wf.badge}</span>
               <span className="font-inter text-[14px] font-bold text-[#191919] leading-snug mt-0.5">{wf.tabName}</span>
               <span className="font-inter text-[12px] text-[#ABABAB]">{wf.tabNote}</span>
+              {/* Mobile arrow hint */}
+              <svg className="md:hidden absolute right-5 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           ))}
         </div>
@@ -1696,8 +1741,92 @@ function Workflows() {
           @keyframes waveSmooth{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
         `}</style>
 
-        {/* Main workflow card */}
-        <div className="bg-white rounded-[24px] overflow-hidden" style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+        {/* Mobile modal */}
+        {mobileOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={() => { setMobileOpen(false); setPlaying(false) }}>
+            <div className="absolute inset-x-0 bottom-0 max-h-[90vh] bg-white rounded-t-[24px] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+              {/* Modal header */}
+              <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
+                <h3 className="font-jakarta font-bold text-[16px] text-[#191919]">{panel.h3}</h3>
+                <button onClick={() => { setMobileOpen(false); setPlaying(false) }} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: '#f5f2ee' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+
+              {/* Stepper */}
+              <div className="flex items-center gap-1 px-5 pb-4 overflow-x-auto shrink-0">
+                {panel.steps.map((s, si) => {
+                  const done = si < checkedCount
+                  return (
+                    <div key={si} className="flex items-center gap-1 shrink-0">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold"
+                        style={done ? { background: '#22c55e', color: 'white' } : { background: '#f0ede8', color: '#999' }}>
+                        {done ? <Check size={10} strokeWidth={3} color="white" /> : si + 1}
+                      </div>
+                      <span className="font-inter text-[9px] text-[#999] max-w-[60px] truncate">{s.title}</span>
+                      {si < panel.steps.length - 1 && <div className="w-3 h-[1px]" style={{ background: '#e0dbd4' }} />}
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Player */}
+              <div className="px-5 py-3 shrink-0" style={{ borderTop: '1px solid #f0ebe3', borderBottom: '1px solid #f0ebe3' }}>
+                <div className="flex items-center gap-3 mb-2">
+                  <button
+                    onClick={() => setPlaying(p => !p)}
+                    className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
+                    style={{ background: playing ? '#191919' : '#fd5000', boxShadow: playing ? '0 2px 8px rgba(0,0,0,0.12)' : '0 2px 10px rgba(253,80,0,0.25)' }}
+                  >
+                    {playing
+                      ? <svg width="9" height="9" viewBox="0 0 10 10" fill="white"><rect x="1" y="0" width="3" height="10" rx="1"/><rect x="6" y="0" width="3" height="10" rx="1"/></svg>
+                      : <svg width="9" height="11" viewBox="0 0 10 12" fill="white" style={{ marginLeft: 1 }}><path d="M0 0L10 6L0 12Z"/></svg>
+                    }
+                  </button>
+                  <div className="flex-1">
+                    <div className="font-inter text-[12px] font-semibold text-[#191919]">{panel.callName}</div>
+                    <div className="font-inter text-[10px] text-[#bbb]">{panel.callInfo}</div>
+                  </div>
+                  <span className="font-['Space_Mono',monospace] text-[9px] text-[#999] tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
+                </div>
+                <div className="flex items-center gap-[2px] h-5">
+                  {bars.map((b, bi) => (
+                    <div key={bi} className="flex-1 rounded-full" style={{
+                      height: `${b.h}%`, background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.4)') : 'rgba(0,0,0,0.05)',
+                      transformOrigin: 'bottom',
+                      animation: playing && b.filled ? `waveSmooth ${2.5 + Math.sin(bi * 0.3) * 1}s ease-in-out ${bi * 0.08}s infinite` : 'none',
+                    }} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Transcript */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-3" style={{ minHeight: 0 }}>
+                {panel.messages.map((m, mi) => {
+                  const isActive = elapsedMs > 0 && mi === visibleMsgs - 1
+                  const isPast = elapsedMs > 0 && mi < visibleMsgs - 1
+                  return (
+                    <div key={mi} className="flex gap-3 transition-opacity duration-500"
+                      style={{ opacity: elapsedMs === 0 ? 1 : isPast ? 1 : isActive ? 1 : 0.15 }}>
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 mt-0.5"
+                        style={m.role === 'ai' ? { background: 'rgba(253,80,0,0.10)', color: '#fd5000' } : { background: '#f0ede8', color: '#888' }}>
+                        {m.role === 'ai' ? 'AI' : 'CU'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className={`font-inter text-[9px] font-semibold uppercase tracking-[0.08em] mb-0.5 ${m.role === 'ai' ? 'text-[#fd5000]' : 'text-[#ABABAB]'}`}>{m.who}</div>
+                        <div className="font-inter text-[12px] leading-[1.6] text-[#5A5A5A]">{m.text}</div>
+                        {m.tag && <span className="inline-flex mt-1 font-['Space_Mono',monospace] text-[8px] font-medium px-2 py-[2px] rounded-full" style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}>{m.tag}</span>}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Main workflow card — desktop only */}
+        <div className="hidden lg:block bg-white rounded-[24px] overflow-hidden" style={{ boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
           <style>{`
             @keyframes playerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
             @keyframes waveSmooth{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
