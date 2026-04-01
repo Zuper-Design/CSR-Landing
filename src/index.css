@@ -34,6 +34,8 @@
   }
   html {
     scroll-behavior: smooth;
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 0;
   }
   body {
     font-family: 'Inter', sans-serif;
@@ -43,6 +45,12 @@
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+
+  /* Scroll snap — proximity only snaps when close to section top */
+  section, .snap-section {
+    scroll-snap-align: start;
   }
 
   /* Smoother transitions globally */
@@ -69,5 +77,21 @@
   ::selection {
     background: rgba(253, 80, 0, 0.15);
     color: #191919;
+  }
+}
+
+/* Mobile responsive overrides */
+@media (max-width: 768px) {
+  /* Disable scroll snap on mobile */
+  html {
+    scroll-snap-type: none;
+  }
+  section, .snap-section {
+    scroll-snap-align: none;
+  }
+
+  /* Hide grid lines on mobile */
+  .grid-lines-hide-mobile {
+    display: none;
   }
 }

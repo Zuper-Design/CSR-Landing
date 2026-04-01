@@ -16,6 +16,7 @@ const Link2 = Workflow
 const CloudLightning = CloudRain
 import { assets } from '../assets'
 import ProfileCard from './ProfileCard'
+import DotGrid from './DotGrid'
 
 
 /* ─── DESIGN TOKENS (from Figma 1155:233) ────────────────────────────────────
@@ -31,11 +32,26 @@ import ProfileCard from './ProfileCard'
 
 /* ── shared primitives ── */
 
+function SectionTextBg({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative inline-block">
+      <div className="absolute -inset-x-6 -inset-y-3 rounded-[16px]" style={{
+        background: 'rgba(248,245,240,0.8)',
+        maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+        maskComposite: 'intersect' as any,
+        WebkitMaskComposite: 'source-in' as any,
+      }} />
+      <div className="relative">{children}</div>
+    </div>
+  )
+}
+
 function SectionEyebrow({ label }: { icon?: string; label: string }) {
   return (
     <span
       className="inline-flex items-center gap-2 px-4 py-[6px] rounded-full text-[11px] font-['Space_Mono',monospace] font-medium tracking-[0.06em] uppercase"
-      style={{ background: 'rgba(253,80,0,0.06)', color: '#fd5000' }}
+      style={{ background: '#fff3ed', color: '#fd5000' }}
     >
       <span className="relative flex items-center justify-center">
         <span className="w-[5px] h-[5px] rounded-full bg-[#fd5000]" />
@@ -48,7 +64,7 @@ function SectionEyebrow({ label }: { icon?: string; label: string }) {
 
 function GridLines() {
   return (
-    <div className="absolute inset-0 pointer-events-none z-0" style={{ overflow: 'hidden' }}>
+    <div className="absolute inset-0 pointer-events-none z-0 hidden md:block" style={{ overflow: 'hidden' }}>
       {/* Vertical left */}
       <div className="absolute top-0 bottom-0" style={{ left: 140, width: 1, background: '#d7d7d7', opacity: 0.5 }} />
       {/* Vertical right */}
@@ -61,41 +77,16 @@ function GridLines() {
   )
 }
 
-function useDotGrid() {
-  const [mouse, setMouse] = useState({ x: -9999, y: -9999, active: false })
-  const onMouseMove = (e: React.MouseEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    setMouse({ x: e.clientX - rect.left, y: e.clientY - rect.top, active: true })
-  }
-  const onMouseLeave = () => setMouse(m => ({ ...m, active: false }))
-  return { mouse, onMouseMove, onMouseLeave }
-}
-
-function DotGridBg({ mouse }: { mouse: { x: number; y: number; active: boolean } }) {
-  return (
-    <>
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          backgroundImage: 'radial-gradient(circle, rgba(253,80,0,0.10) 1.2px, transparent 1.2px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          backgroundImage: 'radial-gradient(circle, #fd5000 1.2px, transparent 1.2px)',
-          backgroundSize: '24px 24px',
-          maskImage: `radial-gradient(circle 280px at ${mouse.x}px ${mouse.y}px, black 0%, rgba(0,0,0,0.6) 40%, transparent 75%)`,
-          WebkitMaskImage: `radial-gradient(circle 280px at ${mouse.x}px ${mouse.y}px, black 0%, rgba(0,0,0,0.6) 40%, transparent 75%)`,
-          opacity: mouse.active ? 1 : 0,
-          transition: mouse.active ? 'opacity 0.1s' : 'opacity 0.6s ease',
-        }}
-      />
-    </>
-  )
+const DOT_GRID_PROPS = {
+  dotSize: 3,
+  gap: 20,
+  baseColor: 'rgba(255, 107, 53, 0.12)',
+  activeColor: '#FF6B35',
+  proximity: 180,
+  shockRadius: 200,
+  shockStrength: 3,
+  resistance: 800,
+  returnDuration: 1.8,
 }
 
 /* ── scroll reveal ── */
@@ -133,7 +124,7 @@ function Navbar() {
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50">
-      <div className="max-w-[1440px] mx-auto px-10 py-4 grid grid-cols-[auto_1fr_auto] items-center gap-6">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-10 py-4 grid grid-cols-[auto_1fr_auto] items-center gap-6">
         <a href="/" className="flex items-center shrink-0">
           <img src={assets.logo} alt="Zuper" className="h-7 w-auto object-contain object-left" style={{ maxWidth: 110 }} />
         </a>
@@ -356,8 +347,7 @@ function Hero() {
 
       {/* ── Main content ── */}
       <div
-        className="relative z-10 max-w-[1240px] mx-auto px-10 flex items-center gap-14 justify-between"
-        style={{ paddingTop: 160, paddingBottom: 96 }}
+        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-14 justify-between pt-[100px] md:pt-[160px] pb-[96px]"
       >
 
         {/* Left copy */}
@@ -671,7 +661,7 @@ function Hero() {
         className="absolute bottom-0 left-0 right-0 z-10"
         style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(14px)', borderTop: '1px solid rgba(255,255,255,0.12)' }}
       >
-        <div className="max-w-[1240px] mx-auto px-10 grid grid-cols-4 divide-x divide-white/10">
+        <div className="max-w-[1240px] mx-auto px-4 md:px-10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
           {HERO_STATS.map(([v, l], i) => (
             <div key={l} className="py-5 flex flex-col items-center gap-[4px]" style={{
               animation: `smoothFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) ${0.8 + i * 0.1}s both`,
@@ -707,7 +697,7 @@ function ChannelBand() {
   return (
     <div className="bg-white border-y border-[#ede8e2] relative">
       <GridLines />
-      <div className="max-w-[1240px] mx-auto px-12 py-5 flex items-center justify-center gap-3 flex-wrap">
+      <div className="max-w-[1240px] mx-auto px-5 md:px-12 py-5 flex items-center justify-center gap-3 flex-wrap">
         <span className="font-['Space_Mono',monospace] text-[10px] tracking-[0.14em] uppercase font-semibold text-[#ABABAB] mr-2 whitespace-nowrap">
           Works Across
         </span>
@@ -746,19 +736,39 @@ const CAPS = [
   { tag: 'Storm Response',   Icon: Zap,            title: 'Emergency Triage',           desc: 'Identifies storm, hail, and water urgency. Escalates critical cases to on-call crews while capturing full intake.', color: '#e11d48' },
 ]
 
-// Fixed card height + gap to calculate exact scroll needed
-const CAP_CARD_H = 152 // approx height of each card (py-8 + content)
-const CAP_GAP = 16
-const CAP_VISIBLE = 3
-const CAP_TOTAL = CAPS.length
-// How much the cards need to scroll: (total - visible) cards * (card height + gap)
-const CAP_SCROLL = (CAP_TOTAL - CAP_VISIBLE) * (CAP_CARD_H + CAP_GAP)
+// Capabilities scroll constants — visible count only, scroll measured dynamically
 
 function Capabilities() {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
   const [colorOpacity, setColorOpacity] = useState(0)
   const [cardTranslate, setCardTranslate] = useState(0)
-  const dotGrid = useDotGrid()
+  const [maxScroll, setMaxScroll] = useState(500)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  // Dynamically measure overflow
+  useEffect(() => {
+    const measure = () => {
+      const cards = cardsRef.current
+      const viewport = viewportRef.current
+      if (!cards || !viewport) return
+      const overflow = cards.scrollHeight - viewport.clientHeight
+      setMaxScroll(Math.max(0, overflow))
+    }
+    measure()
+    requestAnimationFrame(measure)
+    const t = setTimeout(measure, 500)
+    window.addEventListener('resize', measure)
+    return () => { window.removeEventListener('resize', measure); clearTimeout(t) }
+  }, [])
 
   useEffect(() => {
     const onScroll = () => {
@@ -768,7 +778,7 @@ function Capabilities() {
       const entered = -rect.top
       const clamped = Math.max(0, entered)
 
-      setCardTranslate(Math.min(clamped, CAP_SCROLL))
+      setCardTranslate(Math.min(clamped, maxScroll))
 
       const opacity = Math.min(1, Math.max(0, clamped / 150))
       setColorOpacity(opacity)
@@ -776,34 +786,34 @@ function Capabilities() {
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [maxScroll])
 
   return (
     <section
       id="capabilities"
       ref={sectionRef}
       className="bg-[#f8f5f0] relative pt-24"
-      onMouseMove={dotGrid.onMouseMove}
-      onMouseLeave={dotGrid.onMouseLeave}
     >
-      <DotGridBg mouse={dotGrid.mouse} />
+      <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      {/* Scroll runway: viewport + extra scroll for remaining cards */}
-      <div className="relative z-10" style={{ height: `calc(100vh + ${CAP_SCROLL}px)` }}>
-        {/* Sticky container — locks to viewport */}
-        <div className="sticky top-0" style={{ height: '100vh', overflow: 'hidden' }}>
-          <div className="max-w-[1240px] mx-auto px-12 h-full flex flex-col" style={{ paddingTop: 48, paddingBottom: 40 }}>
+      {/* Scroll runway: viewport + extra scroll for remaining cards — disabled on mobile */}
+      <div className="relative z-10" style={{ height: isMobile ? 'auto' : `calc(100vh + ${maxScroll}px)` }}>
+        {/* Sticky container — locks to viewport on desktop, normal flow on mobile */}
+        <div className={isMobile ? '' : 'sticky top-0'} style={{ height: isMobile ? 'auto' : '100vh', overflow: 'hidden' }}>
+          <div className="max-w-[1240px] mx-auto px-5 md:px-12 h-full flex flex-col" style={{ paddingTop: 48, paddingBottom: 40 }}>
 
             {/* ── Title ── */}
             <div className="mb-6 shrink-0">
-              <SectionEyebrow icon="⚡" label="Capabilities" />
-              <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
-                Not a chatbot.<br />
-                <span className="text-[#fd5000]">A roofing expert.</span>
-              </h2>
-              <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3">
-                Trained on roofing workflows. Ready to qualify, book, and convert — across calls and text.
-              </p>
+              <SectionTextBg>
+                <SectionEyebrow icon="⚡" label="Capabilities" />
+                <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
+                  Not a chatbot.<br />
+                  <span className="text-[#fd5000]">A roofing expert.</span>
+                </h2>
+                <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3">
+                  Trained on roofing workflows. Ready to qualify, book, and convert — across calls and text.
+                </p>
+              </SectionTextBg>
             </div>
 
             {/* ── Body: image left + cards right ── */}
@@ -843,10 +853,11 @@ function Capabilities() {
               </div>
 
               {/* Right: cards — clips to ~3 visible, scroll drives translateY */}
-              <div className="flex-1 relative overflow-hidden">
+              <div ref={viewportRef} className="flex-1 relative overflow-hidden">
                 <div
-                  className="flex flex-col gap-4 absolute left-0 right-0"
-                  style={{
+                  ref={cardsRef}
+                  className={`flex flex-col gap-4 ${isMobile ? '' : 'absolute left-0 right-0'}`}
+                  style={isMobile ? {} : {
                     top: 0,
                     transform: `translateY(-${cardTranslate}px)`,
                     willChange: 'transform',
@@ -936,8 +947,8 @@ const AGENTS = [
   },
 ]
 
-function MeetAgents() {
-  const dotGrid = useDotGrid()
+export function MeetAgents() {
+
   const sectionRef = useRef<HTMLDivElement>(null)
   const [spread, setSpread] = useState(0)
   const SCROLL_RUNWAY = 500
@@ -960,14 +971,14 @@ function MeetAgents() {
   }, [])
 
   return (
-    <div ref={sectionRef} className="bg-[#f8f5f0] relative" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
-      <DotGridBg mouse={dotGrid.mouse} />
+    <div ref={sectionRef} className="snap-section bg-[#f8f5f0] relative">
+      <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
 
       {/* Scroll runway — section stays pinned while cards spread */}
       <div style={{ height: `calc(100vh + ${SCROLL_RUNWAY}px)` }}>
         <div className="sticky top-0" style={{ height: '100vh', overflow: 'hidden' }}>
-          <div className="max-w-[1120px] mx-auto px-12 relative z-10 h-full flex flex-col justify-center">
+          <div className="max-w-[1120px] mx-auto px-5 md:px-12 relative z-10 h-full flex flex-col justify-center">
 
             <div className="text-center mb-14">
               <SectionEyebrow icon="🤖" label="Agents" />
@@ -1126,15 +1137,15 @@ function VoiceCard({ colors, spinning }: { accent: string; colors: string[]; spi
   )
 }
 
-function VoiceLanguages() {
-  const dotGrid = useDotGrid()
+export function VoiceLanguages() {
+
   const [activeIdx, setActiveIdx] = useState(-1)
 
   return (
-    <div className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
-      <DotGridBg mouse={dotGrid.mouse} />
+    <div className="snap-section py-24 bg-[#f8f5f0] relative overflow-hidden">
+      <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      <div className="max-w-[1120px] mx-auto px-12 relative z-10">
+      <div className="max-w-[1120px] mx-auto px-5 md:px-12 relative z-10">
         <RevealOnScroll className="text-center mb-14">
           <SectionEyebrow icon="" label="Voices" />
           <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
@@ -1142,7 +1153,7 @@ function VoiceLanguages() {
           </h2>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-4 gap-7">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7">
           {VOICES.map((v, i) => (
             <RevealOnScroll key={v.lang} delay={i * 80}>
               <div className="rounded-[20px] overflow-hidden cursor-pointer group"
@@ -1179,6 +1190,257 @@ function VoiceLanguages() {
         </div>
       </div>
     </div>
+  )
+}
+
+/* ─────────────────────────── GET STARTED ─────────────────────────── */
+const STEPS: { num: string; title: string; desc: string; tag: string; icon: React.ReactNode; illustration: React.ReactNode }[] = [
+  { num: '01', title: 'Agent profile', desc: 'Name your agent, set her personality, and define her expertise areas.', tag: 'Identity',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    illustration: (
+      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-[14px] font-bold"
+            style={{ background: 'linear-gradient(145deg, #ff7a35, #e04500)', boxShadow: '0 4px 12px rgba(253,80,0,0.2), inset 0 1px 2px rgba(255,255,255,0.2)' }}>N</div>
+          <div>
+            <div className="font-jakarta font-bold text-[13px] text-[#191919]">Nova</div>
+            <div className="font-inter text-[10px] text-[#bbb]">CSR Agent · Roofing</div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2.5 rounded-[10px] p-3" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
+          <div className="flex items-center justify-between">
+            <span className="font-inter text-[10px] text-[#999]">Personality</span>
+            <div className="flex gap-1">{['Friendly', 'Professional'].map(t => <span key={t} className="text-[8px] px-2 py-0.5 rounded-full font-medium" style={{ background: '#fff3ed', color: '#fd5000' }}>{t}</span>)}</div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="font-inter text-[10px] text-[#999]">Voice</span>
+            <span className="font-inter text-[10px] font-medium text-[#191919]">Female · English</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="font-inter text-[10px] text-[#999]">Tone</span>
+            <span className="font-inter text-[10px] font-medium text-[#191919]">Warm & helpful</span>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  { num: '02', title: 'Superpowers', desc: 'Toggle capabilities — answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
+    illustration: (
+      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
+        <div className="flex flex-col gap-3 rounded-[10px] p-3" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
+          {[
+            { label: 'Answer calls', on: true, icon: '📞' },
+            { label: 'Book inspections', on: true, icon: '📅' },
+            { label: 'Share updates', on: true, icon: '📊' },
+            { label: 'Reschedule', on: false, icon: '🔄' },
+          ].map(cap => (
+            <div key={cap.label} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px]">{cap.icon}</span>
+                <span className="font-inter text-[11px] text-[#555]">{cap.label}</span>
+              </div>
+              <div className="w-8 h-[18px] rounded-full flex items-center px-[3px] transition-all" style={{ background: cap.on ? '#fd5000' : '#e5e0d8' }}>
+                <div className="w-3 h-3 rounded-full bg-white" style={{ marginLeft: cap.on ? 12 : 0, transition: 'margin 0.3s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  { num: '03', title: 'Knowledge base', desc: 'Upload your docs, FAQs, and SOPs. Nova learns your business in minutes.', tag: 'Intelligence',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>,
+    illustration: (
+      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
+        <div className="flex flex-col gap-2.5">
+          {[
+            { name: 'Service_FAQ.pdf', size: '2.4 MB', done: true },
+            { name: 'Pricing_Guide.pdf', size: '1.1 MB', done: true },
+            { name: 'Company_SOPs.doc', size: '840 KB', done: false },
+          ].map(f => (
+            <div key={f.name} className="flex items-center gap-3 rounded-[10px] p-2.5" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
+              <div className="w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0" style={{ background: f.done ? '#f0fdf4' : '#fff7ed' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={f.done ? '#22c55e' : '#fd5000'} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-inter text-[11px] font-medium text-[#191919] truncate">{f.name}</div>
+                <div className="font-inter text-[9px] text-[#bbb]">{f.size}</div>
+              </div>
+              {f.done ? (
+                <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#f0fdf4' }}>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+              ) : (
+                <div className="w-5 h-5 rounded-full border-2 border-[#fd5000] border-t-transparent animate-spin" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  { num: '04', title: 'Add to route', desc: 'Connect your phone lines and channels. Nova starts answering immediately.', tag: 'Deployment',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>,
+    illustration: (
+      <div className="rounded-[14px] p-4" style={{ background: '#faf8f5' }}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 8px #22c55e' }} />
+              <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-ping opacity-30" />
+            </div>
+            <span className="font-['Space_Mono',monospace] text-[10px] text-[#22c55e] font-medium">LIVE</span>
+          </div>
+          <span className="font-inter text-[9px] text-[#bbb]">Just now</span>
+        </div>
+        <div className="flex flex-col gap-2 rounded-[10px] p-3" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
+          {[
+            { ch: '📞', label: 'Main Line', status: 'Connected', color: '#22c55e' },
+            { ch: '💬', label: 'SMS', status: 'Connected', color: '#22c55e' },
+            { ch: '🌐', label: 'Web Chat', status: 'Ready', color: '#d97706' },
+          ].map(r => (
+            <div key={r.label} className="flex items-center justify-between py-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px]">{r.ch}</span>
+                <span className="font-inter text-[11px] text-[#555]">{r.label}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: r.color }} />
+                <span className="font-inter text-[9px] font-medium" style={{ color: r.color }}>{r.status}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+]
+
+function GetStarted() {
+  return (
+    <section className="py-24 bg-[#f8f5f0] relative overflow-hidden">
+      <DotGrid {...DOT_GRID_PROPS} />
+      <GridLines />
+      <div className="max-w-[960px] mx-auto px-5 md:px-12 relative z-10">
+        <RevealOnScroll className="text-center mb-16">
+          <SectionTextBg>
+            <SectionEyebrow icon="" label="Get Started" />
+            <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
+              Go live in under<br /><span className="text-[#fd5000]">10 minutes.</span>
+            </h2>
+            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[440px] mx-auto mt-3">
+              Four steps. No engineering team required. Nova configures herself around your business.
+            </p>
+          </SectionTextBg>
+        </RevealOnScroll>
+
+        {/* Vertical timeline — alternating sides */}
+        <div className="relative">
+          {/* Center vertical line — hidden on mobile */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[2px] rounded-full hidden md:block" style={{ background: '#e8e3dc' }} />
+
+          {STEPS.map((step, i) => {
+            const isLeft = i % 2 === 0
+            return (
+              <RevealOnScroll key={step.num} delay={i * 120}>
+                {/* Mobile: stacked single column */}
+                <div className="md:hidden flex flex-col items-center mb-12 last:mb-0">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-white shrink-0"
+                      style={{
+                        background: 'linear-gradient(145deg, #ff7a35, #e04500)',
+                        boxShadow: '0 6px 16px rgba(253,80,0,0.25)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                      }}>
+                      {step.icon}
+                    </div>
+                    <span className="font-jakarta font-extrabold text-[11px] text-[#ccc] tracking-[0.04em]">{step.num}</span>
+                  </div>
+                  <div className="w-full max-w-[400px] rounded-[20px] overflow-hidden"
+                    style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}>
+                    <div className="px-6 pt-6 pb-4">
+                      <span className="inline-block font-['Space_Mono',monospace] text-[9px] font-medium tracking-[0.06em] uppercase px-2.5 py-[3px] rounded-[4px] mb-3"
+                        style={{ background: '#fff3ed', color: '#fd5000' }}>
+                        {step.tag}
+                      </span>
+                      <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
+                      <p className="font-inter text-[13.5px] text-[#999] leading-[1.65]">{step.desc}</p>
+                    </div>
+                    <div className="px-4 pb-4">{step.illustration}</div>
+                  </div>
+                </div>
+
+                {/* Desktop: alternating timeline */}
+                <div className="hidden md:flex relative items-start mb-20 last:mb-0" style={{ minHeight: 120 }}>
+
+                  {/* Left content or spacer */}
+                  <div className="w-1/2 pr-12 flex justify-end">
+                    {isLeft && (
+                      <div className="max-w-[360px] rounded-[20px] p-0 transition-all duration-400 text-right overflow-hidden"
+                        style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.08)' }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.05)' }}
+                      >
+                        <div className="px-6 pt-6 pb-4">
+                          <span className="inline-block font-['Space_Mono',monospace] text-[9px] font-medium tracking-[0.06em] uppercase px-2.5 py-[3px] rounded-[4px] mb-3"
+                            style={{ background: '#fff3ed', color: '#fd5000' }}>
+                            {step.tag}
+                          </span>
+                          <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
+                          <p className="font-inter text-[13.5px] text-[#999] leading-[1.65]">{step.desc}</p>
+                        </div>
+                        <div className="px-4 pb-4">{step.illustration}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Center node */}
+                  <div className="absolute left-1/2 -translate-x-1/2 z-10">
+                    <div className="w-14 h-14 rounded-[16px] flex items-center justify-center text-white transition-all duration-400"
+                      style={{
+                        background: 'linear-gradient(145deg, #ff7a35, #e04500)',
+                        boxShadow: '0 8px 20px rgba(253,80,0,0.25), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.12)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.12) translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 28px rgba(253,80,0,0.3), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.12)' }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1) translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(253,80,0,0.25), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -3px 6px rgba(0,0,0,0.12)' }}
+                    >
+                      {step.icon}
+                    </div>
+                    {/* Step number below node */}
+                    <div className="text-center mt-2">
+                      <span className="font-jakarta font-extrabold text-[11px] text-[#ccc] tracking-[0.04em]">{step.num}</span>
+                    </div>
+                  </div>
+
+                  {/* Right content or spacer */}
+                  <div className="w-1/2 pl-12">
+                    {!isLeft && (
+                      <div className="max-w-[360px] rounded-[20px] p-0 transition-all duration-400 overflow-hidden"
+                        style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.08)' }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.05)' }}
+                      >
+                        <div className="px-6 pt-6 pb-4">
+                          <span className="inline-block font-['Space_Mono',monospace] text-[9px] font-medium tracking-[0.06em] uppercase px-2.5 py-[3px] rounded-[4px] mb-3"
+                            style={{ background: '#fff3ed', color: '#fd5000' }}>
+                            {step.tag}
+                          </span>
+                          <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
+                          <p className="font-inter text-[13.5px] text-[#999] leading-[1.65]">{step.desc}</p>
+                        </div>
+                        <div className="px-4 pb-4">{step.illustration}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </RevealOnScroll>
+            )
+          })}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -1301,7 +1563,7 @@ function formatMs(ms: number) {
 }
 
 function Workflows() {
-  const dotGrid = useDotGrid()
+
   const [active, setActive] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [elapsedMs, setElapsedMs] = useState(0)
@@ -1387,25 +1649,27 @@ function Workflows() {
   }))
 
   return (
-    <section id="workflows" className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
-      <DotGridBg mouse={dotGrid.mouse} />
+    <section id="workflows" className="py-24 bg-[#f8f5f0] relative overflow-hidden">
+      <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      <div className="max-w-[1320px] mx-auto px-12 relative z-10">
+      <div className="max-w-[1320px] mx-auto px-4 md:px-12 relative z-10">
 
         {/* Header */}
         <RevealOnScroll className="mb-12">
-          <SectionEyebrow icon="🔁" label="Workflows" />
-          <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.035em] mt-4 mb-3">
-            Three scenarios.<br /><span className="text-[#fd5000]">One agent.</span>
-          </h2>
-          <p className="font-inter text-[15px] text-[#7A7A7A] max-w-[480px] leading-[1.7]">
-            See exactly how the CSR Agent handles your most critical call types — with real sample transcripts.
-          </p>
+          <SectionTextBg>
+            <SectionEyebrow icon="🔁" label="Workflows" />
+            <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.035em] mt-4 mb-3">
+              Three scenarios.<br /><span className="text-[#fd5000]">One agent.</span>
+            </h2>
+            <p className="font-inter text-[15px] text-[#7A7A7A] max-w-[480px] leading-[1.7]">
+              See exactly how the CSR Agent handles your most critical call types — with real sample transcripts.
+            </p>
+          </SectionTextBg>
         </RevealOnScroll>
 
         {/* Outer card */}
         {/* Workflow selector cards */}
-        <div className="grid grid-cols-3 gap-4 mb-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
           {WORKFLOWS.map((wf, i) => (
             <button
               key={i}
@@ -1440,7 +1704,7 @@ function Workflows() {
           `}</style>
 
           {/* Body */}
-          <div className="grid grid-cols-[1fr_440px]" style={{ height: 580 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_440px]" style={{ minHeight: 580 }}>
 
             {/* Left — steps */}
             <div className="flex flex-col overflow-hidden">
@@ -1477,17 +1741,41 @@ function Workflows() {
             {/* Right — call card */}
             <div className="relative flex flex-col overflow-hidden" style={{ background: '#faf7f4', borderLeft: '1px solid #f0ebe3' }}>
 
-              {/* Call header */}
-              <div className="flex items-center gap-3 px-6 py-5 bg-white shrink-0" style={{ borderBottom: '1px solid #f0ebe3' }}>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0"
-                  style={{ background: 'rgba(253,80,0,0.08)' }}>
-                  {panel.callAvatar}
+              {/* Call header with player */}
+              <div className="px-5 py-4 bg-white shrink-0" style={{ borderBottom: '1px solid #f0ebe3' }}>
+                <div className="flex items-center gap-3 mb-3">
+                  <button
+                    onClick={() => setPlaying(p => !p)}
+                    className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
+                    style={{
+                      background: playing ? '#191919' : '#fd5000',
+                      boxShadow: playing ? '0 2px 8px rgba(0,0,0,0.12)' : '0 2px 10px rgba(253,80,0,0.25)',
+                    }}
+                  >
+                    {playing
+                      ? <svg width="9" height="9" viewBox="0 0 10 10" fill="white"><rect x="1" y="0" width="3" height="10" rx="1"/><rect x="6" y="0" width="3" height="10" rx="1"/></svg>
+                      : <svg width="9" height="11" viewBox="0 0 10 12" fill="white" style={{ marginLeft: 1 }}><path d="M0 0L10 6L0 12Z"/></svg>
+                    }
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-inter text-[13px] font-semibold text-[#191919] truncate leading-tight">{panel.callName}</div>
+                    <div className="font-inter text-[10px] text-[#BFBFBF] mt-0.5">{panel.callInfo}</div>
+                  </div>
+                  <span className="font-['Space_Mono',monospace] text-[10px] text-[#999] shrink-0 tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-inter text-[13px] font-semibold text-[#191919] truncate leading-tight">{panel.callName}</div>
-                  <div className="font-inter text-[11px] text-[#BFBFBF] mt-0.5">{panel.callInfo}</div>
+                {/* Waveform */}
+                <div className="flex items-center gap-[2px] h-7">
+                  {bars.map((b, i) => (
+                    <div key={i} className="flex-1 rounded-full"
+                      style={{
+                        height: `${b.h}%`,
+                        background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.4)') : 'rgba(0,0,0,0.05)',
+                        transformOrigin: 'bottom',
+                        animation: playing && b.filled ? `waveSmooth ${2.5 + Math.sin(i * 0.3) * 1}s ease-in-out ${i * 0.08}s infinite` : 'none',
+                        transition: 'background 0.3s ease',
+                      }} />
+                  ))}
                 </div>
-                <span className="font-['Space_Mono',monospace] text-[10px] text-[#999]">{panel.callDur}</span>
               </div>
 
               {/* Scrollable transcript */}
@@ -1534,49 +1822,6 @@ function Workflows() {
                 })}
               </div>
 
-              {/* Fade gradient above floating player */}
-              <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none" style={{ height: 120, background: 'linear-gradient(to top, #faf7f4 0%, #faf7f4 20%, transparent 100%)' }} />
-
-              {/* Floating player card */}
-              <div className="absolute bottom-5 left-5 right-5 z-20" style={{ animation: 'playerFloat 3s ease-in-out infinite' }}>
-                <div className="rounded-[16px] px-4 py-3.5 flex items-center gap-3"
-                  style={{
-                    background: 'white',
-                    boxShadow: '0 12px 40px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)',
-                  }}
-                >
-                  <button
-                    onClick={() => setPlaying(p => !p)}
-                    className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
-                    style={{
-                      background: playing ? '#191919' : '#fd5000',
-                      boxShadow: playing ? '0 3px 10px rgba(0,0,0,0.15)' : '0 3px 12px rgba(253,80,0,0.30)',
-                    }}
-                  >
-                    {playing
-                      ? <svg width="10" height="10" viewBox="0 0 10 10" fill="white"><rect x="1" y="0" width="3" height="10" rx="1"/><rect x="6" y="0" width="3" height="10" rx="1"/></svg>
-                      : <svg width="10" height="12" viewBox="0 0 10 12" fill="white" style={{ marginLeft: 1 }}><path d="M0 0L10 6L0 12Z"/></svg>
-                    }
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-[2px] h-8 overflow-hidden">
-                      {bars.map((b, i) => (
-                        <div key={i} className="flex-1 rounded-full"
-                          style={{
-                            height: `${b.h}%`,
-                            background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.45)') : 'rgba(0,0,0,0.07)',
-                            transformOrigin: 'bottom',
-                            animation: playing && b.filled ? `waveSmooth ${2.5 + Math.sin(i * 0.3) * 1}s ease-in-out ${i * 0.08}s infinite` : 'none',
-                            transition: 'background 0.3s ease',
-                          }} />
-                      ))}
-                    </div>
-                  </div>
-                  <span className="font-['Space_Mono',monospace] text-[10px] text-[#999] shrink-0 tabular-nums">
-                    {formatMs(elapsedMs)} / {panel.callDur}
-                  </span>
-                </div>
-              </div>
 
             </div>
           </div>
@@ -1952,31 +2197,39 @@ function RMCard({ item, i }: { item: typeof RM_ITEMS[number]; i: number }) {
 }
 
 function RevenueMultiplier() {
-  const dotGrid = useDotGrid()
+
 
   return (
     <section
       className="py-24 bg-[#f8f5f0] relative overflow-hidden"
-      onMouseMove={dotGrid.onMouseMove}
-      onMouseLeave={dotGrid.onMouseLeave}
     >
-      <DotGridBg mouse={dotGrid.mouse} />
+      <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      <div className="max-w-[1280px] mx-auto px-12 relative z-10">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-12 relative z-10">
         <RevealOnScroll className="text-center mb-14">
-          <SectionEyebrow icon="📊" label="Impact" />
-          <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
-            From Feature to <span className="text-[#fd5000]">Revenue Multiplier</span>
-          </h2>
-          <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[520px] mx-auto leading-[1.7]">
-            The CSR Agent isn't just a feature — it's a measurable lift across your most critical business metrics.
-          </p>
+          <SectionTextBg>
+            <SectionEyebrow icon="📊" label="Impact" />
+            <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
+              From Feature to <span className="text-[#fd5000]">Revenue Multiplier</span>
+            </h2>
+            <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[520px] mx-auto leading-[1.7]">
+              The CSR Agent isn't just a feature — it's a measurable lift across your most critical business metrics.
+            </p>
+          </SectionTextBg>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-3 gap-6">
-          {RM_ITEMS.map((item, i) => (
-            <RMCard key={item.title} item={item} i={i} />
-          ))}
+        {/* Bento grid */}
+        <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4" style={{
+          gridTemplateRows: 'auto auto',
+        }}>
+          {/* Row 1: Large + Small + Small */}
+          <div className="col-span-1 lg:col-span-2 row-span-1"><RMCard item={RM_ITEMS[0]} i={0} /></div>
+          <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[1]} i={1} /></div>
+          <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[2]} i={2} /></div>
+          {/* Row 2: Small + Small + Large */}
+          <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[3]} i={3} /></div>
+          <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[4]} i={4} /></div>
+          <div className="col-span-1 lg:col-span-2 row-span-1"><RMCard item={RM_ITEMS[5]} i={5} /></div>
         </div>
 
       </div>
@@ -1996,24 +2249,26 @@ const CS_STATS = [
 
 function CaseStudy() {
   const [videoLoaded, setVideoLoaded] = useState(false)
-  const dotGrid = useDotGrid()
+
 
   return (
-    <section id="case-study" className="py-24 bg-[#f8f5f0] relative overflow-hidden" onMouseMove={dotGrid.onMouseMove} onMouseLeave={dotGrid.onMouseLeave}>
-      <DotGridBg mouse={dotGrid.mouse} />
+    <section id="case-study" className="py-24 bg-[#f8f5f0] relative overflow-hidden">
+      <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      <div className="max-w-[1200px] mx-auto px-12 relative z-10">
+      <div className="max-w-[1200px] mx-auto px-5 md:px-12 relative z-10">
 
         <RevealOnScroll className="mb-12">
-          <SectionEyebrow icon="📖" label="Customer Story" />
-          <div className="mt-4">
-            <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.035em]">
-              Proven in a <span className="text-[#fd5000]">real storm surge.</span>
-            </h2>
-            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[520px] mt-3">
-              A&A Roofing. December 2025. 458% call surge. Zero missed leads.
-            </p>
-          </div>
+          <SectionTextBg>
+            <SectionEyebrow icon="📖" label="Customer Story" />
+            <div className="mt-4">
+              <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.035em]">
+                Proven in a <span className="text-[#fd5000]">real storm surge.</span>
+              </h2>
+              <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[520px] mt-3">
+                A&A Roofing. December 2025. 458% call surge. Zero missed leads.
+              </p>
+            </div>
+          </SectionTextBg>
         </RevealOnScroll>
 
         <div className="rounded-[24px] overflow-hidden" style={{ boxShadow: '0 8px 48px rgba(0,0,0,0.13)' }}>
@@ -2055,7 +2310,7 @@ function CaseStudy() {
 
             {/* Right — light panel */}
             <div className="flex flex-col bg-white">
-              <div className="flex-1 px-10 pt-10 pb-8 flex flex-col">
+              <div className="flex-1 px-5 md:px-10 pt-8 md:pt-10 pb-8 flex flex-col">
                 <div className="flex items-center gap-2 mb-8">
                   <div className="w-2 h-2 rounded-full bg-[#fd5000]" />
                   <span className="font-['Space_Mono',monospace] text-[10.5px] font-medium text-[#ABABAB] uppercase tracking-[0.12em]">
@@ -2101,7 +2356,7 @@ function CaseStudy() {
 /* ─────────────────────────── CTA SECTION ─────────────────────────── */
 function CTASection() {
   return (
-    <div id="cta" className="relative overflow-hidden text-center py-24 px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
+    <div id="cta" className="snap-section relative overflow-hidden text-center py-24 px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,0,0,0.2), transparent)' }} />
       {/* Diagonal line pattern overlay */}
       <div
@@ -2144,10 +2399,10 @@ function Footer() {
 
   return (
     <footer className="bg-[#191919]">
-      <div className="max-w-[1280px] mx-auto px-12">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-12">
 
         {/* Top section */}
-        <div className="py-16 grid grid-cols-[1.5fr_1fr_1fr_1fr] gap-12">
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 md:gap-12">
 
           {/* Brand column */}
           <div>
@@ -2208,7 +2463,7 @@ function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="py-6 flex items-center justify-between" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="font-['Space_Mono',monospace] text-[11px] text-[#555]">
             © 2025 Zuper Inc. All rights reserved.
           </div>
@@ -2229,8 +2484,9 @@ export default function LandingPage() {
       <Hero />
       <ChannelBand />
       <Capabilities />
-      <MeetAgents />
-      <VoiceLanguages />
+      <GetStarted />
+      {/* <MeetAgents /> */}
+      {/* <VoiceLanguages /> */}
       <Workflows />
       <RevenueMultiplier />
       <CaseStudy />
