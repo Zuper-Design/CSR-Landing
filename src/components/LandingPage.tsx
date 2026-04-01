@@ -324,7 +324,7 @@ function Hero() {
   })
 
   return (
-    <section ref={heroRef} className="relative overflow-hidden" style={{ minHeight: '100vh' }}>
+    <section ref={heroRef} className="relative overflow-hidden">
 
       {/* ── Orange gradient background from Figma ── */}
       {/* Gradient background SVG */}
@@ -347,7 +347,7 @@ function Hero() {
 
       {/* ── Main content ── */}
       <div
-        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-14 justify-between pt-[80px] md:pt-[160px] pb-[70px] md:pb-[96px]"
+        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[160px] pb-[60px] md:pb-[96px]"
       >
 
         {/* Left copy */}
@@ -355,13 +355,14 @@ function Hero() {
 
           {/* Live badge */}
           <div
-            className="flex items-center gap-[10px] rounded-full px-[14px] py-[6px] mb-8"
+            className="flex items-center gap-[8px] rounded-full px-[12px] py-[5px] mb-4 md:mb-8"
             style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.28)' }}
           >
             <span className="w-[6px] h-[6px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 6px #4ade80' }} />
             {/* white on rgba(0,0,0,0.35)+dark photo ≈ #111 effective bg → contrast ~12:1 ✓ */}
-            <span className="font-['Space_Mono',monospace] text-[10.5px] font-medium text-white tracking-[0.13em] uppercase">
-              Calls &amp; Texts · 24/7 · Powered by Zuper AI
+            <span className="font-['Space_Mono',monospace] text-[9px] md:text-[10.5px] font-medium text-white tracking-[0.13em] uppercase">
+              <span className="hidden md:inline">Calls &amp; Texts · 24/7 · Powered by Zuper AI</span>
+              <span className="md:hidden">24/7 · Zuper AI</span>
             </span>
           </div>
 
@@ -433,7 +434,7 @@ function Hero() {
               Schedule a Demo
             </button>
             <button
-              className="flex items-center gap-2 font-inter font-semibold text-[15px] text-white px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+              className="hidden md:flex items-center gap-2 font-inter font-semibold text-[15px] text-white px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
               onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}
@@ -458,7 +459,7 @@ function Hero() {
         </div>
 
         {/* Mobile compact demo card */}
-        <div className="lg:hidden mt-6 w-full" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
+        <div className="lg:hidden mt-3 w-full" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
           <div className="rounded-[14px] flex items-center gap-3 px-3 py-2.5" style={{ background: 'rgba(12,8,6,0.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
             <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
               <video autoPlay loop muted playsInline className="w-full h-full object-cover">
