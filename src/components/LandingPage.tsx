@@ -137,7 +137,7 @@ function Navbar() {
     <header className="absolute top-0 left-0 right-0 z-50">
       <div className="max-w-[1440px] mx-auto px-4 md:px-10 py-4 grid grid-cols-[auto_1fr_auto] items-center gap-6">
         <a href="/" className="flex items-center shrink-0">
-          <img src={assets.logo} alt="Zuper" className="h-7 w-auto object-contain object-left" style={{ maxWidth: 110 }} />
+          <img src="/zuper-logo.svg" alt="Zuper" className="h-7 w-auto object-contain object-left" style={{ maxWidth: 110 }} />
         </a>
         <nav className="hidden lg:flex items-center justify-center gap-0.5">
           {navLinks.map((link) => (
@@ -1343,440 +1343,539 @@ export function VoiceLanguages() {
 }
 
 /* ─────────────────────────── GET STARTED ─────────────────────────── */
-const STEPS: { num: string; title: string; desc: string; tag: string; icon: React.ReactNode; illustration: React.ReactNode }[] = [
-  { num: '01', title: 'Agent profile', desc: 'Name your agent, set her personality, and define her expertise areas.', tag: 'Identity',
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-    illustration: (
-      <div className="flex items-center justify-center p-5" style={{ height: 220, backgroundImage: 'url(/agent-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        {/* ID card */}
-        <div className="rounded-[12px] overflow-hidden w-full max-w-[200px]" style={{ background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
-          <div className="relative" style={{ height: 110, background: 'linear-gradient(145deg, #e8dff8, #f3eeff)' }}>
-            <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
-          </div>
-          <div className="px-3 py-2.5 text-center">
-            <div className="flex items-center justify-center gap-1.5">
-              <span className="font-jakarta font-bold text-[12px] text-[#191919]">Nova</span>
-              <span className="w-[5px] h-[5px] rounded-full bg-[#22c55e] shrink-0" style={{ boxShadow: '0 0 4px #22c55e' }} />
+
+// Animated illustration: Agent profile — Nova card with form fields appearing
+function IllusAgentProfile({ active }: { active?: boolean }) {
+  const [phase, setPhase] = useState<'typing' | 'ready' | 'hovering' | 'clicking' | 'card' | 'reset'>('typing')
+  const [typedChars, setTypedChars] = useState(0)
+  const [spinAngle, setSpinAngle] = useState(0)
+  const name = 'Nova'
+  const btnRef = useRef<HTMLDivElement>(null)
+  const cursorRef = useRef<HTMLDivElement>(null)
+
+  // Reset when step becomes active
+  useEffect(() => {
+    if (active) { setTypedChars(0); setPhase('typing') }
+  }, [active])
+
+  // Typewriter
+  useEffect(() => {
+    if (phase !== 'typing') return
+    if (typedChars >= name.length) {
+      const t = setTimeout(() => setPhase('ready'), 400)
+      return () => clearTimeout(t)
+    }
+    const t = setTimeout(() => setTypedChars(prev => prev + 1), 200)
+    return () => clearTimeout(t)
+  }, [phase, typedChars])
+
+  // Button appears → cursor moves to it
+  useEffect(() => {
+    if (phase !== 'ready') return
+    const t = setTimeout(() => setPhase('hovering'), 600)
+    return () => clearTimeout(t)
+  }, [phase])
+
+  // Cursor hovers → clicks
+  useEffect(() => {
+    if (phase !== 'hovering') return
+    const t = setTimeout(() => setPhase('clicking'), 800)
+    return () => clearTimeout(t)
+  }, [phase])
+
+  // Click → show card + spin
+  useEffect(() => {
+    if (phase !== 'clicking') return
+    const t = setTimeout(() => { setPhase('card'); setSpinAngle(prev => prev + 360) }, 400)
+    return () => clearTimeout(t)
+  }, [phase])
+
+  // Card holds then resets
+  useEffect(() => {
+    if (phase !== 'card') return
+    const t = setTimeout(() => setPhase('reset'), 3500)
+    return () => clearTimeout(t)
+  }, [phase])
+
+  // Reset → loop
+  useEffect(() => {
+    if (phase !== 'reset') return
+    setTypedChars(0)
+    const t = setTimeout(() => setPhase('typing'), 800)
+    return () => clearTimeout(t)
+  }, [phase])
+
+  const displayName = name.slice(0, typedChars)
+  const showCursor = phase === 'typing'
+  const showForm = phase !== 'card'
+  const showCard = phase === 'card'
+  const btnVisible = phase === 'ready' || phase === 'hovering' || phase === 'clicking'
+  const btnPressed = phase === 'clicking'
+  const cursorOnBtn = phase === 'hovering' || phase === 'clicking'
+
+  return (
+    <div className="flex items-center justify-center p-6 h-full min-h-[540px]" style={{ backgroundImage: 'url(/agent-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="w-full max-w-[340px] relative" style={{ minHeight: 360 }}>
+
+        {/* Form card */}
+        <div className="absolute inset-0 flex items-center justify-center" style={{
+          opacity: showForm ? 1 : 0,
+          transform: showForm ? 'scale(1)' : 'scale(0.92)',
+          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: showForm ? 'auto' as const : 'none' as const,
+        }}>
+          <div className="w-full rounded-[16px] p-6 flex flex-col gap-4 relative" style={{ background: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}>
+            <div>
+              <div className="font-inter text-[11px] text-[#6b6b6b] mb-1.5">name</div>
+              <div className="rounded-[8px] px-3 py-2.5 font-inter text-[15px] text-[#191919] min-h-[42px]" style={{ border: '1px solid #e8e3dc' }}>
+                {displayName}
+                {showCursor && <span className="inline-block w-[2px] h-[16px] bg-[#fd5000] ml-0.5 align-middle" style={{ animation: 'subtlePulse 0.6s step-end infinite' }} />}
+              </div>
             </div>
-            <p className="font-inter text-[9px] text-[#6b6b6b] mt-0.5">CSR Agent · Roofing</p>
+            <div>
+              <div className="font-inter text-[11px] text-[#6b6b6b] mb-1.5">Communication tone</div>
+              <div className="rounded-[8px] px-3 py-2.5 font-inter text-[13px] text-[#6b6b6b] flex items-center justify-between" style={{ border: '1px solid #e8e3dc' }}>
+                Friendly & Approachable
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <div className="font-inter text-[11px] text-[#6b6b6b] mb-1.5">Voice</div>
+              <div className="rounded-[8px] px-3 py-2.5 font-inter text-[13px] text-[#6b6b6b] flex items-center justify-between" style={{ border: '1px solid #e8e3dc' }}>
+                Nova (Female)
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+            {/* Create agent button */}
+            <div ref={btnRef} style={{
+              maxHeight: btnVisible ? 48 : 0,
+              opacity: btnVisible ? 1 : 0,
+              overflow: 'hidden',
+              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}>
+              <div className="rounded-[10px] py-2.5 text-center font-inter text-[13px] font-semibold text-white" style={{
+                background: '#191919',
+                transform: btnPressed ? 'scale(0.96)' : 'scale(1)',
+                transition: 'transform 0.15s ease',
+              }}>
+                Create agent
+              </div>
+            </div>
+
+            {/* Fake cursor */}
+            <div ref={cursorRef} className="absolute pointer-events-none z-20" style={{
+              bottom: cursorOnBtn ? 22 : -20,
+              right: cursorOnBtn ? 80 : 40,
+              opacity: cursorOnBtn ? 1 : 0,
+              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+              transform: btnPressed ? 'scale(0.85)' : 'scale(1)',
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M5 3l14 9-7 1.5L9 21z" fill="#191919" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </div>
         </div>
+
+        {/* Nova agent ID card */}
+        <div className="absolute inset-0 flex items-center justify-center" style={{
+          opacity: showCard ? 1 : 0,
+          transform: showCard ? 'scale(1)' : 'scale(0.8)',
+          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: showCard ? 'auto' as const : 'none' as const,
+          perspective: 1000,
+        }}>
+          <div className="w-full max-w-[260px] rounded-[18px] overflow-hidden" style={{
+            background: 'white', boxShadow: '0 16px 48px rgba(0,0,0,0.12)',
+            transform: `rotateY(${spinAngle}deg)`,
+            transition: 'transform 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            transformStyle: 'preserve-3d',
+          }}>
+            <div className="relative" style={{ height: 200, background: 'linear-gradient(145deg, #e8dff8, #f3eeff)' }}>
+              <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
+            </div>
+            <div className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <span className="font-jakarta font-bold text-[18px] text-[#191919]">Nova</span>
+                <span className="font-['Space_Mono',monospace] text-[9px] font-bold px-2 py-[3px] rounded-[5px]" style={{ background: '#f0fdf4', color: '#15803d' }}>Z-134</span>
+              </div>
+              <p className="font-inter text-[12px] text-[#6b6b6b]">Organized, focused, and task driven.</p>
+              <div className="flex flex-wrap justify-center gap-2 mt-3">
+                {[
+                  { label: 'Task management', bg: '#eef4ff', color: '#2563eb' },
+                  { label: 'Team collaboration', bg: '#f0e8ff', color: '#7c3aed' },
+                  { label: 'Project planning', bg: '#e8f5ec', color: '#15803d' },
+                ].map(t => (
+                  <span key={t.label} className="font-['Space_Mono',monospace] text-[9px] font-semibold px-2.5 py-[4px] rounded-full" style={{ background: t.bg, color: t.color }}>{t.label}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    ),
+    </div>
+  )
+}
+
+// Animated illustration: Superpowers — toggles enable one by one, pills appear on Nova card
+function IllusSuperpowers({ active }: { active?: boolean }) {
+  const caps = [
+    { label: 'Answer calls', icon: '📞', color: '#fd5000', bg: '#fff3ed' },
+    { label: 'Take bookings', icon: '📅', color: '#2563eb', bg: '#eef4ff' },
+    { label: 'Job Updates', icon: '📊', color: '#059669', bg: '#e8f5ec' },
+    { label: 'Reschedule', icon: '🔄', color: '#7c3aed', bg: '#f0e8ff' },
+  ]
+  const [enabledCount, setEnabledCount] = useState(0)
+  // Reset when step becomes active
+  useEffect(() => {
+    if (active) setEnabledCount(0)
+  }, [active])
+  useEffect(() => {
+    const id = setInterval(() => {
+      setEnabledCount(prev => (prev >= caps.length ? 0 : prev + 1))
+    }, 1200)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <div className="p-6 flex flex-col justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/sp-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="w-full max-w-[500px] mx-auto flex flex-col items-center gap-4">
+        {/* Nova ID card with floating pills */}
+        <div className="relative" style={{ width: 260 }}>
+          {/* Floating capability pills around the card */}
+          {caps.map((cap, i) => {
+            const enabled = i < enabledCount
+            const positions: { style: React.CSSProperties; from: string }[] = [
+              { style: { top: -14, right: -40 }, from: 'translate(-10px, 10px)' },
+              { style: { top: '45%', right: -55 }, from: 'translateX(-15px)' },
+              { style: { top: '45%', left: -55 }, from: 'translateX(15px)' },
+              { style: { top: -14, left: -35 }, from: 'translate(10px, 10px)' },
+            ]
+            const pos = positions[i]
+            return (
+              <div key={cap.label} className="absolute z-10 flex items-center gap-1.5 px-3 py-2 rounded-full whitespace-nowrap pointer-events-none" style={{
+                ...pos.style,
+                background: enabled ? 'white' : 'transparent',
+                boxShadow: enabled ? `0 4px 16px ${cap.color}20` : 'none',
+                border: enabled ? `1px solid ${cap.color}30` : '1px solid transparent',
+                opacity: enabled ? 1 : 0,
+                transform: enabled ? 'scale(1) translate(0, 0)' : `scale(0.7) ${pos.from}`,
+                transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}>
+                <span className="text-[13px]">{cap.icon}</span>
+                <span className="font-inter text-[11px] font-semibold" style={{ color: cap.color }}>{cap.label}</span>
+              </div>
+            )
+          })}
+
+          <div className="rounded-[18px] overflow-hidden" style={{ background: 'white', boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }}>
+            <div className="relative" style={{ height: 200, background: 'linear-gradient(145deg, #fde8e0, #fef0ea)' }}>
+              <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
+            </div>
+            <div className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <span className="font-jakarta font-bold text-[17px] text-[#191919]">Nova</span>
+                <span className="w-[6px] h-[6px] rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 6px #22c55e' }} />
+              </div>
+              <p className="font-inter text-[12px] text-[#6b6b6b]">Organized, focused, and task driven.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4 capability cards in a row */}
+        <div className="w-full grid grid-cols-4 gap-2.5">
+          {caps.map((cap, i) => {
+            const enabled = i < enabledCount
+            return (
+              <div key={cap.label} className="rounded-[12px] p-3 transition-all duration-400 flex flex-col items-center text-center" style={{
+                background: 'white', boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+                border: enabled ? `1.5px solid ${cap.color}` : '1.5px solid transparent',
+              }}>
+                <span className="text-[18px] mb-1.5">{cap.icon}</span>
+                <div className="font-inter text-[10px] font-semibold text-[#191919] mb-1.5 leading-tight">{cap.label}</div>
+                <div className="w-8 h-[18px] rounded-full flex items-center px-[2px] mt-auto" style={{ background: enabled ? cap.color : '#e5e0d8', transition: 'background 0.3s ease' }}>
+                  <div className="w-[14px] h-[14px] rounded-full bg-white" style={{ marginLeft: enabled ? 12 : 0, transition: 'margin-left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Animated illustration: Knowledge base — cards feed into Nova agent
+function IllusKnowledgeBase({ active }: { active?: boolean }) {
+  const items = [
+    { label: 'Greeting', icon: '💬', text: 'Hi there! This is Nova, an AI agent...' },
+    { label: 'Company Info', icon: '🏢', text: 'Maven Pvt. Ltd. — Roofing specialist' },
+    { label: 'FAQ Trained', icon: '📖', text: 'Weekend appointments, pricing, etc.' },
+  ]
+  const [fedCount, setFedCount] = useState(0)
+  // Reset when step becomes active
+  useEffect(() => {
+    if (active) setFedCount(0)
+  }, [active])
+  useEffect(() => {
+    const id = setInterval(() => setFedCount(prev => (prev >= items.length ? 0 : prev + 1)), 1800)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <div className="p-6 flex items-center justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/kb-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="w-full max-w-[560px] flex items-center gap-6">
+
+        {/* Left — info cards that fly into agent */}
+        <div className="flex-1 flex flex-col gap-2.5 relative">
+          {items.map((item, i) => {
+            const fed = i < fedCount
+            const isFeeding = i === fedCount - 1 && fedCount > 0
+            return (
+              <div key={item.label} className="rounded-[14px] p-4 flex items-center gap-3.5 relative overflow-hidden" style={{
+                background: 'white',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                transform: fed ? 'translateX(40px) scale(0.88)' : isFeeding ? 'translateX(8px)' : 'translateX(0) scale(1)',
+                transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                border: isFeeding ? '1.5px solid #7c3aed' : '1.5px solid transparent',
+              }}>
+                {/* Sweep overlay when feeding */}
+                <div className="absolute inset-0 pointer-events-none" style={{
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(124,58,237,0.08) 50%, transparent 100%)',
+                  transform: isFeeding ? 'translateX(100%)' : 'translateX(-100%)',
+                  transition: isFeeding ? 'transform 0.8s ease-in-out' : 'none',
+                }} />
+                {/* Fade to purple tint when fed */}
+                <div className="absolute inset-0 rounded-[12px] pointer-events-none" style={{
+                  background: 'rgba(124,58,237,0.06)',
+                  opacity: fed ? 1 : 0,
+                  transition: 'opacity 0.5s ease',
+                }} />
+                <div className="relative z-10 flex items-center gap-3 w-full">
+                  <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0 transition-all duration-500" style={{
+                    background: fed ? '#f0e8ff' : '#f8f5f0',
+                  }}>
+                    <span className="text-[20px]">{item.icon}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-inter text-[13px] font-semibold text-[#191919] transition-colors duration-500" style={{ color: fed ? '#7c3aed' : '#191919' }}>{item.label}</div>
+                    <div className="font-inter text-[11px] text-[#6b6b6b] truncate">{item.text}</div>
+                  </div>
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-500" style={{
+                    background: fed ? '#7c3aed' : '#f0ebe3',
+                    transform: fed ? 'scale(1)' : 'scale(0.8)',
+                  }}>
+                    {fed && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Right — Nova agent card absorbing knowledge */}
+        <div className="shrink-0 relative" style={{ width: 220 }}>
+          <div className="rounded-[18px] overflow-hidden transition-all duration-700" style={{
+            background: 'white',
+            boxShadow: fedCount > 0 ? `0 0 ${10 + fedCount * 10}px rgba(124,58,237,${0.08 + fedCount * 0.05}), 0 12px 40px rgba(0,0,0,0.1)` : '0 12px 40px rgba(0,0,0,0.1)',
+          }}>
+            <div className="relative" style={{ height: 180, background: 'linear-gradient(145deg, #e8dff8, #f3eeff)' }}>
+              <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
+            </div>
+            <div className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <span className="font-jakarta font-bold text-[16px] text-[#191919]">Nova</span>
+                <span className="w-[6px] h-[6px] rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 5px #22c55e' }} />
+              </div>
+              <p className="font-inter text-[11px] text-[#6b6b6b]">CSR Agent · Roofing</p>
+              {/* Knowledge progress */}
+              <div className="mt-3 h-[5px] rounded-full overflow-hidden" style={{ background: '#f0ebe3' }}>
+                <div className="h-full rounded-full transition-all duration-700" style={{
+                  width: `${(fedCount / items.length) * 100}%`,
+                  background: 'linear-gradient(90deg, #7c3aed, #a78bfa)',
+                }} />
+              </div>
+              <div className="font-['Space_Mono',monospace] text-[9px] text-[#6b6b6b] mt-1.5">
+                {fedCount >= items.length ? 'Trained ✓' : `Learning... ${Math.round((fedCount / items.length) * 100)}%`}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+// Animated illustration: Add to route — routes connecting one by one
+function IllusAddRoute({ active }: { active?: boolean }) {
+  const routes = [
+    { label: 'Main Line', color: '#15803d' },
+    { label: 'SMS', color: '#15803d' },
+    { label: 'Web Chat', color: '#92400e' },
+  ]
+  const [connectedCount, setConnectedCount] = useState(0)
+  // Reset when step becomes active
+  useEffect(() => {
+    if (active) setConnectedCount(0)
+  }, [active])
+  useEffect(() => {
+    const id = setInterval(() => setConnectedCount(prev => (prev >= routes.length ? 0 : prev + 1)), 2000)
+    return () => clearInterval(id)
+  }, [])
+  return (
+    <div className="p-6 flex items-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="rounded-[16px] p-6 w-full max-w-[380px] mx-auto" style={{ background: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <div className="w-3 h-3 rounded-full transition-all duration-500" style={{ background: connectedCount > 0 ? '#22c55e' : '#e5e0d8', boxShadow: connectedCount > 0 ? '0 0 8px #22c55e' : 'none' }} />
+              {connectedCount > 0 && <div className="absolute inset-0 w-3 h-3 rounded-full bg-[#22c55e] animate-ping opacity-30" />}
+            </div>
+            <span className="font-['Space_Mono',monospace] text-[13px] font-medium transition-colors duration-500" style={{ color: connectedCount > 0 ? '#15803d' : '#b0a89e' }}>
+              {connectedCount >= routes.length ? 'LIVE' : 'CONNECTING...'}
+            </span>
+          </div>
+          <span className="font-inter text-[12px] text-[#636363]">Just now</span>
+        </div>
+        <div className="flex flex-col gap-4">
+          {routes.map((r, i) => {
+            const connected = i < connectedCount
+            return (
+              <div key={r.label} className="flex items-center justify-between transition-all duration-500" style={{ opacity: connected ? 1 : 0.4 }}>
+                <span className="font-inter text-[15px] text-[#555]">{r.label}</span>
+                <div className="flex items-center gap-2">
+                  {connected ? (
+                    <>
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: r.color }} />
+                      <span className="font-inter text-[13px] font-medium" style={{ color: r.color }}>Connected</span>
+                    </>
+                  ) : i === connectedCount ? (
+                    <div className="w-4 h-4 rounded-full border-2 border-[#fd5000] border-t-transparent animate-spin" />
+                  ) : (
+                    <span className="font-inter text-[13px] text-[#b0a89e]">Waiting</span>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const STEPS: { num: string; title: string; desc: string; tag: string; color: string; tagBg: string; tagText: string; icon: React.ReactNode; Illustration: React.ComponentType<{ active?: boolean }> }[] = [
+  { num: '01', title: 'Agent profile', desc: 'Name your agent, set her personality, and define her expertise areas.', tag: 'Identity',
+    color: '#7c3aed', tagBg: '#f0e8ff', tagText: '#5b21b6',
+    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    Illustration: IllusAgentProfile,
   },
   { num: '02', title: 'Superpowers', desc: 'Toggle capabilities — answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
+    color: '#fd5000', tagBg: '#fff3ed', tagText: '#b93500',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
-    illustration: (
-      <div className="p-5 flex items-center" style={{ height: 220, backgroundImage: 'url(/sp-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className="rounded-[10px] p-3.5 w-full" style={{ background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="flex flex-col gap-3">
-            {[
-              { label: 'Answer calls', on: true },
-              { label: 'Book inspections', on: true },
-              { label: 'Share updates', on: true },
-              { label: 'Reschedule', on: false },
-            ].map(cap => (
-              <div key={cap.label} className="flex items-center justify-between">
-                <span className="font-inter text-[11px] text-[#555]">{cap.label}</span>
-                <div className="w-8 h-[18px] rounded-full flex items-center px-[3px] transition-all" style={{ background: cap.on ? '#fd5000' : '#e5e0d8' }}>
-                  <div className="w-3 h-3 rounded-full bg-white" style={{ marginLeft: cap.on ? 12 : 0, transition: 'margin 0.3s ease', boxShadow: '0 1px 3px rgba(0,0,0,0.12)' }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    ),
+    Illustration: IllusSuperpowers,
   },
   { num: '03', title: 'Knowledge base', desc: 'Upload your docs, FAQs, and SOPs. Nova learns your business in minutes.', tag: 'Intelligence',
+    color: '#2563eb', tagBg: '#eef4ff', tagText: '#1e40af',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>,
-    illustration: (
-      <div className="p-5 relative overflow-hidden flex items-center" style={{ height: 220, backgroundImage: 'url(/kb-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className="flex flex-col gap-2.5 relative z-10 w-full">
-          {[
-            { name: 'Service_FAQ.pdf', size: '2.4 MB', done: true },
-            { name: 'Pricing_Guide.pdf', size: '1.1 MB', done: true },
-            { name: 'Company_SOPs.doc', size: '840 KB', done: false },
-          ].map(f => (
-            <div key={f.name} className="flex items-center gap-3 rounded-[10px] p-2.5" style={{ background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-              <div className="w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0" style={{ background: f.done ? '#e8f5ec' : '#fff0e8' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={f.done ? '#15803d' : '#c2410c'} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-inter text-[11px] font-medium text-[#191919] truncate">{f.name}</div>
-                <div className="font-inter text-[9px] text-[#777]">{f.size}</div>
-              </div>
-              {f.done ? (
-                <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#e8f5ec' }}>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
-                </div>
-              ) : (
-                <div className="w-5 h-5 rounded-full border-2 border-[#c2410c] border-t-transparent animate-spin" />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
+    Illustration: IllusKnowledgeBase,
   },
   { num: '04', title: 'Add to route', desc: 'Connect your phone lines and channels. Nova starts answering immediately.', tag: 'Deployment',
+    color: '#059669', tagBg: '#e8f5ec', tagText: '#065f46',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>,
-    illustration: (
-      <div className="p-5 flex items-center" style={{ height: 220, backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className="rounded-[10px] p-3.5 w-full" style={{ background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 8px #22c55e' }} />
-                <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#22c55e] animate-ping opacity-30" />
-              </div>
-              <span className="font-['Space_Mono',monospace] text-[10px] text-[#15803d] font-medium">LIVE</span>
-            </div>
-            <span className="font-inter text-[9px] text-[#767676]">Just now</span>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            {[
-              { label: 'Main Line', status: 'Connected', color: '#15803d' },
-              { label: 'SMS', status: 'Connected', color: '#15803d' },
-              { label: 'Web Chat', status: 'Ready', color: '#92400e' },
-            ].map(r => (
-              <div key={r.label} className="flex items-center justify-between">
-                <span className="font-inter text-[11px] text-[#555]">{r.label}</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: r.color }} />
-                  <span className="font-inter text-[9px] font-medium" style={{ color: r.color }}>{r.status}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    ),
+    Illustration: IllusAddRoute,
   },
 ]
 
 function GetStarted() {
-  const timelineRef = useRef<HTMLDivElement>(null)
-  const lineTrackRef = useRef<HTMLDivElement>(null)
-  const progressRef = useRef<HTMLDivElement>(null)
-  const tipRef = useRef<HTMLDivElement>(null)
-  const progressVal = useRef(0)
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([])
-  const nodeRefs = useRef<(HTMLDivElement | null)[]>([])
-  const badgeRefs = useRef<(HTMLDivElement | null)[]>([])
-  const badgeTextRefs = useRef<(HTMLSpanElement | null)[]>([])
-  const iconRefs = useRef<(HTMLDivElement | null)[]>([])
-  const prevActive = useRef<boolean[]>(STEPS.map(() => false))
-
-  // Butter-smooth scroll: direct DOM updates in rAF, no React re-renders
-  useEffect(() => {
-    let rafId = 0
-    let currentProgress = 0
-    let targetProgress = 0
-
-    const update = () => {
-      const el = timelineRef.current
-      if (el) {
-        const rect = el.getBoundingClientRect()
-        const vh = window.innerHeight
-        const entered = vh - rect.top
-        const total = rect.height + vh * 0.5
-        targetProgress = Math.max(0, Math.min(1, entered / total))
-      }
-
-      // Lerp for silky smooth movement
-      currentProgress += (targetProgress - currentProgress) * 0.12
-      // Snap if very close
-      if (Math.abs(currentProgress - targetProgress) < 0.001) currentProgress = targetProgress
-      progressVal.current = currentProgress
-
-      // Update progress line directly
-      if (progressRef.current) {
-        progressRef.current.style.transform = `scaleY(${currentProgress})`
-      }
-      // Position tip at the bottom edge of the filled line
-      if (tipRef.current && lineTrackRef.current) {
-        const trackH = lineTrackRef.current.offsetHeight
-        const tipY = currentProgress * trackH
-        tipRef.current.style.transform = `translateY(${tipY}px)`
-        tipRef.current.style.opacity = currentProgress > 0.02 ? '1' : '0'
-      }
-
-      // Update step activations
-      for (let i = 0; i < STEPS.length; i++) {
-        const threshold = (i + 0.5) / STEPS.length
-        const isActive = currentProgress >= threshold
-        const wasActive = prevActive.current[i]
-        if (isActive === wasActive) continue
-        prevActive.current[i] = isActive
-
-        // Card
-        const card = stepRefs.current[i]
-        if (card) {
-          const isLeft = i % 2 === 0
-          card.style.opacity = isActive ? '1' : '0'
-          card.style.transform = isActive
-            ? 'translateX(0) translateY(0) scale(1)'
-            : `translateX(${isLeft ? '40px' : '-40px'}) translateY(12px) scale(0.95)`
-          card.style.boxShadow = isActive
-            ? '0 12px 40px rgba(0,0,0,0.10)'
-            : '0 2px 12px rgba(0,0,0,0.02)'
-        }
-
-        // Node wrapper
-        const node = nodeRefs.current[i]
-        if (node) {
-          node.style.transform = isActive ? 'translateX(-50%) scale(1)' : 'translateX(-50%) scale(0.7)'
-          node.style.opacity = isActive ? '1' : '0.35'
-        }
-
-        // Badge
-        const badge = badgeRefs.current[i]
-        if (badge) {
-          badge.style.background = isActive ? 'linear-gradient(180deg, #ff8c42, #fd5000)' : 'white'
-          badge.style.boxShadow = isActive
-            ? '0 4px 14px rgba(253,80,0,0.35), 0 1px 0 0 rgba(255,180,120,0.4) inset'
-            : '0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)'
-        }
-        const badgeText = badgeTextRefs.current[i]
-        if (badgeText) {
-          badgeText.style.color = isActive ? 'white' : '#c0b8ae'
-        }
-
-        // Icon node
-        const icon = iconRefs.current[i]
-        if (icon) {
-          icon.style.background = isActive
-            ? 'linear-gradient(180deg, #ff8c42, #fd5000, #d94400)'
-            : 'linear-gradient(180deg, #e8e4dc, #d5d0c8)'
-          icon.style.boxShadow = isActive
-            ? '0 1px 0 0 rgba(255,200,150,0.5) inset, 0 -2px 6px rgba(0,0,0,0.2) inset, 0 8px 20px rgba(253,80,0,0.3), 0 2px 6px rgba(253,80,0,0.15)'
-            : '0 1px 0 0 rgba(255,255,255,0.6) inset, 0 -2px 4px rgba(0,0,0,0.08) inset, 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)'
-          icon.style.border = isActive ? '1px solid rgba(255,180,120,0.4)' : '1px solid rgba(255,255,255,0.35)'
-        }
-      }
-
-      rafId = requestAnimationFrame(update)
-    }
-
-    rafId = requestAnimationFrame(update)
-    return () => cancelAnimationFrame(rafId)
-  }, [])
+  const [activeStep, setActiveStep] = useState(0)
 
   return (
     <section className="py-24 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
-      <div className="max-w-[960px] mx-auto px-5 md:px-12 relative z-10">
-        <RevealOnScroll className="text-center mb-16">
-          <SectionTextBg>
-            <SectionEyebrow icon="" label="Get Started" />
-            <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
-              Go live in under<br /><span className="text-[#fd5000]">10 minutes.</span>
-            </h2>
-            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[440px] mx-auto mt-3">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-12 relative z-10">
+        {/* Title row — eyebrow + heading + subtitle in one line */}
+        <RevealOnScroll className="mb-14">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-8">
+            <div>
+              <SectionEyebrow icon="" label="Get Started" />
+              <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
+                Go live in under <span className="text-[#fd5000]">10 minutes.</span>
+              </h2>
+            </div>
+            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[380px] md:text-right shrink-0">
               Four steps. No engineering team required. Nova configures herself around your business.
             </p>
-          </SectionTextBg>
+          </div>
         </RevealOnScroll>
 
-        {/* Vertical timeline — alternating sides */}
-        <div ref={timelineRef} className="relative">
-          {/* Center vertical line — hidden on mobile */}
-          <div ref={lineTrackRef} className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[2px] rounded-full hidden md:block" style={{ background: '#e8e3dc' }}>
-            {/* Progress fill */}
-            <div ref={progressRef} className="w-full rounded-full" style={{
-              height: '100%',
-              background: 'linear-gradient(to bottom, #fd5000, #ff8c5a)',
-              transformOrigin: 'top center',
-              transform: 'scaleY(0)',
-              willChange: 'transform',
-            }} />
+        {/* ── Single card: steps left, illustration right ── */}
+        <RevealOnScroll>
+          <div className="rounded-[24px] overflow-hidden grid grid-cols-1 lg:grid-cols-[380px_1fr]" style={{ background: 'white', boxShadow: '0 2px 24px rgba(0,0,0,0.05)' }}>
 
-            {/* Glowing tip — outside scaleY so it stays circular */}
-            <div ref={tipRef} className="absolute left-1/2 pointer-events-none" style={{
-              top: 0, opacity: 0, willChange: 'transform',
-            }}>
-              {/* Outer soft pulse */}
-              <div style={{
-                position: 'absolute', left: '50%', top: '50%',
-                width: 24, height: 24, borderRadius: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: 'radial-gradient(circle, rgba(253,80,0,0.35) 0%, transparent 70%)',
-                animation: 'timelineTipGlow 2s ease-in-out infinite',
-              }} />
-              {/* Core dot */}
-              <div style={{
-                position: 'absolute', left: '50%', top: '50%',
-                width: 8, height: 8, borderRadius: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: 'radial-gradient(circle, #fff 10%, #ffbc6b 50%, #fd5000 100%)',
-                boxShadow: '0 0 6px 2px rgba(253,80,0,0.6), 0 0 14px 4px rgba(253,80,0,0.25)',
-                animation: 'timelineTipCore 1.5s ease-in-out infinite',
-              }} />
-            </div>
-          </div>
-
-          {STEPS.map((step, i) => {
-            const isLeft = i % 2 === 0
-            return (
-              <RevealOnScroll key={step.num} delay={i * 120}>
-                {/* Mobile: stacked single column */}
-                <div className="md:hidden flex flex-col items-center mb-12 last:mb-0">
-                  <div className="flex flex-col items-center gap-2 mb-4">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center"
-                      style={{ background: 'white', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-                      <span className="font-['Space_Mono',monospace] text-[10px] font-bold" style={{ color: '#fd5000' }}>{step.num}</span>
-                    </div>
-                    <div className="w-12 h-12 rounded-[14px] flex items-center justify-center text-white shrink-0"
+            {/* Left — step accordion */}
+            <div className="flex flex-col h-full">
+              {/* Step list — fills the full height equally */}
+              <div className="flex flex-col flex-1">
+                {STEPS.map((s, i) => {
+                  const isActive = i === activeStep
+                  return (
+                    <button
+                      key={s.num}
+                      onClick={() => setActiveStep(i)}
+                      className="text-left transition-all duration-300 cursor-pointer flex-1 flex items-stretch relative"
                       style={{
-                        background: 'linear-gradient(145deg, #ff7a35, #e04500)',
-                        boxShadow: '0 6px 16px rgba(253,80,0,0.25)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                      }}>
-                      {step.icon}
-                    </div>
-                  </div>
-                  <div className="w-full max-w-[400px] rounded-[20px] overflow-hidden"
-                    style={{ background: 'white', boxShadow: '0 4px 24px rgba(0,0,0,0.05)' }}>
-                    <div className="px-6 pt-6 pb-4">
-                      <span className="inline-block font-['Space_Mono',monospace] text-[10px] font-semibold tracking-[0.06em] uppercase px-3 py-[4px] rounded-[6px] mb-3"
-                        style={{ background: '#ffe8db', color: '#b93500' }}>
-                        {step.tag}
-                      </span>
-                      <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
-                      <p className="font-inter text-[13.5px] text-[#6b6b6b] leading-[1.65]">{step.desc}</p>
-                    </div>
-                    <div className="px-4 pb-4">{step.illustration}</div>
-                  </div>
-                </div>
-
-                {/* Desktop: alternating timeline */}
-                <div className="hidden md:flex relative items-start mb-20 last:mb-0" style={{ minHeight: 120 }}>
-
-                  {/* Left content or spacer */}
-                  <div className="w-1/2 pr-12 flex justify-end">
-                    {isLeft && (
-                      <div ref={el => { stepRefs.current[i] = el }} className="w-full max-w-[360px] rounded-[20px]"
-                        style={{
-                          opacity: 0,
-                          transform: 'translateX(40px) translateY(12px) scale(0.95)',
-                          transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
-                          willChange: 'transform, opacity',
-                          perspective: 800,
-                        }}
-                      >
-                        <div className="rounded-[20px] text-right overflow-hidden"
-                          style={{
-                            background: 'white',
-                            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-                            transition: 'transform 0.15s ease-out, box-shadow 0.3s ease',
-                            transformStyle: 'preserve-3d',
-                          }}
-                          onMouseMove={e => {
-                            const rect = e.currentTarget.getBoundingClientRect()
-                            const x = (e.clientX - rect.left) / rect.width - 0.5
-                            const y = (e.clientY - rect.top) / rect.height - 0.5
-                            e.currentTarget.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`
-                            e.currentTarget.style.boxShadow = `0 8px 28px rgba(0,0,0,0.08)`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.transform = 'rotateY(0deg) rotateX(0deg)'
-                            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.02)'
-                          }}
-                        >
-                          <div>{step.illustration}</div>
-                          <div className="px-6 pt-4 pb-5">
-                            <span className="inline-block font-['Space_Mono',monospace] text-[10px] font-semibold tracking-[0.06em] uppercase px-3 py-[4px] rounded-[6px] mb-3"
-                              style={{ background: '#ffe8db', color: '#b93500' }}>
-                              {step.tag}
-                            </span>
-                            <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
-                            <p className="font-inter text-[13.5px] text-[#6b6b6b] leading-[1.65]">{step.desc}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Center node */}
-                  <div ref={el => { nodeRefs.current[i] = el }} className="absolute left-1/2 z-10 flex flex-col items-center" style={{
-                    transform: 'translateX(-50%) scale(0.7)',
-                    opacity: 0.35,
-                    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-                    willChange: 'transform, opacity',
-                  }}>
-                    {/* Step number badge */}
-                    <div ref={el => { badgeRefs.current[i] = el }} className="mb-2 w-8 h-8 rounded-full flex items-center justify-center"
-                      style={{
-                        background: 'white',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)',
-                        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-                      }}>
-                      <span ref={el => { badgeTextRefs.current[i] = el }} className="font-['Space_Mono',monospace] text-[10px] font-bold" style={{ color: '#c0b8ae', transition: 'color 0.5s ease' }}>{step.num}</span>
-                    </div>
-                    {/* Icon node */}
-                    <div ref={el => { iconRefs.current[i] = el }} className="w-[52px] h-[52px] rounded-[14px] flex items-center justify-center text-white"
-                      style={{
-                        background: 'linear-gradient(180deg, #e8e4dc, #d5d0c8)',
-                        boxShadow: '0 1px 0 0 rgba(255,255,255,0.6) inset, 0 -2px 4px rgba(0,0,0,0.08) inset, 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
-                        border: '1px solid rgba(255,255,255,0.35)',
-                        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                        paddingLeft: 0,
+                        paddingRight: 24,
+                        borderBottom: i < STEPS.length - 1 ? '1px solid #ece7e0' : 'none',
+                        background: isActive ? `linear-gradient(to right, ${s.color}0a, transparent)` : 'transparent',
                       }}
                     >
-                      {step.icon}
-                    </div>
-                  </div>
-
-                  {/* Right content or spacer */}
-                  <div className="w-1/2 pl-12">
-                    {!isLeft && (
-                      <div ref={el => { stepRefs.current[i] = el }} className="w-full max-w-[360px] rounded-[20px]"
-                        style={{
-                          opacity: 0,
-                          transform: 'translateX(-40px) translateY(12px) scale(0.95)',
-                          transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
-                          willChange: 'transform, opacity',
-                          perspective: 800,
-                        }}
-                      >
-                        <div className="rounded-[20px] overflow-hidden"
-                          style={{
-                            background: 'white',
-                            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-                            transition: 'transform 0.15s ease-out, box-shadow 0.3s ease',
-                            transformStyle: 'preserve-3d',
-                          }}
-                          onMouseMove={e => {
-                            const rect = e.currentTarget.getBoundingClientRect()
-                            const x = (e.clientX - rect.left) / rect.width - 0.5
-                            const y = (e.clientY - rect.top) / rect.height - 0.5
-                            e.currentTarget.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`
-                            e.currentTarget.style.boxShadow = `0 8px 28px rgba(0,0,0,0.08)`
-                          }}
-                          onMouseLeave={e => {
-                            e.currentTarget.style.transform = 'rotateY(0deg) rotateX(0deg)'
-                            e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.02)'
-                          }}
-                        >
-                          <div>{step.illustration}</div>
-                          <div className="px-6 pt-4 pb-5">
-                            <span className="inline-block font-['Space_Mono',monospace] text-[10px] font-semibold tracking-[0.06em] uppercase px-3 py-[4px] rounded-[6px] mb-3"
-                              style={{ background: '#ffe8db', color: '#b93500' }}>
-                              {step.tag}
+                      {/* Active indicator bar */}
+                      <div className="w-[4px] shrink-0 rounded-full transition-all duration-400 self-stretch my-4" style={{
+                        background: isActive ? s.color : 'transparent',
+                        boxShadow: isActive ? `0 0 8px ${s.color}40` : 'none',
+                      }} />
+                      <div className="flex-1 flex flex-col justify-center py-5 pl-5">
+                        <div className="flex items-center gap-2.5">
+                          <span className="font-['Space_Mono',monospace] text-[11px] font-bold transition-colors duration-300" style={{ color: isActive ? s.color : '#c0b8ae' }}>{s.num}</span>
+                          <h3 className={`font-jakarta font-bold text-[16px] transition-colors duration-300 ${isActive ? 'text-[#191919]' : 'text-[#6b6b6b]'}`}>
+                            {s.title}
+                          </h3>
+                          {isActive && (
+                            <span className="font-['Space_Mono',monospace] text-[9px] font-semibold tracking-[0.04em] uppercase px-2 py-[2px] rounded-[4px] shrink-0"
+                              style={{ background: s.tagBg, color: s.tagText }}>
+                              {s.tag}
                             </span>
-                            <h3 className="font-jakarta font-bold text-[18px] text-[#191919] mb-2">{step.title}</h3>
-                            <p className="font-inter text-[13.5px] text-[#6b6b6b] leading-[1.65]">{step.desc}</p>
-                          </div>
+                          )}
                         </div>
+                        <p className={`font-inter text-[14px] leading-[1.65] transition-all duration-400 overflow-hidden ${isActive ? 'text-[#6b6b6b] max-h-[100px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
+                          {s.desc}
+                        </p>
                       </div>
-                    )}
-                  </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Right — illustration */}
+            <div className="relative overflow-hidden" style={{ minHeight: 540 }}>
+              {STEPS.map((s, i) => (
+                <div key={s.num} className="absolute inset-0 transition-all duration-500" style={{
+                  opacity: i === activeStep ? 1 : 0,
+                  transform: i === activeStep ? 'translateY(0)' : 'translateY(12px)',
+                  pointerEvents: i === activeStep ? 'auto' as const : 'none' as const,
+                }}>
+                  <s.Illustration active={i === activeStep} />
                 </div>
-              </RevealOnScroll>
-            )
-          })}
-        </div>
+              ))}
+            </div>
+
+          </div>
+        </RevealOnScroll>
       </div>
     </section>
   )
