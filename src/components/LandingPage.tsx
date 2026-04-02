@@ -61,7 +61,7 @@ function SectionEyebrow({ label }: { icon?: string; label: string }) {
   const colors = EYEBROW_COLORS[label] || { bg: '#fff3ed', text: '#c2410c', dot: '#fd5000' }
   return (
     <span
-      className="inline-flex items-center gap-2 px-4 py-[7px] rounded-full text-[12px] font-['Space_Mono',monospace] font-semibold tracking-[0.06em] uppercase"
+      className="inline-flex items-center gap-2 px-4 py-[7px] rounded-full text-[12px] font-['Roboto',sans-serif] font-semibold tracking-[0.06em] uppercase"
       style={{ background: colors.bg, color: colors.text }}
     >
       <span className="relative flex items-center justify-center">
@@ -185,20 +185,20 @@ function Navbar() {
 
 /* ─────────────────────────── HERO ─────────────────────────── */
 const HERO_STATS = [
-  ['24 / 7', 'Always Answering'],
-  ['< 2 s',  'Avg Response Time'],
-  ['500+',   'Roofing Companies'],
-  ['458%',   'Peak Surge Handled'],
+  ['350+',   'Calls Per Month'],
+  ['$60K',   'Saved Annually'],
+  ['100x',   'Peak Surge Capacity'],
+  ['90%',    'AI Calls → Booked Jobs'],
 ]
 
 // Words for the reading highlight effect
 const HERO_WORDS: { word: string; lineBreak?: boolean; stroke?: boolean }[] = [
-  { word: 'Every' },
-  { word: 'Call', lineBreak: true },
-  { word: 'Answered.', lineBreak: true },
-  { word: 'Every', stroke: true },
-  { word: 'Lead', stroke: true, lineBreak: true },
-  { word: 'Captured.', stroke: true },
+  { word: 'Answer' },
+  { word: 'every' },
+  { word: 'call.', lineBreak: true },
+  { word: 'Win', stroke: true },
+  { word: 'every', stroke: true },
+  { word: 'job.', stroke: true },
 ]
 
 function useReadingHighlight(totalWords: number, trigger: number, wordDuration = 320, startDelay = 500) {
@@ -348,8 +348,8 @@ function Hero() {
         }}
       />
 
-      {/* Orange tint overlay to dominate */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: '#d95a3a', opacity: 0.55 }} />
+      {/* Subtle warm tint */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: '#d95a3a', opacity: 0.15 }} />
 
       {/* Subtle scrim for bottom legibility */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/15 pointer-events-none" />
@@ -371,9 +371,9 @@ function Hero() {
           >
             <span className="w-[6px] h-[6px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 6px #4ade80' }} />
             {/* white on rgba(0,0,0,0.35)+dark photo ≈ #111 effective bg → contrast ~12:1 ✓ */}
-            <span className="font-['Space_Mono',monospace] text-[9px] md:text-[10.5px] font-medium text-white tracking-[0.13em] uppercase">
-              <span className="hidden md:inline">Calls &amp; Texts · 24/7 · Powered by Zuper AI</span>
-              <span className="md:hidden">24/7 · Zuper AI</span>
+            <span className="font-['Roboto',sans-serif] text-[9px] md:text-[10.5px] font-medium text-white tracking-[0.13em] uppercase">
+              <span className="hidden md:inline">AI that runs your front desk</span>
+              <span className="md:hidden">AI that runs your front desk</span>
             </span>
           </div>
 
@@ -428,10 +428,10 @@ function Hero() {
           `}</style>
 
           <p className="font-inter leading-[1.7] mt-4 md:mt-6 text-[14px] md:text-[16px]" style={{
-            maxWidth: 460, color: '#D4D4D4',
+            maxWidth: 580, color: '#D4D4D4',
             animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both',
           }}>
-            Your AI-powered CSR handles overflow calls, after-hours inquiries, and storm surge — so your roofing business never loses revenue to voicemail.
+            Zuper CSR Agent is your AI-powered receptionist that handles<br />overflow calls, after-hours inquiries, and emergency surges<br />so your roofing business never loses revenue to voicemail.
           </p>
 
           {/* CTAs */}
@@ -463,8 +463,8 @@ function Hero() {
               ))}
             </div>
             <p className="font-inter text-[11px] md:text-[13px]" style={{ color: '#BCBCBC' }}>
-              <span className="hidden md:inline">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span>, <span className="font-semibold text-white">Brothers Metal</span> & 50+ others</span>
-              <span className="md:hidden">Trusted by <span className="font-semibold text-white">50+</span> companies</span>
+              <span className="hidden md:inline">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span>, <span className="font-semibold text-white">Brothers Metal</span> & others</span>
+              <span className="md:hidden">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span> & others</span>
             </p>
           </div>
         </div>
@@ -499,7 +499,7 @@ function Hero() {
         {/* Right card stack — tilts toward cursor */}
         <div
           className="hidden lg:flex flex-col gap-3 shrink-0 relative"
-          style={{ width: 370, perspective: 800 }}
+          style={{ width: 420, perspective: 800 }}
           onMouseMove={e => {
             const rect = e.currentTarget.getBoundingClientRect()
             const x = (e.clientX - rect.left) / rect.width - 0.5
@@ -513,9 +513,9 @@ function Hero() {
           <div
             className="absolute rounded-[22px]"
             style={{
-              width: 370,
+              width: 420,
               top: 12,
-              bottom: 70,
+              bottom: 12,
               left: 0,
               background: 'rgba(12,8,6,0.30)',
               border: '1px solid rgba(255,255,255,0.08)',
@@ -533,9 +533,9 @@ function Hero() {
           <div
             className="absolute rounded-[22px]"
             style={{
-              width: 370,
+              width: 420,
               top: 12,
-              bottom: 70,
+              bottom: 12,
               left: 0,
               background: 'rgba(12,8,6,0.30)',
               border: '1px solid rgba(255,255,255,0.08)',
@@ -571,7 +571,7 @@ function Hero() {
                 <span className="font-inter text-[12px] font-semibold text-white tracking-wide uppercase">AI Agent Demo</span>
               </div>
               {/* #8A8A8A on #0C0806 ≈ 5.1:1 ✓ */}
-              <span className="font-['Space_Mono',monospace] text-[11px]" style={{ color: '#8A8A8A' }}>
+              <span className="font-['Roboto',sans-serif] text-[11px]" style={{ color: '#8A8A8A' }}>
                 {playing ? `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}` : '0:42'}
               </span>
             </div>
@@ -585,7 +585,7 @@ function Hero() {
             `}</style>
 
             {/* Orb — looping video */}
-            <div className="flex items-center justify-center px-8 py-3">
+            <div className="flex items-center justify-center px-8 py-6">
               <div className="relative">
                 {/* Glow behind orb */}
                 <div className="absolute inset-0 rounded-full" style={{
@@ -608,7 +608,7 @@ function Hero() {
                   playsInline
                   className="relative"
                   style={{
-                    width: 200, height: 200, borderRadius: '50%', objectFit: 'cover',
+                    width: 220, height: 220, borderRadius: '50%', objectFit: 'cover',
                     filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.50))',
                     animation: playing ? 'none' : 'orbGlow 3.5s ease-in-out infinite',
                     boxShadow: playing ? '0 0 0 3px rgba(253,80,0,0.35), 0 0 30px rgba(253,80,0,0.20)' : undefined,
@@ -643,7 +643,7 @@ function Hero() {
               minHeight: 52,
             }}>
               {activeMsg >= 0 && playing ? (
-                <p className="font-['Space_Mono',monospace] text-[11px] leading-[1.6]">
+                <p className="font-['Roboto',sans-serif] text-[11px] leading-[1.6]">
                   <span style={{ color: DEMO_TRANSCRIPT[activeMsg].speaker === 'Agent' ? '#fd7040' : '#60a5fa' }}>
                     {DEMO_TRANSCRIPT[activeMsg].speaker}
                   </span>{'  '}
@@ -655,14 +655,14 @@ function Hero() {
                   ))}
                 </p>
               ) : (
-                <p className="font-['Space_Mono',monospace] text-[11px] leading-[1.6]" style={{ color: '#B0B0B0' }}>
+                <p className="font-['Roboto',sans-serif] text-[11px] leading-[1.6]" style={{ color: '#B0B0B0' }}>
                   <span style={{ color: '#fd7040' }}>Agent</span>{"  "}Hi, this is ZuperAI — how can I help with your roofing inquiry today?
                 </p>
               )}
             </div>
 
             {/* Play / Stop button */}
-            <div className="px-4 pb-4">
+            <div className="px-4 pb-5">
               <button
                 aria-label={playing ? 'Stop call playback' : 'Play call demo'}
                 onClick={() => { setPlaying(p => !p); if (playing) { setActiveMsg(-1); setActiveWordIdx(-1); setElapsed(0) } }}
@@ -681,17 +681,6 @@ function Hero() {
             </div>
           </div>
 
-          {/* Two small floating stat pills — dark bg for legibility */}
-          <div className="grid grid-cols-2 gap-3 relative" style={{ zIndex: 1 }}>
-            {[['21', 'Jobs auto-logged'], ['100%', 'Response rate']].map(([v, l]) => (
-              <div key={l} className="rounded-[14px] px-4 py-3 flex flex-col gap-0.5"
-                style={{ background: 'rgba(12,8,6,0.58)', border: '1px solid rgba(255,255,255,0.18)', backdropFilter: 'blur(12px)' }}>
-                <span className="font-jakarta font-extrabold text-white text-[20px] leading-none tracking-[-0.03em]">{v}</span>
-                {/* #ADADAD on #0C0806 ≈ 6.4:1 ✓ */}
-                <span className="font-inter text-[11px]" style={{ color: '#ADADAD' }}>{l}</span>
-              </div>
-            ))}
-          </div>
 
         </div>
 
@@ -730,7 +719,7 @@ const CHANNELS = [
   },
   {
     icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-    name: 'Emergency Line', tag: 'Storm & Hail Surge',
+    name: 'Power Dialer', tag: 'Proactive Outreach',
   },
 ]
 
@@ -739,7 +728,7 @@ function ChannelBand() {
     <div className="bg-white border-y border-[#ede8e2] relative">
       <GridLines />
       <div className="max-w-[1240px] mx-auto px-5 md:px-12 py-5 flex items-center justify-center gap-3 flex-wrap">
-        <span className="font-['Space_Mono',monospace] text-[10px] tracking-[0.14em] uppercase font-semibold text-[#ABABAB] mr-2 whitespace-nowrap">
+        <span className="font-['Roboto',sans-serif] text-[10px] tracking-[0.14em] uppercase font-semibold text-[#ABABAB] mr-2 whitespace-nowrap">
           Works Across
         </span>
         {CHANNELS.map((ch) => (
@@ -754,8 +743,8 @@ function ChannelBand() {
             >
               {ch.icon}
             </div>
-            <span className="font-inter font-semibold text-[#1A1A1A] text-[13.5px] whitespace-nowrap">{ch.name}</span>
-            <span className="font-inter text-[12px] text-[#9A9A9A] whitespace-nowrap hidden sm:block">· {ch.tag}</span>
+            <span className="font-['Roboto',sans-serif] font-semibold text-[#1A1A1A] text-[13.5px] whitespace-nowrap">{ch.name}</span>
+            <span className="font-['Roboto',sans-serif] text-[12px] text-[#9A9A9A] whitespace-nowrap hidden sm:block">· {ch.tag}</span>
             <div className="relative shrink-0">
               <span className="w-[7px] h-[7px] rounded-full bg-[#22C55E] block" />
               <span className="animate-ping absolute inset-0 rounded-full bg-[#22C55E] opacity-50" />
@@ -769,12 +758,12 @@ function ChannelBand() {
 
 /* ─────────────────────────── CAPABILITIES ─────────────────────────── */
 const CAPS = [
-  { tag: 'Lead Intake',      Icon: ClipboardList, title: 'Intake & Qualification',     desc: 'Captures name, address, damage type, insurance carrier, and urgency — routed straight into your Zuper pipeline.', color: '#fd5000' },
-  { tag: 'Scheduling',       Icon: CalendarCheck,  title: 'Appointment Booking',        desc: 'Checks real-time crew availability, offers slots, and confirms inspections with no dispatcher required.', color: '#2563eb' },
+  { tag: 'Lead Intake',      Icon: ClipboardList, title: 'Intake & Qualification',     desc: 'Captures name, address, damage type, insurance status, and urgency level in one call. Routes the complete intake directly into your Zuper pipeline without re-entry.', color: '#fd5000' },
+  { tag: 'Scheduling',       Icon: CalendarCheck,  title: 'Appointment Booking',        desc: 'Presents available time slots, locks in the inspection time, and creates the job record in Zuper before the call ends.', color: '#2563eb' },
   { tag: 'Sales Support',    Icon: MessageSquare,  title: 'Estimation & Quote Queries', desc: 'Answers pricing and scope questions instantly. Flags complex deals for your sales team to own and close.', color: '#059669' },
   { tag: 'Customer Service', Icon: Activity,       title: 'Job Status Updates',         desc: 'Pulls live job data from Zuper and communicates progress, schedule changes, and next steps to homeowners.', color: '#7c3aed' },
-  { tag: 'FAQ Handling',     Icon: BookOpen,       title: 'Business & Services FAQ',    desc: 'Handles services, coverage areas, warranties, insurance claims, and financing — consistently, every time.', color: '#d97706' },
-  { tag: 'Storm Response',   Icon: Zap,            title: 'Emergency Triage',           desc: 'Identifies storm, hail, and water urgency. Escalates critical cases to on-call crews while capturing full intake.', color: '#e11d48' },
+  { tag: 'FAQ Handling',     Icon: BookOpen,       title: 'Business & Services FAQ',    desc: 'Knows your services, coverage areas, warranty terms, and financing options. Answers the same way your team would.', color: '#d97706' },
+  { tag: 'Storm Response',   Icon: Zap,            title: 'Emergency Triage',           desc: 'Identifies active leaks, storm damage, and structural concerns on the call. Escalates critical cases to on-call crews while capturing full intake.', color: '#e11d48' },
 ]
 
 // Capabilities scroll constants — visible count only, scroll measured dynamically
@@ -824,23 +813,45 @@ function Capabilities() {
   const offsetRef = useRef(0)
   const userVelocityRef = useRef(0)
 
-  // Wheel handler — adds velocity on top of auto-scroll
+  // Drag-to-scroll — grab and drag scrolls cards, normal wheel scrolls page
+  const isDraggingRef = useRef(false)
+  const dragStartYRef = useRef(0)
+  const dragLastYRef = useRef(0)
+
   useEffect(() => {
     if (isMobile) return
     const vp = viewportRef.current
     if (!vp) return
 
-    const onWheel = (e: WheelEvent) => {
-      if (halfHeightRef.current <= 0) return
-      // Only prevent page scroll if mostly vertical and cards are in view
-      if (inViewRef.current && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault()
-        userVelocityRef.current += e.deltaY * 0.4
-      }
+    const onMouseDown = (e: MouseEvent) => {
+      isDraggingRef.current = true
+      dragStartYRef.current = e.clientY
+      dragLastYRef.current = e.clientY
+      vp.style.cursor = 'grabbing'
+      e.preventDefault()
     }
 
-    vp.addEventListener('wheel', onWheel, { passive: false })
-    return () => vp.removeEventListener('wheel', onWheel)
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDraggingRef.current) return
+      const delta = dragLastYRef.current - e.clientY
+      dragLastYRef.current = e.clientY
+      userVelocityRef.current += delta * 0.8
+    }
+
+    const onMouseUp = () => {
+      isDraggingRef.current = false
+      vp.style.cursor = 'grab'
+    }
+
+    vp.style.cursor = 'grab'
+    vp.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+    return () => {
+      vp.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
+    }
   }, [isMobile])
 
   useEffect(() => {
@@ -924,7 +935,7 @@ function Capabilities() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="bg-[#f8f5f0] relative pt-24"
+      className="bg-[#f8f5f0] relative pt-32"
     >
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
@@ -937,11 +948,11 @@ function Capabilities() {
               <SectionTextBg>
                 <SectionEyebrow icon="⚡" label="Capabilities" />
                 <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
-                  Not a chatbot.<br />
-                  <span className="text-[#fd5000]">A roofing expert.</span>
+                  Your newest hire.<br />
+                  <span className="text-[#fd5000]">Starting today.</span>
                 </h2>
                 <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3">
-                  Trained on roofing workflows. Ready to qualify, book, and convert — across calls and text.
+                  Trained on roofing. Customized to your business. Works inside Zuper and can take calls, book inspections, and create jobs automatically.
                 </p>
               </SectionTextBg>
             </div>
@@ -956,11 +967,11 @@ function Capabilities() {
                   <SectionTextBg>
                     <SectionEyebrow icon="⚡" label="Capabilities" />
                     <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
-                      Not a chatbot.<br />
-                      <span className="text-[#fd5000]">A roofing expert.</span>
+                      Your newest hire.<br />
+                      <span className="text-[#fd5000]">Starting today.</span>
                     </h2>
                     <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3 max-w-[400px]">
-                      Trained on roofing workflows.<br />Ready to qualify, book, and convert — across calls and text.
+                      Trained on roofing. Customized to your business. Works inside Zuper and can take calls, book inspections, and create jobs automatically.
                     </p>
                   </SectionTextBg>
                 </div>
@@ -989,7 +1000,7 @@ function Capabilities() {
                     style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.50) 50%, transparent 100%)' }}>
                     <div className="flex items-center gap-2 mb-2">
                       <span className="w-[8px] h-[8px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 8px #4ade80' }} />
-                      <span className="font-['Space_Mono',monospace] text-[11px] font-medium text-white/80 tracking-[0.12em] uppercase">Live · Available 24/7</span>
+                      <span className="font-['Roboto',sans-serif] text-[11px] font-medium text-white/80 tracking-[0.12em] uppercase">Live · Available 24/7</span>
                     </div>
                     <p className="font-jakarta font-extrabold text-white text-[22px] leading-tight tracking-[-0.02em]">Nova — CSR Agent</p>
                     <p className="font-inter text-[13px] mt-1" style={{ color: '#ddd' }}>Handles calls, texts &amp; storm surge — automatically.</p>
@@ -1019,7 +1030,7 @@ function Capabilities() {
                     <div
                       ref={el => { if (el) cardsInnerRef.current[i] = el }}
                       key={`${c.title}-${i}`}
-                      className="group bg-white rounded-[20px] px-7 py-8 flex items-start gap-5 cursor-default"
+                      className="group bg-white rounded-[20px] px-7 py-8 flex items-start gap-5 cursor-grab active:cursor-grabbing"
                       style={{
                         boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                         transition: 'box-shadow 0.3s ease',
@@ -1045,12 +1056,12 @@ function Capabilities() {
                           <h3 className="font-jakarta font-bold text-[#191919] text-[16px] leading-snug tracking-[-0.01em]">
                             {c.title}
                           </h3>
-                          <span className="font-['Space_Mono',monospace] text-[11px] text-[#C8C0B8] font-medium shrink-0 ml-3">
+                          <span className="font-['Roboto',sans-serif] text-[11px] text-[#C8C0B8] font-medium shrink-0 ml-3">
                             {String(i + 1).padStart(2, '0')}
                           </span>
                         </div>
                         <p className="font-inter text-[14px] text-[#7A7A7A] leading-[1.65] mb-3">{c.desc}</p>
-                        <span className="inline-flex items-center font-['Space_Mono',monospace] text-[11px] font-medium px-3 py-[4px] rounded-full"
+                        <span className="inline-flex items-center font-['Roboto',sans-serif] text-[11px] font-medium px-3 py-[4px] rounded-full"
                           style={{ background: `${c.color}0d`, color: c.color }}>
                           {c.tag}
                         </span>
@@ -1291,7 +1302,7 @@ export function VoiceLanguages() {
   const [activeIdx, setActiveIdx] = useState(-1)
 
   return (
-    <div className="snap-section py-24 bg-[#f8f5f0] relative overflow-hidden">
+    <div className="snap-section py-32 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1120px] mx-auto px-5 md:px-12 relative z-10">
@@ -1497,7 +1508,7 @@ function IllusAgentProfile({ active }: { active?: boolean }) {
             <div className="p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <span className="font-jakarta font-bold text-[18px] text-[#191919]">Nova</span>
-                <span className="font-['Space_Mono',monospace] text-[9px] font-bold px-2 py-[3px] rounded-[5px]" style={{ background: '#f0fdf4', color: '#15803d' }}>Z-134</span>
+                <span className="font-['Roboto',sans-serif] text-[9px] font-bold px-2 py-[3px] rounded-[5px]" style={{ background: '#f0fdf4', color: '#15803d' }}>Z-134</span>
               </div>
               <p className="font-inter text-[12px] text-[#6b6b6b]">Organized, focused, and task driven.</p>
               <div className="flex flex-wrap justify-center gap-2 mt-3">
@@ -1506,7 +1517,7 @@ function IllusAgentProfile({ active }: { active?: boolean }) {
                   { label: 'Team collaboration', bg: '#f0e8ff', color: '#7c3aed' },
                   { label: 'Project planning', bg: '#e8f5ec', color: '#15803d' },
                 ].map(t => (
-                  <span key={t.label} className="font-['Space_Mono',monospace] text-[9px] font-semibold px-2.5 py-[4px] rounded-full" style={{ background: t.bg, color: t.color }}>{t.label}</span>
+                  <span key={t.label} className="font-['Roboto',sans-serif] text-[9px] font-semibold px-2.5 py-[4px] rounded-full" style={{ background: t.bg, color: t.color }}>{t.label}</span>
                 ))}
               </div>
             </div>
@@ -1695,7 +1706,7 @@ function IllusKnowledgeBase({ active }: { active?: boolean }) {
                   background: 'linear-gradient(90deg, #7c3aed, #a78bfa)',
                 }} />
               </div>
-              <div className="font-['Space_Mono',monospace] text-[9px] text-[#6b6b6b] mt-1.5">
+              <div className="font-['Roboto',sans-serif] text-[9px] text-[#6b6b6b] mt-1.5">
                 {fedCount >= items.length ? 'Trained ✓' : `Learning... ${Math.round((fedCount / items.length) * 100)}%`}
               </div>
             </div>
@@ -1707,81 +1718,214 @@ function IllusKnowledgeBase({ active }: { active?: boolean }) {
   )
 }
 
-// Animated illustration: Add to route — routes connecting one by one
+// Animated illustration: Add to route — Nova card + connect button → cursor clicks → call scene
 function IllusAddRoute({ active }: { active?: boolean }) {
-  const routes = [
-    { label: 'Main Line', color: '#15803d' },
-    { label: 'SMS', color: '#15803d' },
-    { label: 'Web Chat', color: '#92400e' },
-  ]
-  const [connectedCount, setConnectedCount] = useState(0)
-  // Reset when step becomes active
+  // card: show Nova card with button, hovering: cursor moves to btn, clicking: press,
+  // scene: call scene with biz→customer, joining: Nova slides into middle, reset
+  const [phase, setPhase] = useState<'card' | 'hovering' | 'clicking' | 'scene' | 'joining' | 'reset'>('card')
+
   useEffect(() => {
-    if (active) setConnectedCount(0)
+    if (active) setPhase('card')
   }, [active])
+
   useEffect(() => {
-    const id = setInterval(() => setConnectedCount(prev => (prev >= routes.length ? 0 : prev + 1)), 2000)
-    return () => clearInterval(id)
-  }, [])
+    if (phase === 'card') {
+      const t = setTimeout(() => setPhase('hovering'), 1200)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'hovering') {
+      const t = setTimeout(() => setPhase('clicking'), 700)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'clicking') {
+      const t = setTimeout(() => setPhase('scene'), 400)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'scene') {
+      const t = setTimeout(() => setPhase('joining'), 2000)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'joining') {
+      const t = setTimeout(() => setPhase('reset'), 3200)
+      return () => clearTimeout(t)
+    }
+    if (phase === 'reset') {
+      const t = setTimeout(() => setPhase('card'), 800)
+      return () => clearTimeout(t)
+    }
+  }, [phase])
+
+  const showCard = phase === 'card' || phase === 'hovering' || phase === 'clicking'
+  const showScene = phase === 'scene' || phase === 'joining'
+  const cursorOnBtn = phase === 'hovering' || phase === 'clicking'
+  const btnPressed = phase === 'clicking'
+  const novaIn = phase === 'joining'
+
   return (
-    <div className="p-6 flex items-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="rounded-[16px] p-6 w-full max-w-[380px] mx-auto" style={{ background: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="relative">
-              <div className="w-3 h-3 rounded-full transition-all duration-500" style={{ background: connectedCount > 0 ? '#22c55e' : '#e5e0d8', boxShadow: connectedCount > 0 ? '0 0 8px #22c55e' : 'none' }} />
-              {connectedCount > 0 && <div className="absolute inset-0 w-3 h-3 rounded-full bg-[#22c55e] animate-ping opacity-30" />}
-            </div>
-            <span className="font-['Space_Mono',monospace] text-[13px] font-medium transition-colors duration-500" style={{ color: connectedCount > 0 ? '#15803d' : '#b0a89e' }}>
-              {connectedCount >= routes.length ? 'LIVE' : 'CONNECTING...'}
-            </span>
-          </div>
-          <span className="font-inter text-[12px] text-[#636363]">Just now</span>
-        </div>
-        <div className="flex flex-col gap-4">
-          {routes.map((r, i) => {
-            const connected = i < connectedCount
-            return (
-              <div key={r.label} className="flex items-center justify-between transition-all duration-500" style={{ opacity: connected ? 1 : 0.4 }}>
-                <span className="font-inter text-[15px] text-[#555]">{r.label}</span>
-                <div className="flex items-center gap-2">
-                  {connected ? (
-                    <>
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: r.color }} />
-                      <span className="font-inter text-[13px] font-medium" style={{ color: r.color }}>Connected</span>
-                    </>
-                  ) : i === connectedCount ? (
-                    <div className="w-4 h-4 rounded-full border-2 border-[#fd5000] border-t-transparent animate-spin" />
-                  ) : (
-                    <span className="font-inter text-[13px] text-[#b0a89e]">Waiting</span>
-                  )}
+    <div className="p-6 flex items-center justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="relative w-full max-w-[460px]" style={{ height: 360 }}>
+
+        {/* === Phase 1: Nova card with Connect Agent button === */}
+        <div className="absolute inset-0 flex items-center justify-center" style={{
+          opacity: showCard ? 1 : 0,
+          transform: showCard ? 'scale(1)' : 'scale(0.95)',
+          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: showCard ? 'auto' as const : 'none' as const,
+        }}>
+          <div className="relative">
+            <div className="rounded-[18px] overflow-hidden" style={{
+              background: 'white', boxShadow: '0 12px 40px rgba(0,0,0,0.1)', width: 220,
+            }}>
+              <div className="relative" style={{ height: 120, background: 'linear-gradient(145deg, #d1fae5, #ecfdf5)' }}>
+                <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
+              </div>
+              <div className="p-4 text-center">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <span className="font-jakarta font-bold text-[16px] text-[#191919]">Nova</span>
+                  <span className="font-['Roboto',sans-serif] text-[9px] font-bold px-2 py-[3px] rounded-[5px]" style={{ background: '#f0fdf4', color: '#15803d' }}>AI</span>
+                </div>
+                <p className="font-inter text-[11px] text-[#888] mb-3">Ready to handle calls</p>
+                <div className="rounded-[10px] py-2.5 text-center font-inter text-[13px] font-semibold text-white" style={{
+                  background: '#059669',
+                  transform: btnPressed ? 'scale(0.95)' : 'scale(1)',
+                  transition: 'transform 0.15s ease',
+                }}>
+                  Connect Agent
                 </div>
               </div>
-            )
-          })}
+            </div>
+            {/* Fake cursor */}
+            <div className="absolute pointer-events-none z-20" style={{
+              bottom: cursorOnBtn ? 28 : -10,
+              right: cursorOnBtn ? 50 : 20,
+              opacity: cursorOnBtn ? 1 : 0,
+              transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+              transform: btnPressed ? 'scale(0.85)' : 'scale(1)',
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M5 3l14 9-7 1.5L9 21z" fill="#191919" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
         </div>
+
+        {/* === Phase 2: Call scene === */}
+        <div className="absolute inset-0" style={{
+          opacity: showScene ? 1 : 0,
+          transition: 'opacity 0.8s ease',
+          pointerEvents: showScene ? 'auto' as const : 'none' as const,
+        }}>
+          {/* Connection lines — use percentages matching card positions */}
+          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" fill="none" style={{ overflow: 'visible' }}>
+            {/* Direct line — fades out when Nova arrives */}
+            <line x1="18%" y1="50%" x2="82%" y2="50%"
+              stroke="#d4d4d4" strokeWidth="1.5" strokeDasharray="6 4"
+              style={{ opacity: novaIn ? 0 : 0.8, transition: 'opacity 0.6s ease' }}
+            />
+            {/* Pulse along direct line */}
+            {!novaIn && showScene && (
+              <circle r="4" fill="#059669" opacity="0.7">
+                <animate attributeName="cx" from="18%" to="82%" dur="1.8s" repeatCount="indefinite" />
+                <animate attributeName="cy" values="50%" dur="1.8s" repeatCount="indefinite" />
+              </circle>
+            )}
+            {/* Lines: Business → Nova */}
+            <line x1="18%" y1="50%" x2="32%" y2="50%"
+              stroke="#059669" strokeWidth="2" strokeDasharray="6 4"
+              style={{ opacity: novaIn ? 1 : 0, transition: 'opacity 0.5s ease 0.2s' }}
+            />
+            {/* Lines: Nova → Customer */}
+            <line x1="68%" y1="50%" x2="82%" y2="50%"
+              stroke="#059669" strokeWidth="2" strokeDasharray="6 4"
+              style={{ opacity: novaIn ? 1 : 0, transition: 'opacity 0.5s ease 0.2s' }}
+            />
+            {novaIn && (
+              <>
+                <circle r="4" fill="#059669" opacity="0.7">
+                  <animate attributeName="cx" from="18%" to="32%" dur="1s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="50%" dur="1s" repeatCount="indefinite" />
+                </circle>
+                <circle r="4" fill="#059669" opacity="0.7">
+                  <animate attributeName="cx" from="68%" to="82%" dur="1s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="50%" dur="1s" repeatCount="indefinite" />
+                </circle>
+              </>
+            )}
+          </svg>
+
+          {/* Business — left, slides further left when Nova joins */}
+          <div className="absolute" style={{
+            left: novaIn ? 0 : 40,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            transition: 'left 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}>
+            <div className="rounded-[14px] p-4 flex flex-col items-center gap-2" style={{ background: 'white', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', width: 90 }}>
+              <span className="text-[28px]">🏢</span>
+              <span className="font-inter text-[12px] font-semibold text-[#191919]">Business</span>
+            </div>
+          </div>
+
+          {/* Customer — right, slides further right when Nova joins */}
+          <div className="absolute" style={{
+            right: novaIn ? 0 : 40,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            transition: 'right 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}>
+            <div className="rounded-[14px] p-4 flex flex-col items-center gap-2" style={{ background: 'white', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', width: 90 }}>
+              <span className="text-[28px]">👤</span>
+              <span className="font-inter text-[12px] font-semibold text-[#191919]">Customer</span>
+            </div>
+          </div>
+
+          {/* Nova card — drops in to center */}
+          <div className="absolute" style={{
+            left: '50%',
+            top: '50%',
+            transform: novaIn ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -20%) scale(0.92)',
+            opacity: novaIn ? 1 : 0,
+            transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+            zIndex: 10,
+          }}>
+            <div className="rounded-[18px] overflow-hidden" style={{
+              background: 'white', boxShadow: '0 12px 40px rgba(0,0,0,0.1)', width: 200,
+            }}>
+              <div className="relative" style={{ height: 130, background: 'linear-gradient(145deg, #d1fae5, #ecfdf5)' }}>
+                <img src="/agent-nova.png" alt="Nova" className="absolute inset-0 w-full h-full object-contain" style={{ objectPosition: 'center bottom' }} />
+              </div>
+              <div className="p-4 text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="font-jakarta font-bold text-[17px] text-[#191919]">Nova</span>
+                  <span className="w-[7px] h-[7px] rounded-full bg-[#22c55e]" style={{ boxShadow: '0 0 6px #22c55e' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )
 }
 
 const STEPS: { num: string; title: string; desc: string; tag: string; color: string; tagBg: string; tagText: string; icon: React.ReactNode; Illustration: React.ComponentType<{ active?: boolean }> }[] = [
-  { num: '01', title: 'Agent profile', desc: 'Name your agent, set her personality, and define her expertise areas.', tag: 'Identity',
+  { num: '01', title: 'Agent Identity', desc: 'Name your agent, set the personality, and define expertise areas.', tag: 'Identity',
     color: '#7c3aed', tagBg: '#f0e8ff', tagText: '#5b21b6',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
     Illustration: IllusAgentProfile,
   },
-  { num: '02', title: 'Superpowers', desc: 'Toggle capabilities — answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
+  { num: '02', title: 'Call Handling', desc: 'Toggle what the agent can do: answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
     color: '#fd5000', tagBg: '#fff3ed', tagText: '#b93500',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
     Illustration: IllusSuperpowers,
   },
-  { num: '03', title: 'Knowledge base', desc: 'Upload your docs, FAQs, and SOPs. Nova learns your business in minutes.', tag: 'Intelligence',
+  { num: '03', title: 'Knowledge Base', desc: 'Upload your pricing guides, FAQs, and SOPs. Your CSR Agent learns your business in minutes.', tag: 'Intelligence',
     color: '#2563eb', tagBg: '#eef4ff', tagText: '#1e40af',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>,
     Illustration: IllusKnowledgeBase,
   },
-  { num: '04', title: 'Add to route', desc: 'Connect your phone lines and channels. Nova starts answering immediately.', tag: 'Deployment',
+  { num: '04', title: 'Deployment', desc: 'Connect to your existing call routes.', tag: 'Deployment',
     color: '#059669', tagBg: '#e8f5ec', tagText: '#065f46',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>,
     Illustration: IllusAddRoute,
@@ -1792,22 +1936,24 @@ function GetStarted() {
   const [activeStep, setActiveStep] = useState(0)
 
   return (
-    <section className="py-24 bg-[#f8f5f0] relative overflow-hidden">
+    <section className="py-32 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1280px] mx-auto px-5 md:px-12 relative z-10">
         {/* Title row — eyebrow + heading + subtitle in one line */}
         <RevealOnScroll className="mb-14">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-8">
-            <div>
+            <SectionTextBg>
               <SectionEyebrow icon="" label="Get Started" />
               <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
-                Go live in under <span className="text-[#fd5000]">10 minutes.</span>
+                CSR Agent will go live<br />in <span className="text-[#fd5000]">minutes.</span>
               </h2>
-            </div>
-            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[380px] md:text-right shrink-0">
-              Four steps. No engineering team required. Nova configures herself around your business.
-            </p>
+            </SectionTextBg>
+            <SectionTextBg>
+              <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[380px] md:text-right shrink-0">
+                No dev team. No long onboarding. Works inside Zuper and can take calls, book inspections, and create jobs automatically.
+              </p>
+            </SectionTextBg>
           </div>
         </RevealOnScroll>
 
@@ -1840,12 +1986,12 @@ function GetStarted() {
                       }} />
                       <div className="flex-1 flex flex-col justify-center py-5 pl-5">
                         <div className="flex items-center gap-2.5">
-                          <span className="font-['Space_Mono',monospace] text-[11px] font-bold transition-colors duration-300" style={{ color: isActive ? s.color : '#c0b8ae' }}>{s.num}</span>
+                          <span className="font-['Roboto',sans-serif] text-[11px] font-bold transition-colors duration-300" style={{ color: isActive ? s.color : '#c0b8ae' }}>{s.num}</span>
                           <h3 className={`font-jakarta font-bold text-[16px] transition-colors duration-300 ${isActive ? 'text-[#191919]' : 'text-[#6b6b6b]'}`}>
                             {s.title}
                           </h3>
                           {isActive && (
-                            <span className="font-['Space_Mono',monospace] text-[9px] font-semibold tracking-[0.04em] uppercase px-2 py-[2px] rounded-[4px] shrink-0"
+                            <span className="font-['Roboto',sans-serif] text-[9px] font-semibold tracking-[0.04em] uppercase px-2 py-[2px] rounded-[4px] shrink-0"
                               style={{ background: s.tagBg, color: s.tagText }}>
                               {s.tag}
                             </span>
@@ -1896,87 +2042,84 @@ const WORKFLOWS: WorkflowPanel[] = [
   {
     badge: 'Business Hours', badgeColor: 'green',
     tabName: 'Regular Hour Lead Intake', tabNote: 'New roof inspection booking',
-    h3: 'Full Roof Replacement Intake',
-    desc: "Nova handles the full intake — greets Isaac, confirms the address, qualifies the job type, and books the inspection. No hold music, no voicemail, no missed opportunity.",
+    h3: 'New Lead Intake & Booking',
+    desc: "The CSR Agent picks up as your company, identifies what the caller needs, builds their profile, captures the roofing issue, and books the inspection. All on one call.",
     steps: [
-      { title: 'Instant Pickup',       desc: 'Greets Isaac by name within 2 seconds as Brothers Metal Roofing.', doneAt: 6000 },
-      { title: 'Identify Intent',      desc: 'Determines Isaac is calling about a new roof inspection.', doneAt: 15000 },
-      { title: 'Confirm Address',      desc: 'Verifies property at 5265 Sebring-Warner Road, Greenville, Ohio 45331.', doneAt: 28000 },
-      { title: 'Qualify the Job',      desc: 'Confirms homeowner status and that it\'s a full roof replacement.', doneAt: 76000 },
-      { title: 'Book the Inspection',  desc: 'Schedules Monday, November 24th at 3 PM and confirms.', doneAt: 107000 },
+      { title: 'Greet & Route',           desc: 'Picks up as your company. Asks if it\'s a new inspection, existing project, or something else.', doneAt: 15000 },
+      { title: 'Build the Profile',       desc: 'Collects name and phone. If the caller skips a field, the agent moves on.', doneAt: 52000 },
+      { title: 'Confirm the Address',     desc: 'Captures property address, reads it back, and confirms before proceeding.', doneAt: 86000 },
+      { title: 'Capture the Issue',       desc: 'Asks what\'s going on with the roof. Logs the damage description and confirms homeowner status.', doneAt: 115000 },
+      { title: 'Book the Inspection',     desc: 'Offers a date and time, confirms the appointment, and creates the job in Zuper.', doneAt: 160000 },
     ],
-    callAvatar: '🏠', callName: 'Isaac — Brothers Metal Roofing', callInfo: 'Today · 2:34 PM · New Roof Inspection', callDur: '2:18',
+    callAvatar: '🏠', callName: 'John — Maven Roofing Services', callInfo: '3:00 · New Roof Inspection', callDur: '3:00',
     messages: [
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Hi there, Isaac. You've reached Brothers Metal Roofing. This is Nova. I'm here to help you get the support you need.", time: 2000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Are you calling about a new roof inspection, an existing project, or something else today?", time: 9000 },
-      { role: 'cu', who: 'Isaac', text: "New roof inspection.", time: 15000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "I have your property address as 5265 Sebring-Warner Road, Greenville, Ohio 45331. Should we use this for your booking?", tag: 'Address Confirm', time: 17000 },
-      { role: 'cu', who: 'Isaac', text: "Yes, that's correct.", time: 28000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Are you the homeowner?", time: 29000 },
-      { role: 'cu', who: 'Isaac', text: "Yes.", time: 32000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Thanks for confirming. Just to clarify, are you the homeowner of the property?", tag: 'Qualifying', time: 34000 },
-      { role: 'cu', who: 'Isaac', text: "Yes.", time: 40000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Great. And could you tell me a bit about the issue you'd like us to inspect? For example, is it a leak, damage, or something else?", time: 41000 },
-      { role: 'cu', who: 'Isaac', text: "Um, I want a new roof.", time: 55000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Understood. You're looking to get a new roof. Could you share a bit more detail? For example, are there specific concerns like old shingles, storm damage, or is it just time for a full replacement?", time: 59000 },
-      { role: 'cu', who: 'Isaac', text: "It's time for a full replacement.", time: 76000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Thanks for that. When would be the best date and time for us to come out and do the inspection?", tag: 'Booking', time: 79000 },
-      { role: 'cu', who: 'Isaac', text: "Um, Monday afternoon at approximately 3 o'clock.", time: 89000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Got it. Monday afternoon at around 3 o'clock. That would be November 24th. Does that sound right to you?", time: 95000 },
-      { role: 'cu', who: 'Isaac', text: "Yes.", time: 101000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "All right, let me get that set up for you now. This will just take a moment.", time: 102000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Your roof inspection is all set for Monday, November 24th at 3 PM. We'll see you then for the full roof replacement inspection.", tag: 'Confirmed ✓', highlight: true, time: 107000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "If anything changes or you need more help, just let me know.", time: 115000 },
-      { role: 'cu', who: 'Isaac', text: "All right, thank you.", time: 120000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "You're very welcome. We look forward to helping you with your new roof. Have a great day, Isaac.", time: 123000 },
-      { role: 'cu', who: 'Isaac', text: "Thank you.", time: 129000 },
-      { role: 'ai', who: 'Nova · Brothers Metal Roofing', text: "Take care, Isaac. If you need anything else, just reach out. Bye for now.", time: 131000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there. You've reached Maven Roofing Services. This is Mavis. I'm here to help. Are you calling about a new roofing inspection, an existing project, or something else today?", time: 3000 },
+      { role: 'cu', who: 'John', text: "A roof inspection.", time: 15000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Let's get your profile set up. Can I have your full name?", tag: 'Profile', time: 20000 },
+      { role: 'cu', who: 'John', text: "John Smith.", time: 28000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Thanks, John. Would you like me to use the number you're calling from?", time: 33000 },
+      { role: 'cu', who: 'John', text: "Yes, please.", time: 40000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Got it. What's the best email for you?", time: 45000 },
+      { role: 'cu', who: 'John', text: "I'd rather not give that out right now. I'll give it to the inspector when he gets here.", time: 52000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "No problem. We can skip the email. Can you give me the property address?", time: 60000 },
+      { role: 'cu', who: 'John', text: "25488 Highway 17, Hampstead, North Carolina.", time: 70000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "That's 25488 Highway 17, Hampstead, North Carolina. Sound right?", tag: 'Address Confirm', time: 78000 },
+      { role: 'cu', who: 'John', text: "That's correct.", time: 86000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Great. I'll create your profile now. Are you the homeowner or calling on behalf of someone else?", tag: 'Qualifying', time: 92000 },
+      { role: 'cu', who: 'John', text: "I'm the homeowner.", time: 100000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Could you tell me about the issue with your roof?", time: 106000 },
+      { role: 'cu', who: 'John', text: "I've been noticing water spots on my living room ceiling.", time: 115000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Water spots on the ceiling. When would be the best time for an inspection?", tag: 'Booking', time: 123000 },
+      { role: 'cu', who: 'John', text: "Tomorrow morning.", time: 132000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Tomorrow, April 1st. Any specific time, or should we go with the morning window around 9 AM?", time: 140000 },
+      { role: 'cu', who: 'John', text: "9 AM works.", time: 150000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Your roof inspection is set for tomorrow at 9 AM. A professional will come out to check the water spots. If you need to update anything, just call us back. Have a great day, John.", tag: 'Confirmed ✓', highlight: true, time: 160000 },
     ],
   },
   {
-    badge: 'After Hours', badgeColor: 'orange',
-    tabName: 'After-Hour Intake & Booking', tabNote: 'Late nights, weekends, holidays',
-    h3: 'After-Hours Lead Intake & Booking',
-    desc: "When your office closes, the CSR Agent keeps the front door open. Every late-night and weekend inquiry is captured, fully qualified, and booked for the next available slot — zero leads lost to voicemail.",
+    badge: 'Existing Customers', badgeColor: 'blue',
+    tabName: 'Service queries handled', tabNote: 'Account lookups, scope handling',
+    h3: 'Customer Service & Scope Handling',
+    desc: "Existing customer calls to check their balance. Then asks about fences. The CSR Agent checks for open invoices, answers accurately, and redirects off-scope requests back to what you cover.",
     steps: [
-      { title: 'After-Hours Greeting',  desc: "Acknowledges it's outside office hours and assures the customer they're in good hands." },
-      { title: 'Full Intake',           desc: 'Captures property, damage description, urgency level, and contact info.' },
-      { title: 'Emergency Assessment',  desc: 'Determines if the issue needs same-night response or standard next-day scheduling.' },
-      { title: 'Next-Day Booking',      desc: 'Schedules first available morning slot and sends SMS confirmation immediately.' },
-      { title: 'Lead Created in Zuper', desc: 'Full record in After-Hour pipeline ready for team review at start of business.' },
+      { title: 'Recognize the Caller',      desc: 'Identifies them as an existing customer.', doneAt: 12000 },
+      { title: 'Check Account Status',       desc: 'Looks up invoices. Confirms no balance owed.', doneAt: 28000 },
+      { title: 'Handle Off-Scope Request',   desc: "Caller asks about fences. Agent responds: 'We specialize in roofing. We don't handle fences.'", doneAt: 40000 },
+      { title: 'Redirect to Services',       desc: 'Offers to help with anything roofing-related.', doneAt: 46000 },
+      { title: 'Close the Call',             desc: 'Wraps up warmly. No time wasted.', doneAt: 55000 },
     ],
-    callAvatar: '🌙', callName: 'Diane R. — (720) 555-0394', callInfo: 'Last Night · 9:47 PM · After Hours', callDur: '3:05',
+    callAvatar: '👤', callName: 'Existing Customer — Maven Roofing', callInfo: '0:59 · Service Query', callDur: '0:59',
     messages: [
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Thanks for calling Summit Roofing. Our office is closed, but I can absolutely help you right now. What's going on?" },
-      { role: 'cu', who: 'Diane', text: "I have a leak coming through my ceiling. It's been raining all day, the stain keeps spreading — worried it gets worse overnight." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "That's stressful, especially at night. Is water actively dripping, or is it a stain that appeared today?", tag: 'Triage' },
-      { role: 'cu', who: 'Diane', text: "More of a stain, wet to the touch, not dripping yet." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Since it's not actively dripping, I can get our first crew to you first thing tomorrow morning. Place a towel nearby just in case. What's your address?", tag: 'Scheduling' },
-      { role: 'cu', who: 'Diane', text: "1120 Birchwood Lane, Denver, Colorado 80203." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "You're booked for tomorrow at 8 AM, Diane — our earliest slot. Confirmation text on its way. The team will assess damage and walk you through next steps. You're in good hands.", tag: 'Confirmed ✓', highlight: true },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there, you've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you need. Are you calling about a new roofing inspection, an existing project, or something else today?", time: 2000 },
+      { role: 'cu', who: 'Caller', text: "Do I owe you anything?", time: 12000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "I can help with that. I don't see any invoices created for you at this time, so it looks like you don't owe anything right now. Is there anything else I can assist you with today?", tag: 'Account Check', time: 16000 },
+      { role: 'cu', who: 'Caller', text: "Well, can you guys do my fence?", time: 28000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We specialize in roofing services: inspections, repairs, replacements, and working with insurance for roof-related issues. We don't handle fences. Is there something related to your roof I can help with?", tag: 'Off-Scope', time: 33000 },
+      { role: 'cu', who: 'Caller', text: "Not at the moment, thank you.", time: 46000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're welcome. If anything comes up with your roof in the future, feel free to reach out. Have a great day.", highlight: true, time: 50000 },
     ],
   },
   {
-    badge: 'Emergency', badgeColor: 'red',
-    tabName: 'Storm & Hail Response', tabNote: 'High-volume weather surge',
-    h3: 'Storm & Hail Emergency Response',
-    desc: "When severe weather hits, call volume spikes 10x. The CSR Agent handles the surge — qualifying every caller, triaging damage, and routing critical cases to on-call crews without missing a single lead.",
+    badge: 'FAQ Handling', badgeColor: 'purple',
+    tabName: 'Service scope questions', tabNote: 'Solar, gutters, off-scope queries',
+    h3: 'FAQ & Service Scope',
+    desc: "Caller asks about solar. Then gutters. The CSR Agent answers both accurately: no to solar, and gutters only as part of a full roof replacement. Stays in your lane and redirects to what you do cover.",
     steps: [
-      { title: 'Storm Mode Activation', desc: 'Switches to emergency protocol when storm event keywords are detected.' },
-      { title: 'Damage Triage',         desc: 'Assesses severity: structural compromise, active leaks, or cosmetic hail damage.' },
-      { title: 'Priority Routing',      desc: 'Critical cases escalated to on-call crew. Non-urgent cases queued for next day.' },
-      { title: 'Insurance Guidance',    desc: 'Advises on photo documentation, tarping, and insurance claim filing steps.' },
-      { title: 'Mass Lead Capture',     desc: "Every caller gets a structured record in Zuper's Emergency pipeline — no call wasted." },
+      { title: 'Greet & Route',         desc: 'Picks up as your company. Caller says they have a question.', doneAt: 16000 },
+      { title: 'Answer: Solar',         desc: "'We specialize in roofing. We don't offer solar installations.'", doneAt: 38000 },
+      { title: 'Answer: Gutters',       desc: "'We don't install gutters as a standalone service. During a roof replacement, we can discuss gutter options.'", doneAt: 70000 },
+      { title: 'Offer Roofing Help',    desc: "'If you're having any roofing concerns, I'd be happy to help.'", doneAt: 85000 },
+      { title: 'Close the Call',        desc: 'Wraps up. No confusion. No wrong promises.', doneAt: 100000 },
     ],
-    callAvatar: '⛈️', callName: 'Robert K. — (214) 555-0847', callInfo: 'Wednesday · 6:22 PM · Storm Surge', callDur: '1:52',
+    callAvatar: '❓', callName: 'Caller — Maven Roofing', callInfo: '1:52 · FAQ Query', callDur: '1:52',
     messages: [
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Summit Roofing — storm response line. We know a lot of you were hit hard today. I'm here to help. What's going on at your property?" },
-      { role: 'cu', who: 'Robert', text: "Massive hailstorm two hours ago. Dents all over the roof and a section near the chimney looks cracked. Worried water gets in overnight." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "That cracked section is an active risk — flagging this for our emergency crew right now. Can I get your address and name?", tag: '🚨 Escalating' },
-      { role: 'cu', who: 'Robert', text: "Robert Kessler. 7782 Pecan Street, Dallas, Texas 75214." },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Your address is flagged as priority. Do not go on the roof yourself. Do you have homeowner's insurance?", tag: 'Safety + Insurance' },
-      { role: 'cu', who: 'Robert', text: "Yes, Allstate. How soon can someone get here?" },
-      { role: 'ai', who: 'Aria · Summit Roofing', text: "Our on-call team will contact you within the hour. Sending a confirmation text with your job reference number now. Document any interior water damage with photos — your adjuster will need them. You called the right people, Robert.", tag: 'Dispatched ✓', highlight: true },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there, you've reached Maven Roofing Services. This is Mavis. I'm here to help. Are you calling about a new roofing inspection, an existing project, or something else today?", time: 3000 },
+      { role: 'cu', who: 'Caller', text: "I just have a couple questions. Do you guys do solar?", time: 16000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Great question. We specialize in roofing — inspections, repairs, and full replacements. We don't offer solar installations. Is there anything roof-related I can help with?", tag: 'Solar — No', time: 22000 },
+      { role: 'cu', who: 'Caller', text: "What about gutters?", time: 42000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We don't install gutters as a standalone service. However, during a full roof replacement, we can discuss gutter options as part of the project. Would you like to schedule a roof inspection?", tag: 'Gutters — Conditional', time: 48000 },
+      { role: 'cu', who: 'Caller', text: "Not right now, but good to know. Thanks.", time: 78000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're welcome. If you're ever having any roofing concerns, feel free to reach out. Have a great day.", highlight: true, time: 85000 },
     ],
   },
 ]
@@ -1985,6 +2128,8 @@ const BADGE_STYLES: Record<string, string> = {
   green:  'bg-[rgba(34,197,94,0.12)] text-[#16A34A]',
   orange: 'bg-[rgba(253,80,0,0.12)] text-[#fd5000]',
   red:    'bg-[rgba(239,68,68,0.12)] text-[#DC2626]',
+  blue:   'bg-[rgba(37,99,235,0.12)] text-[#2563EB]',
+  purple: 'bg-[rgba(124,58,237,0.12)] text-[#7C3AED]',
 }
 
 // Message interval is now dynamic per panel: totalDurMs / totalMsgs
@@ -2010,12 +2155,14 @@ function Workflows() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const panel = WORKFLOWS[active]
 
-  // Create audio element once
+  // Create audio element per tab
   useEffect(() => {
-    audioRef.current = new Audio('/roofing-audio-01.mp3')
+    audioRef.current?.pause()
+    const audioSrc = ['/business-hours.mp3', '/q-handling.mp3', '/faq.mp3'][active] || '/roofing-audio-01.mp3'
+    audioRef.current = new Audio(audioSrc)
     audioRef.current.preload = 'auto'
     return () => { audioRef.current?.pause(); audioRef.current = null }
-  }, [])
+  }, [active])
 
   const totalDurMs = parseDurMs(panel.callDur)
   const totalMsgs = panel.messages.length
@@ -2047,11 +2194,11 @@ function Workflows() {
     if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0 }
   }, [active])
 
-  // Sync audio with play state (only on tab 0 — Isaac)
+  // Sync audio with play state
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    if (playing && active === 0) {
+    if (playing) {
       audio.play().catch(() => {})
       // Sync elapsed time from audio position
       const syncInterval = setInterval(() => {
@@ -2095,7 +2242,7 @@ function Workflows() {
   }))
 
   return (
-    <section id="workflows" className="py-24 bg-[#f8f5f0] relative overflow-hidden">
+    <section id="workflows" className="py-32 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1320px] mx-auto px-4 md:px-12 relative z-10">
@@ -2129,7 +2276,7 @@ function Workflows() {
                 transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)',
               }}
             >
-              <span className={`text-[10px] font-semibold tracking-[0.08em] uppercase px-2.5 py-0.5 rounded-full w-fit font-['Space_Mono',monospace] ${BADGE_STYLES[wf.badgeColor]}`}>{wf.badge}</span>
+              <span className={`text-[10px] font-semibold tracking-[0.08em] uppercase px-2.5 py-0.5 rounded-full w-fit font-['Roboto',sans-serif] ${BADGE_STYLES[wf.badgeColor]}`}>{wf.badge}</span>
               <span className="font-jakarta text-[14px] font-bold text-[#191919] leading-snug mt-0.5">{wf.tabName}</span>
               <span className="font-inter text-[12px] text-[#ABABAB]">{wf.tabNote}</span>
               {/* Mobile arrow hint */}
@@ -2189,7 +2336,7 @@ function Workflows() {
                     <div className="font-inter text-[12px] font-semibold text-[#191919]">{panel.callName}</div>
                     <div className="font-inter text-[10px] text-[#767676]">{panel.callInfo}</div>
                   </div>
-                  <span className="font-['Space_Mono',monospace] text-[9px] text-[#6b6b6b] tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
+                  <span className="font-['Roboto',sans-serif] text-[9px] text-[#6b6b6b] tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
                 <div className="flex items-center gap-[2px] h-5">
                   {bars.map((b, bi) => (
@@ -2211,13 +2358,13 @@ function Workflows() {
                     <div key={mi} className="flex gap-3 transition-opacity duration-500"
                       style={{ opacity: elapsedMs === 0 ? 1 : isPast ? 1 : isActive ? 1 : 0.15 }}>
                       <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 mt-0.5"
-                        style={m.role === 'ai' ? { background: 'rgba(253,80,0,0.10)', color: '#c2410c' } : { background: '#f0ede8', color: '#5c5c5c' }}>
-                        {m.role === 'ai' ? 'AI' : 'CU'}
+                        style={m.role === 'ai' ? { background: 'rgba(253,80,0,0.10)', color: '#c2410c' } : { background: 'rgba(37,99,235,0.10)', color: '#2563eb' }}>
+                        {m.role === 'ai' ? 'AI' : m.who.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className={`font-inter text-[9px] font-semibold uppercase tracking-[0.08em] mb-0.5 ${m.role === 'ai' ? 'text-[#fd5000]' : 'text-[#ABABAB]'}`}>{m.who}</div>
                         <div className="font-inter text-[12px] leading-[1.6] text-[#5A5A5A]">{m.text}</div>
-                        {m.tag && <span className="inline-flex mt-1 font-['Space_Mono',monospace] text-[8px] font-medium px-2 py-[2px] rounded-full" style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}>{m.tag}</span>}
+                        {m.tag && <span className="inline-flex mt-1 font-['Roboto',sans-serif] text-[8px] font-medium px-2 py-[2px] rounded-full" style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}>{m.tag}</span>}
                       </div>
                     </div>
                   )
@@ -2255,7 +2402,7 @@ function Workflows() {
                       >
                         {done
                           ? <Check size={12} strokeWidth={2.5} color="white" />
-                          : <span className="font-['Space_Mono',monospace] text-[10px] font-bold tracking-tight">{i + 1}</span>
+                          : <span className="font-['Roboto',sans-serif] text-[10px] font-bold tracking-tight">{i + 1}</span>
                         }
                       </div>
                       <div>
@@ -2299,7 +2446,7 @@ function Workflows() {
                     <div className="font-inter text-[13px] font-semibold text-[#191919] truncate leading-tight">{panel.callName}</div>
                     <div className="font-inter text-[10px] text-[#BFBFBF] mt-0.5">{panel.callInfo}</div>
                   </div>
-                  <span className="font-['Space_Mono',monospace] text-[10px] text-[#6b6b6b] shrink-0 tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
+                  <span className="font-['Roboto',sans-serif] text-[10px] text-[#6b6b6b] shrink-0 tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
                 {/* Waveform */}
                 <div className="flex items-center gap-[2px] h-7">
@@ -2335,9 +2482,9 @@ function Workflows() {
                       className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5 font-inter"
                       style={m.role === 'ai'
                         ? { background: 'rgba(253,80,0,0.10)', color: '#c2410c' }
-                        : { background: '#f0ede8', color: '#5c5c5c' }}
+                        : { background: 'rgba(37,99,235,0.10)', color: '#2563eb' }}
                     >
-                      {m.role === 'ai' ? 'AI' : 'CU'}
+                      {m.role === 'ai' ? 'AI' : m.who.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className={`font-inter text-[10px] font-semibold uppercase tracking-[0.08em] mb-1 ${m.role === 'ai' ? 'text-[#fd5000]' : 'text-[#ABABAB]'}`}>
@@ -2349,7 +2496,7 @@ function Workflows() {
                         ) : m.text}
                       </div>
                       {m.tag && (
-                        <span className="inline-flex mt-1.5 font-['Space_Mono',monospace] text-[10px] font-medium px-[9px] py-[4px] rounded-full"
+                        <span className="inline-flex mt-1.5 font-['Roboto',sans-serif] text-[10px] font-medium px-[9px] py-[4px] rounded-full"
                           style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}>
                           {m.tag}
                         </span>
@@ -2372,12 +2519,12 @@ function Workflows() {
 
 /* ─────────────────────────── REVENUE MULTIPLIER ─────────────────────────── */
 const RM_ITEMS = [
-  { Icon: TrendingUp,     title: 'Higher Close Rates',       desc: 'Answer instantly while homeowner intent is at its peak. Never lose a warm lead to a competitor who picked up faster.', color: '#059669', iconBg: 'rgba(5,150,105,0.10)', iconBorder: 'rgba(5,150,105,0.20)', illusBg: 'linear-gradient(155deg, #f0faf5, #e8f5ee)' },
-  { Icon: Zap,            title: 'Shorter Response Windows', desc: "Speed-to-contact is the #1 driver of close rate in home services. You'll always be the fastest response — regardless of time of day.", color: '#4f46e5', iconBg: 'rgba(79,70,229,0.10)', iconBorder: 'rgba(79,70,229,0.20)', illusBg: 'linear-gradient(155deg, #f5f2ff, #eee8fc)' },
-  { Icon: CloudLightning, title: 'Storm Surge Readiness',    desc: 'When hail hits your market, volume spikes 10x overnight. Scale instantly with no overtime, hiring chaos, or capacity limits.', color: '#d97706', iconBg: 'rgba(217,119,6,0.10)', iconBorder: 'rgba(217,119,6,0.20)', illusBg: 'linear-gradient(155deg, #fef8ee, #fdf2e0)' },
-  { Icon: BarChart2,      title: 'Pipeline Stays Pristine',  desc: 'Every call creates a structured lead record in Zuper. Your team wakes up to a qualified pipeline — not a pile of voicemails to parse.', color: '#2563eb', iconBg: 'rgba(37,99,235,0.10)', iconBorder: 'rgba(37,99,235,0.20)', illusBg: 'linear-gradient(155deg, #f0f5ff, #e8effe)' },
-  { Icon: Users,          title: 'Revenue Per CSR',          desc: 'Your team handles complex conversations and customer relationships. Routine intake and booking handled automatically.', color: '#e11d48', iconBg: 'rgba(225,29,72,0.10)', iconBorder: 'rgba(225,29,72,0.20)', illusBg: 'linear-gradient(155deg, #fef2f4, #fde8ec)' },
-  { Icon: Link2,          title: 'Zero Tool Sprawl',         desc: 'Intake, qualification, booking, and pipeline updates all live in one connected Zuper workflow. No third-party glue required.', color: '#7c3aed', iconBg: 'rgba(124,58,237,0.10)', iconBorder: 'rgba(124,58,237,0.20)', illusBg: 'linear-gradient(155deg, #f6f2ff, #f0eafc)' },
+  { Icon: TrendingUp,     title: 'Higher Close Rates',       desc: 'Speed to lead is the #1 driver of close rate in home services. When every call is answered on the first ring, you win the job before your competitor even sees the missed call.', color: '#059669', iconBg: 'rgba(5,150,105,0.10)', iconBorder: 'rgba(5,150,105,0.20)', illusBg: 'linear-gradient(155deg, #f0faf5, #e8f5ee)' },
+  { Icon: CloudLightning, title: 'Capacity on Demand',       desc: 'Storm season, emergency leaks, seasonal rushes. When your call volume spikes, the CSR Agent scales with it and handles every call the same way your team would.', color: '#d97706', iconBg: 'rgba(217,119,6,0.10)', iconBorder: 'rgba(217,119,6,0.20)', illusBg: 'linear-gradient(155deg, #fef8ee, #fdf2e0)' },
+  { Icon: BarChart2,      title: 'Pipeline Stays Pristine',  desc: 'Every call creates a structured lead record in Zuper. Your team wakes up to a qualified pipeline, not a pile of voicemails to parse.', color: '#2563eb', iconBg: 'rgba(37,99,235,0.10)', iconBorder: 'rgba(37,99,235,0.20)', illusBg: 'linear-gradient(155deg, #f0f5ff, #e8effe)' },
+  { Icon: Users,          title: 'Revenue Per CSR',          desc: 'The CSR Agent handles routine intake, booking, and status updates so your team can focus on complex conversations and customer relationships that drive revenue.', color: '#e11d48', iconBg: 'rgba(225,29,72,0.10)', iconBorder: 'rgba(225,29,72,0.20)', illusBg: 'linear-gradient(155deg, #fef2f4, #fde8ec)' },
+  { Icon: Zap,            title: 'Fraction of the Cost',     desc: "Adding another CSR to cover nights, weekends, and overflow is expensive. The CSR Agent covers those gaps around the clock, so your team's time goes further.", color: '#4f46e5', iconBg: 'rgba(79,70,229,0.10)', iconBorder: 'rgba(79,70,229,0.20)', illusBg: 'linear-gradient(155deg, #f5f2ff, #eee8fc)' },
+  { Icon: Link2,          title: 'One Platform, One Workflow', desc: 'Intake, qualification, booking, and job creation all happen inside Zuper. One system your team already uses. Nothing extra to learn, connect, or pay for.', color: '#7c3aed', iconBg: 'rgba(124,58,237,0.10)', iconBorder: 'rgba(124,58,237,0.20)', illusBg: 'linear-gradient(155deg, #f6f2ff, #f0eafc)' },
 ]
 
 function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: boolean }) {
@@ -2423,7 +2570,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
             }} />
           ))}
         </div>
-        <span className="font-['Space_Mono',monospace] text-[8px] text-[#636363] shrink-0">0:42</span>
+        <span className="font-['Roboto',sans-serif] text-[8px] text-[#636363] shrink-0">0:42</span>
       </div>
       {/* Status swap */}
       <div className="relative h-7 flex items-center justify-center" style={{ animation: 'closeTagIn 5s cubic-bezier(0.4,0,0.2,1) infinite' }}>
@@ -2439,8 +2586,8 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
     </div>
   )
 
-  // Shorter Response — user msg → typing → AI reply → fade out → loop
-  if (item.title.includes('Response')) return (
+  // Fraction of the Cost — user msg → typing → AI reply → fade out → loop
+  if (item.title.includes('Fraction')) return (
     <div className="w-full flex flex-col gap-2">
       <style>{`
         @keyframes chatUserIn{0%,2%{opacity:0;transform:translateY(10px)}8%,82%{opacity:1;transform:translateY(0)}92%,100%{opacity:0;transform:translateY(-4px)}}
@@ -2474,13 +2621,13 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
       </div>
       {/* Speed badge */}
       <div className="flex justify-end" style={{ animation: 'chatBadgeIn 6s cubic-bezier(0.4,0,0.2,1) infinite' }}>
-        <span className="font-['Space_Mono',monospace] text-[8px] px-2 py-0.5" style={{ ...cardStyle, color: c }}>{'<'}2s response</span>
+        <span className="font-['Roboto',sans-serif] text-[8px] px-2 py-0.5" style={{ ...cardStyle, color: c }}>{'<'}2s response</span>
       </div>
     </div>
   )
 
-  // Storm Surge — smooth animated surge visualization
-  if (item.title.includes('Storm')) return (
+  // Capacity on Demand — smooth animated surge visualization
+  if (item.title.includes('Capacity')) return (
     <div className="w-full flex flex-col gap-2">
       <style>{`
         @keyframes stormPulse{0%,100%{opacity:0.7}50%{opacity:1}}
@@ -2492,10 +2639,10 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 px-2 py-1" style={{ ...cardStyle }}>
           <div className="w-1.5 h-1.5 rounded-full" style={{ background: c, animation: 'stormPulse 1.2s ease infinite' }} />
-          <span className="font-['Space_Mono',monospace] text-[8px] font-medium" style={{ color: c }}>SURGE</span>
+          <span className="font-['Roboto',sans-serif] text-[8px] font-medium" style={{ color: c }}>SURGE</span>
         </div>
         <div className="flex items-center gap-1 px-2 py-1" style={cardStyle}>
-          <span className="font-['Space_Mono',monospace] text-[9px] font-bold" style={{ color: c, animation: 'stormCount 4s ease infinite' }}>458%</span>
+          <span className="font-['Roboto',sans-serif] text-[9px] font-bold" style={{ color: c, animation: 'stormCount 4s ease infinite' }}>458%</span>
         </div>
       </div>
       {/* Smooth bar chart with surge effect */}
@@ -2583,7 +2730,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: `${c}12` }}>
           <div className="h-full rounded-[2px]" style={{ background: c, animation: 'revBarFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
         </div>
-        <span className="font-['Space_Mono',monospace] text-[8px] font-bold shrink-0" style={{ color: c }}>78%</span>
+        <span className="font-['Roboto',sans-serif] text-[8px] font-bold shrink-0" style={{ color: c }}>78%</span>
       </div>
       {/* Team bar */}
       <div className="flex items-center gap-2">
@@ -2595,7 +2742,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
         <div className="flex-1 h-3.5 rounded-[2px] overflow-hidden" style={{ background: '#e8e4e0' }}>
           <div className="h-full rounded-[2px]" style={{ background: '#a8a4a0', animation: 'revTeamFill 5s cubic-bezier(0.4,0,0.2,1) infinite' }} />
         </div>
-        <span className="font-['Space_Mono',monospace] text-[8px] font-bold text-[#767676] shrink-0">22%</span>
+        <span className="font-['Roboto',sans-serif] text-[8px] font-bold text-[#767676] shrink-0">22%</span>
       </div>
       {/* Metric cards */}
       <div className="flex gap-1.5">
@@ -2606,7 +2753,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
           }}>
             <span className="text-[9px]">{m.icon}</span>
             <div>
-              <div className="font-['Space_Mono',monospace] text-[9px] font-bold leading-none" style={{ color: c }}>{m.v}</div>
+              <div className="font-['Roboto',sans-serif] text-[9px] font-bold leading-none" style={{ color: c }}>{m.v}</div>
               <div className="font-inter text-[8px] text-[#636363] leading-none mt-0.5">{m.l}</div>
             </div>
           </div>
@@ -2615,7 +2762,7 @@ function RMCardIllustration({ item }: { item: typeof RM_ITEMS[number]; hovered: 
     </div>
   )
 
-  // Zero Tool Sprawl — workflow pipeline with staggered reveal
+  // One Platform, One Workflow — workflow pipeline with staggered reveal
   return (
     <div className="w-full flex flex-col gap-2">
       <style>{`
@@ -2741,7 +2888,7 @@ function RevenueMultiplier() {
 
   return (
     <section
-      className="py-24 bg-[#f8f5f0] relative overflow-hidden"
+      className="py-32 bg-[#f8f5f0] relative overflow-hidden"
     >
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
@@ -2750,10 +2897,10 @@ function RevenueMultiplier() {
           <SectionTextBg>
             <SectionEyebrow icon="📊" label="Impact" />
             <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
-              From Feature to <span className="text-[#fd5000]">Revenue Multiplier</span>
+              Results from <span className="text-[#fd5000]">Day One.</span>
             </h2>
-            <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[520px] mx-auto leading-[1.7]">
-              The CSR Agent isn't just a feature — it's a measurable lift across your most critical business metrics.
+            <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[620px] mx-auto leading-[1.7]">
+              From the first call it answers, the CSR Agent is already improving your close rates, your pipeline, and your bottom line.
             </p>
           </SectionTextBg>
         </RevealOnScroll>
@@ -2779,7 +2926,7 @@ function RevenueMultiplier() {
 
 /* ─────────────────────────── CASE STUDY ─────────────────────────── */
 const CS_STATS = [
-  { num: '$25K',  label: 'Deal Value Captured During Storm' },
+  { num: '$440K', label: 'Deal Value Captured During Storm' },
   { num: '95',    label: 'Calls Handled at Peak Demand' },
   { num: '100%',  label: 'Response Rate' },
   { num: '458%',  label: 'Call Surge Absorbed' },
@@ -2787,12 +2934,71 @@ const CS_STATS = [
   { num: '30',    label: 'Callbacks Captured' },
 ]
 
+function SlotNumber({ value, active, delay = 0 }: { value: string; active: boolean; delay?: number }) {
+  const [display, setDisplay] = useState(value)
+  const [started, setStarted] = useState(false)
+
+  useEffect(() => {
+    if (!active) { setStarted(false); setDisplay(value); return }
+    const delayTimer = setTimeout(() => {
+      setStarted(true)
+      const chars = value.split('')
+      const digitIndices = chars.map((ch, i) => /[0-9]/.test(ch) ? i : -1).filter(i => i >= 0)
+      let settled = 0
+      const current = chars.map(ch => /[0-9]/.test(ch) ? '0' : ch)
+
+      // Settle one digit at a time
+      const settleNext = () => {
+        if (settled >= digitIndices.length) {
+          setDisplay(value)
+          return
+        }
+        const idx = digitIndices[settled]
+        const target = parseInt(chars[idx])
+        let count = 0
+        const totalSpins = 8 + Math.floor(Math.random() * 4)
+
+        const spin = setInterval(() => {
+          count++
+          current[idx] = String(count % 10)
+          setDisplay(current.join(''))
+          if (count >= totalSpins) {
+            clearInterval(spin)
+            current[idx] = String(target)
+            setDisplay(current.join(''))
+            settled++
+            setTimeout(settleNext, 80)
+          }
+        }, 60)
+      }
+      settleNext()
+    }, delay)
+    return () => clearTimeout(delayTimer)
+  }, [active, value, delay])
+
+  return <span>{started || !active ? display : value.replace(/[0-9]/g, '0')}</span>
+}
+
 function CaseStudy() {
   const [videoLoaded, setVideoLoaded] = useState(false)
+  const [statsVisible, setStatsVisible] = useState(false)
+  const statsRef = useRef<HTMLDivElement>(null)
 
+  useEffect(() => {
+    const el = statsRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setStatsVisible(true)
+      },
+      { threshold: 0.5 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <section id="case-study" className="py-24 bg-[#f8f5f0] relative overflow-hidden">
+    <section id="case-study" className="py-32 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1200px] mx-auto px-5 md:px-12 relative z-10">
@@ -2833,15 +3039,17 @@ function CaseStudy() {
                     <div className="w-16 h-16 rounded-full bg-white/15 border border-white/30 flex items-center justify-center mb-5 group-hover:bg-white/25 group-hover:scale-105 transition-all" style={{ backdropFilter: 'blur(8px)' }}>
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style={{ marginLeft: 3 }}><path d="M8 5v14l11-7z"/></svg>
                     </div>
-                    <p className="font-inter font-semibold text-white text-[14px] tracking-[0.02em]">Watch the A&A Roofing Story</p>
+                    <p className="font-inter font-semibold text-white text-[14px] tracking-[0.02em]">Watch the A&amp;A Roofing Story</p>
                     <p className="font-inter text-[12px] mt-1" style={{ color: '#ABABAB' }}>3 min · Storm Surge Response</p>
                   </div>
                 )}
               </div>
-              <div className="flex border-t border-white/10">
+              <div ref={statsRef} className="flex border-t border-white/10">
                 {CS_STATS.slice(0, 3).map((s, i) => (
                   <div key={s.label} className={`flex-1 px-5 py-5 ${i < 2 ? 'border-r border-white/10' : ''}`}>
-                    <div className="font-jakarta font-extrabold text-white text-[24px] leading-none tracking-[-0.04em]">{s.num}</div>
+                    <div className="font-jakarta font-extrabold text-white text-[24px] leading-none tracking-[-0.04em]">
+                      <SlotNumber value={s.num} active={statsVisible} delay={i * 400} />
+                    </div>
                     <div className="font-inter text-[10px] mt-1.5 leading-snug" style={{ color: '#9A9A9A' }}>{s.label}</div>
                   </div>
                 ))}
@@ -2853,18 +3061,18 @@ function CaseStudy() {
               <div className="flex-1 px-5 md:px-10 pt-8 md:pt-10 pb-8 flex flex-col">
                 <div className="flex items-center gap-2 mb-8">
                   <div className="w-2 h-2 rounded-full bg-[#fd5000]" />
-                  <span className="font-['Space_Mono',monospace] text-[10.5px] font-medium text-[#ABABAB] uppercase tracking-[0.12em]">
+                  <span className="font-['Roboto',sans-serif] text-[10.5px] font-medium text-[#ABABAB] uppercase tracking-[0.12em]">
                     A&amp;A Roofing · Storm Surge · Dec 2025
                   </span>
                 </div>
                 <blockquote className="flex-1" style={{ borderLeft: '3px solid #fd5000', paddingLeft: 20 }}>
                   <span className="font-jakarta font-extrabold text-[#fd5000] text-[52px] leading-[0.6] block mb-3 select-none">"</span>
                   <p className="font-jakarta font-bold text-[#191919] text-[20px] leading-[1.4] tracking-[-0.02em]">
-                    When the storm hit, we didn't miss a single call. Nova handled the surge and we captured every opportunity — without adding a single person to the team.
+                    When the storm hit, we didn't miss a single call. The AI Agent handled the surge and we captured every opportunity, without adding a single person to the team.
                   </p>
                 </blockquote>
                 <p className="font-inter text-[13.5px] text-[#7A7A7A] leading-[1.75] mt-6">
-                  A major storm struck A&amp;A Roofing's service area in December 2025 — a <strong className="text-[#191919] font-semibold">458% surge in inbound calls</strong> with every crew already deployed. Instead of missing opportunities, they relied on Zuper AI Agent Nova to handle every call.
+                  A major storm struck A&amp;A Roofing's service area in December 2025, a <strong className="text-[#191919] font-semibold">458% spike in inbound calls</strong> with every crew already in the field. Instead of losing leads to voicemail, the AI Agent answered every call, qualified every lead, and logged every job. When crews freed up, the pipeline was full and dispatch was ready.
                 </p>
                 <div className="mt-7 pt-6 border-t border-[#ede8e2]">
                   <div className="flex items-center justify-between">
@@ -3002,10 +3210,10 @@ function CTASection() {
       <RevealOnScroll>
         <div className="relative">
           <h2 className="font-jakarta font-extrabold text-white text-[clamp(34px,4.5vw,58px)] leading-[1.1] tracking-[-0.04em] max-w-[680px] mx-auto mb-4">
-            Ready to never miss<br />another lead?
+            Stop losing leads<br />to voicemail.
           </h2>
-          <p className="font-inter text-[18px] font-light max-w-[480px] mx-auto mb-11 leading-[1.65]" style={{ color: '#E8E8E8' }}>
-            See Nova handle a live workflow customized with your company name, services, and real availability.
+          <p className="font-inter text-[18px] font-light max-w-[520px] mx-auto mb-11 leading-[1.65]" style={{ color: '#E8E8E8' }}>
+            Book a demo and hear the CSR Agent take a real call as your company.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a href="https://www.zuper.co/demo" className="font-inter bg-white text-[#fd5000] px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
@@ -3100,12 +3308,12 @@ function Footer() {
 
         {/* Bottom bar */}
         <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="font-['Space_Mono',monospace] text-[11px] text-[#555]">
+          <div className="font-['Roboto',sans-serif] text-[11px] text-[#555]">
             © 2025 Zuper Inc. All rights reserved.
           </div>
           <div className="flex items-center gap-2">
             <span className="w-[5px] h-[5px] rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 4px #4ade80' }} />
-            <span className="font-['Space_Mono',monospace] text-[10px] text-[#555]">All systems operational</span>
+            <span className="font-['Roboto',sans-serif] text-[10px] text-[#555]">All systems operational</span>
           </div>
         </div>
       </div>

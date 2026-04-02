@@ -118,7 +118,7 @@ export default function ProfileCard({
               </h3>
               <div className="flex items-center gap-2">
                 <span className="w-[7px] h-[7px] rounded-full shrink-0" style={{ background: dotColor, boxShadow: `0 0 6px ${dotColor}` }} />
-                <span className="text-[12px] font-medium text-[#bbb]" style={{ fontFamily: 'Space Mono, monospace' }}>
+                <span className="text-[12px] font-medium text-[#bbb]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                   {number}
                 </span>
               </div>
