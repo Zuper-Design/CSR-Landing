@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, FileText, Calendar, MessageCircle, Radio, HelpCircle, BoltIcon, Check as LucideCheck, ArrowUpRight, BarChart3, UsersRound, CloudRain, Workflow } from 'lucide-react'
+import { FileText, Calendar, MessageCircle, Radio, HelpCircle, BoltIcon, Check as LucideCheck, ArrowUpRight, BarChart3, UsersRound, CloudRain, Workflow } from 'lucide-react'
 
 // Aliases for backward compat
 const ClipboardList = FileText
@@ -74,18 +74,7 @@ function SectionEyebrow({ label }: { icon?: string; label: string }) {
 }
 
 function GridLines() {
-  return (
-    <div className="absolute inset-0 pointer-events-none z-0 hidden md:block" style={{ overflow: 'hidden' }}>
-      {/* Vertical left */}
-      <div className="absolute top-0 bottom-0" style={{ left: 140, width: 1, background: '#b0b0b0', opacity: 0.5 }} />
-      {/* Vertical right */}
-      <div className="absolute top-0 bottom-0" style={{ right: 140, width: 1, background: '#b0b0b0', opacity: 0.5 }} />
-      {/* Horizontal top */}
-      <div className="absolute left-0 right-0" style={{ top: 0, height: 0.5, background: '#b0b0b0', opacity: 0.5 }} />
-      {/* Horizontal bottom */}
-      <div className="absolute left-0 right-0" style={{ bottom: 0, height: 0.5, background: '#b0b0b0', opacity: 0.5 }} />
-    </div>
-  )
+  return null
 }
 
 const DOT_GRID_PROPS = {
@@ -130,36 +119,44 @@ function RevealOnScroll({ children, delay = 0, className = '' }: {
 
 /* ─────────────────────────── NAVBAR ─────────────────────────── */
 function Navbar() {
-  const navLinks = ['Solutions', 'Industries', 'Resources', 'Company']
+  const navLinks = [
+    { label: 'Home', href: 'https://www.zuper.co/', external: true },
+    { label: 'Capabilities', href: '#capabilities' },
+    { label: 'Get Started', href: '#get-started' },
+    { label: 'Workflows', href: '#workflows' },
+    { label: 'Impact', href: '#impact' },
+    { label: 'Customer Story', href: '#case-study' },
+  ]
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const scrollTo = (link: typeof navLinks[number]) => {
+    setMenuOpen(false)
+    if ('external' in link && link.external) { window.open(link.href, '_blank'); return }
+    const el = document.querySelector(link.href)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <header className="absolute top-0 left-0 right-0 z-50">
       <div className="max-w-[1440px] mx-auto px-4 md:px-10 py-4 grid grid-cols-[auto_1fr_auto] items-center gap-6">
-        <a href="/" className="flex items-center shrink-0">
+        <a href="https://www.zuper.co/" target="_blank" rel="noreferrer" className="flex items-center shrink-0">
           <img src="/zuper-logo.svg" alt="Zuper" className="h-7 w-auto object-contain object-left" style={{ maxWidth: 110 }} />
         </a>
-        <nav className="hidden lg:flex items-center justify-center gap-0.5">
+        <nav className="hidden lg:flex items-center justify-center gap-1">
           {navLinks.map((link) => (
-            <button key={link} className="flex items-center gap-1 px-4 py-2 font-inter font-medium text-white/85 text-[15px] rounded-[8px] whitespace-nowrap transition-all duration-300 hover:text-white hover:bg-white/[0.06]">
-              {link}<ChevronDown size={12} className="opacity-50 mt-0.5 transition-transform duration-300 group-hover:rotate-180" />
+            <button key={link.label} onClick={() => scrollTo(link)} className="px-5 py-2 font-inter font-medium text-white/85 text-[14px] rounded-[8px] whitespace-nowrap transition-all duration-300 hover:text-white hover:bg-white/[0.06]">
+              {link.label}
             </button>
           ))}
         </nav>
         <span className="lg:hidden" />
         <div className="hidden lg:flex items-center gap-3">
-          <button className="text-[#f8f5f1] font-inter font-semibold text-[14px] px-6 py-[11px] rounded-[10px] whitespace-nowrap transition-all duration-300 hover:-translate-y-[1px]"
-            style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}>
-            Customer Login
-          </button>
-          <button className="bg-white text-[#b5271c] font-inter font-semibold text-[14px] px-6 py-[11px] rounded-[10px] whitespace-nowrap transition-all duration-300 hover:-translate-y-[1px]"
+          <a href="https://www.zuper.co/demo" target="_blank" rel="noreferrer" className="bg-white text-[#b5271c] font-inter font-semibold text-[14px] px-6 py-[11px] rounded-[10px] whitespace-nowrap transition-all duration-300 hover:-translate-y-[1px]"
             style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.10)' }}
             onMouseEnter={e => e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'}
             onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.10)'}>
             Schedule Demo
-          </button>
+          </a>
         </div>
         <button aria-label="Toggle navigation menu" className="lg:hidden text-white p-2 justify-self-end" onClick={() => setMenuOpen(!menuOpen)}>
           <div className="space-y-1.5">
@@ -168,15 +165,14 @@ function Navbar() {
         </button>
       </div>
       {menuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-[#1a0500] p-6 flex flex-col gap-4 lg:hidden shadow-xl">
+        <div className="absolute top-full left-0 right-0 bg-[#1a0500] p-6 flex flex-col gap-3 lg:hidden shadow-xl">
           {navLinks.map((link) => (
-            <button key={link} className="text-left text-[#f8f5f1] font-medium text-base flex items-center justify-between">
-              {link}<ChevronDown size={16} />
+            <button key={link.label} onClick={() => scrollTo(link)} className="text-left text-[#f8f5f1] font-medium text-base py-2">
+              {link.label}
             </button>
           ))}
           <hr className="border-white/20" />
-          <button className="border border-[#f8f5f1] text-[#f8f5f1] font-bold text-sm px-6 py-3 rounded-[8px]">Customer Login</button>
-          <button className="bg-[#f8f5f1] text-[#b5271c] font-bold text-sm px-6 py-3 rounded-[8px]">Schedule Demo</button>
+          <a href="https://www.zuper.co/demo" target="_blank" rel="noreferrer" className="bg-[#f8f5f1] text-[#b5271c] font-bold text-sm px-6 py-3 rounded-[8px] text-center block">Schedule Demo</a>
         </div>
       )}
     </header>
@@ -380,11 +376,11 @@ function Hero() {
 
       {/* ── Main content ── */}
       <div
-        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[160px] pb-[100px] md:pb-[160px]"
+        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[160px] pb-[240px] md:pb-[160px]"
       >
 
         {/* Left copy */}
-        <div className="flex flex-col items-start" style={{ maxWidth: 560 }}>
+        <div className="flex flex-col items-start w-full lg:max-w-[560px]">
 
           {/* Live badge */}
           <div
@@ -458,14 +454,15 @@ function Hero() {
 
           {/* CTAs */}
           <div className="flex items-center gap-3 mt-5 md:mt-9" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.65s both' }}>
-            <button
+            <a
+              href="https://www.zuper.co/demo" target="_blank" rel="noreferrer"
               className="font-inter font-semibold text-[15px] text-[#b5271c] px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ background: '#fff', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
               onMouseEnter={e => e.currentTarget.style.boxShadow = '0 10px 32px rgba(0,0,0,0.18)'}
               onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}
             >
               Schedule a Demo
-            </button>
+            </a>
             <button
               className="hidden md:flex items-center gap-2 font-inter font-semibold text-[15px] text-white px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
@@ -489,33 +486,92 @@ function Hero() {
               <span className="md:hidden">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span> & others</span>
             </p>
           </div>
-        </div>
 
-        {/* Mobile compact demo card */}
-        <div className="lg:hidden mt-3 w-full" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
-          <div className="rounded-[14px] flex items-center gap-3 px-3 py-2.5" style={{ background: 'rgba(12,8,6,0.55)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
-              <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                <source src="/orb-loop.mp4" type="video/mp4" />
-              </video>
+        {/* Mobile demo card — full-featured */}
+        <div className="lg:hidden mt-4 w-full relative z-20" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.9s both' }}>
+          <div className="rounded-[18px] flex flex-col overflow-hidden" style={{ background: 'rgba(12,8,6,0.62)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 12px 40px rgba(0,0,0,0.45)' }}>
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 pt-3 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 6px #4ade80' }} />
+                <span className="font-inter text-[10px] font-semibold text-white tracking-wide uppercase">AI Agent Demo</span>
+              </div>
+              <span className="font-['Roboto',sans-serif] text-[10px]" style={{ color: '#8A8A8A' }}>
+                {playing ? `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}` : '1:18'}
+              </span>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-jakarta font-bold text-white text-[12px] leading-tight">Nova — CSR Agent</p>
-              <p className="font-inter text-[10px] text-white/50">Handles calls & storm surge</p>
+            {/* Body — orb left, transcript + play right */}
+            <div className="flex items-center gap-4 px-4 pb-4">
+              {/* Orb */}
+              <div className="relative shrink-0">
+                <div className="absolute inset-0 rounded-full" style={{
+                  background: 'radial-gradient(circle, rgba(253,80,0,0.30) 0%, transparent 70%)',
+                  transform: 'scale(1.4)',
+                  animation: playing ? 'orbBreath 2s ease-in-out infinite' : 'orbBreath 3.5s ease-in-out infinite',
+                }} />
+                {[0, 0.8, 1.6].map((d,idx) => (
+                  <div key={idx} className="absolute inset-0 rounded-full" style={{
+                    border: `1.5px solid rgba(253,80,0,${playing ? 0.3 : 0.12})`,
+                    animation: `${playing ? 'orbPulseRing' : 'orbIdlePulse'} ${playing ? 2.1 : 3.5}s ease-out infinite ${d}s`,
+                  }} />
+                ))}
+                <video autoPlay loop muted playsInline className="relative" style={{
+                  width: 90, height: 90, borderRadius: '50%', objectFit: 'cover',
+                  filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.50))',
+                  animation: playing ? 'none' : 'orbGlow 3.5s ease-in-out infinite',
+                  boxShadow: playing ? '0 0 0 3px rgba(253,80,0,0.35), 0 0 20px rgba(253,80,0,0.20)' : undefined,
+                  transition: 'box-shadow 0.4s ease',
+                }}>
+                  <source src="/orb-loop.mp4" type="video/mp4" />
+                </video>
+              </div>
+              {/* Right — transcript + play */}
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
+                {/* Transcript */}
+                <div className="py-2 px-2.5 rounded-[8px]" style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: `1px solid ${playing ? 'rgba(253,80,0,0.20)' : 'rgba(255,255,255,0.10)'}`,
+                  minHeight: 40,
+                }}>
+                  {activeMsg >= 0 && playing ? (
+                    <p className="font-['Roboto',sans-serif] text-[10px] leading-[1.5]">
+                      <span style={{ color: DEMO_TRANSCRIPT[activeMsg].speaker === 'Agent' ? '#fd7040' : '#60a5fa' }}>
+                        {DEMO_TRANSCRIPT[activeMsg].speaker}
+                      </span>{'  '}
+                      {DEMO_TRANSCRIPT[activeMsg].text.split(' ').slice(0, 15).map((word, wi) => (
+                        <span key={wi} style={{
+                          color: wi <= activeWordIdx ? '#ffffff' : 'rgba(176,176,176,0.45)',
+                          transition: 'color 0.12s ease',
+                        }}>{word} </span>
+                      ))}
+                      {DEMO_TRANSCRIPT[activeMsg].text.split(' ').length > 15 && <span style={{ color: 'rgba(176,176,176,0.45)' }}>...</span>}
+                    </p>
+                  ) : (
+                    <p className="font-['Roboto',sans-serif] text-[10px] leading-[1.5]" style={{ color: '#B0B0B0' }}>
+                      <span style={{ color: '#fd7040' }}>Agent</span>{"  "}Hi there, Mary. You've reached Maven Roofing...
+                    </p>
+                  )}
+                </div>
+                {/* Play button */}
+                <button
+                  aria-label={playing ? 'Stop call playback' : 'Play call demo'}
+                  onClick={() => { setPlaying(p => !p); if (playing) { setActiveMsg(-1); setActiveWordIdx(-1); setElapsed(0); elapsedMsRef.current = 0; if (demoAudioRef.current) { demoAudioRef.current.pause(); demoAudioRef.current.currentTime = 0 } } }}
+                  className="w-full flex items-center justify-center gap-2 font-inter font-semibold text-[12px] rounded-[10px] py-2 transition-all hover:brightness-110 active:scale-[0.98] text-white"
+                  style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000', border: `1px solid ${playing ? 'rgba(255,255,255,0.25)' : '#fd5000'}`, boxShadow: playing ? 'none' : '0 4px 14px rgba(253,80,0,0.35)' }}
+                >
+                  <span className="flex items-center justify-center rounded-full" style={{ width: 20, height: 20, background: 'rgba(255,255,255,0.22)' }}>
+                    {playing ? (
+                      <svg width="8" height="8" viewBox="0 0 10 10" fill="white"><rect x="1" y="1" width="3" height="8" rx="0.5"/><rect x="6" y="1" width="3" height="8" rx="0.5"/></svg>
+                    ) : (
+                      <svg width="7" height="8" viewBox="0 0 10 12" fill="white"><path d="M0 0L10 6L0 12V0Z"/></svg>
+                    )}
+                  </span>
+                  {playing ? 'Stop' : 'Play Call'}
+                </button>
+              </div>
             </div>
-            <button
-              aria-label={playing ? 'Pause demo' : 'Play demo'}
-              onClick={() => setPlaying(p => !p)}
-              className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000' }}
-            >
-              {playing ? (
-                <svg width="9" height="9" viewBox="0 0 10 10" fill="white"><rect x="1" y="0" width="3" height="10" rx="0.5"/><rect x="6" y="0" width="3" height="10" rx="0.5"/></svg>
-              ) : (
-                <svg width="8" height="10" viewBox="0 0 10 12" fill="white" style={{ marginLeft: 1 }}><path d="M0 0L10 6L0 12V0Z"/></svg>
-              )}
-            </button>
           </div>
+        </div>
         </div>
 
         {/* Right card stack — tilts toward cursor */}
@@ -956,13 +1012,13 @@ function Capabilities() {
     <section
       id="capabilities"
       ref={sectionRef}
-      className="bg-[#f8f5f0] relative pt-32"
+      className="bg-[#f8f5f0] relative pt-10 pb-12 lg:pb-0"
     >
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="relative z-10" style={{ height: isMobile ? 'auto' : '100vh' }}>
-        <div style={{ height: isMobile ? 'auto' : '100vh', overflow: 'hidden' }}>
-          <div className="max-w-[1240px] mx-auto px-5 md:px-12 h-full flex flex-col" style={{ paddingTop: 48, paddingBottom: 40 }}>
+        <div style={isMobile ? {} : { height: '100vh', overflow: 'hidden' }}>
+          <div className="max-w-[1240px] mx-auto px-4 md:px-12" style={isMobile ? { paddingTop: 24, paddingBottom: 24 } : { paddingTop: 48, paddingBottom: 40, height: '100%', display: 'flex', flexDirection: 'column' as const }}>
 
             {/* ── Mobile title ── */}
             <div className="lg:hidden mb-6 shrink-0">
@@ -978,8 +1034,9 @@ function Capabilities() {
               </SectionTextBg>
             </div>
 
+
             {/* ── Body: left column (title + image) + right column (cards) ── */}
-            <div className="flex gap-8 items-stretch flex-1 min-h-0">
+            <div className={`${isMobile ? 'flex flex-col gap-4' : 'flex flex-row gap-8 items-stretch flex-1 min-h-0'}`}>
 
               {/* Left: title + image stacked */}
               <div className="hidden lg:flex flex-col shrink-0 gap-5" style={{ width: 480 }}>
@@ -1021,16 +1078,15 @@ function Capabilities() {
                     style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.50) 50%, transparent 100%)' }}>
                     <div className="flex items-center gap-2 mb-2">
                       <span className="w-[8px] h-[8px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 8px #4ade80' }} />
-                      <span className="font-['Roboto',sans-serif] text-[11px] font-medium text-white/80 tracking-[0.12em] uppercase">Live · Available 24/7</span>
+                      <span className="font-['Roboto',sans-serif] text-[11px] font-medium text-white/80 tracking-[0.12em] uppercase">Available 24/7</span>
                     </div>
-                    <p className="font-jakarta font-extrabold text-white text-[22px] leading-tight tracking-[-0.02em]">Nova — CSR Agent</p>
-                    <p className="font-inter text-[13px] mt-1" style={{ color: '#ddd' }}>Handles calls, texts &amp; storm surge — automatically.</p>
+                    <p className="font-jakarta font-extrabold text-white text-[22px] leading-tight tracking-[-0.02em]">CSR Agent</p>
                   </div>
                 </div>
               </div>
 
               {/* Right: cards — infinite auto-scroll with edge fading, pauses on hover */}
-              <div ref={viewportRef} className="flex-1 relative overflow-hidden"
+              <div ref={viewportRef} className={`${isMobile ? '' : 'flex-1'} relative ${isMobile ? 'overflow-visible' : 'overflow-hidden'}`}
                 onMouseEnter={() => { hoveredRef.current = true }}
                 onMouseLeave={() => { hoveredRef.current = false }}
               >
@@ -1051,7 +1107,7 @@ function Capabilities() {
                     <div
                       ref={el => { if (el) cardsInnerRef.current[i] = el }}
                       key={`${c.title}-${i}`}
-                      className="group bg-white rounded-[20px] px-7 py-8 flex items-start gap-5 cursor-grab active:cursor-grabbing"
+                      className="group bg-white rounded-[16px] md:rounded-[20px] px-4 py-5 md:px-7 md:py-8 flex items-start gap-3 md:gap-5 cursor-grab active:cursor-grabbing"
                       style={{
                         boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                         transition: 'box-shadow 0.3s ease',
@@ -1065,7 +1121,7 @@ function Capabilities() {
                     >
                       {/* icon */}
                       <div
-                        className="w-12 h-12 rounded-[12px] flex items-center justify-center shrink-0"
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-[10px] md:rounded-[12px] flex items-center justify-center shrink-0"
                         style={{ background: `linear-gradient(135deg, ${c.color}18 0%, ${c.color}0a 100%)` }}
                       >
                         <c.Icon size={22} strokeWidth={1.7} color={c.color} />
@@ -1323,7 +1379,7 @@ export function VoiceLanguages() {
   const [activeIdx, setActiveIdx] = useState(-1)
 
   return (
-    <div className="snap-section py-32 bg-[#f8f5f0] relative overflow-hidden">
+    <div className="snap-section py-20 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1120px] mx-auto px-5 md:px-12 relative z-10">
@@ -1334,7 +1390,7 @@ export function VoiceLanguages() {
           </h2>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-7">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">
           {VOICES.map((v, i) => (
             <RevealOnScroll key={v.lang} delay={i * 80}>
               <div className="rounded-[20px] overflow-hidden cursor-pointer group"
@@ -1446,8 +1502,8 @@ function IllusAgentProfile({ active, onComplete }: { active?: boolean; onComplet
   const cursorOnBtn = phase === 'hovering' || phase === 'clicking'
 
   return (
-    <div className="flex items-center justify-center p-6 h-full min-h-[540px]" style={{ backgroundImage: 'url(/agent-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="w-full max-w-[340px] relative" style={{ minHeight: 360 }}>
+    <div className="flex items-center justify-center p-6 h-full min-h-[360px] md:min-h-[540px]" style={{ backgroundImage: 'url(/agent-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="w-full max-w-[90%] md:max-w-[340px] relative min-h-[280px] md:min-h-[360px]">
 
         {/* Form card */}
         <div className="absolute inset-0 flex items-center justify-center" style={{
@@ -1576,10 +1632,10 @@ function IllusSuperpowers({ active, onComplete }: { active?: boolean; onComplete
     return () => clearInterval(id)
   }, [active])
   return (
-    <div className="p-6 flex flex-col justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/sp-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="w-full max-w-[500px] mx-auto flex flex-col items-center gap-4">
+    <div className="p-6 flex flex-col justify-center h-full min-h-[360px] md:min-h-[540px]" style={{ backgroundImage: 'url(/sp-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="w-full max-w-[90%] md:max-w-[500px] mx-auto flex flex-col items-center gap-4">
         {/* Nova ID card with floating pills */}
-        <div className="relative" style={{ width: 260 }}>
+        <div className="relative w-[200px] md:w-[260px]">
           {/* Floating capability pills around the card */}
           {caps.map((cap, i) => {
             const enabled = i < enabledCount
@@ -1621,7 +1677,7 @@ function IllusSuperpowers({ active, onComplete }: { active?: boolean; onComplete
         </div>
 
         {/* 4 capability cards in a row */}
-        <div className="w-full grid grid-cols-4 gap-2.5">
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2.5">
           {caps.map((cap, i) => {
             const enabled = i < enabledCount
             return (
@@ -1667,8 +1723,8 @@ function IllusKnowledgeBase({ active, onComplete }: { active?: boolean; onComple
   }, [active])
 
   return (
-    <div className="p-6 flex items-center justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/kb-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="w-full max-w-[560px] flex items-center gap-6">
+    <div className="p-6 flex items-center justify-center h-full min-h-[360px] md:min-h-[540px]" style={{ backgroundImage: 'url(/kb-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="w-full max-w-[90%] md:max-w-[560px] flex flex-col md:flex-row items-center gap-4 md:gap-6">
 
         {/* Left — info cards that fly into agent */}
         <div className="flex-1 flex flex-col gap-2.5 relative">
@@ -1718,7 +1774,7 @@ function IllusKnowledgeBase({ active, onComplete }: { active?: boolean; onComple
         </div>
 
         {/* Right — Nova agent card absorbing knowledge */}
-        <div className="shrink-0 relative" style={{ width: 220 }}>
+        <div className="shrink-0 relative w-full md:w-[220px]">
           <div className="rounded-[18px] overflow-hidden transition-all duration-700" style={{
             background: 'white',
             boxShadow: fedCount > 0 ? `0 0 ${10 + fedCount * 10}px rgba(124,58,237,${0.08 + fedCount * 0.05}), 0 12px 40px rgba(0,0,0,0.1)` : '0 12px 40px rgba(0,0,0,0.1)',
@@ -1795,8 +1851,8 @@ function IllusAddRoute({ active, onComplete }: { active?: boolean; onComplete?: 
   const novaIn = phase === 'joining'
 
   return (
-    <div className="p-6 flex items-center justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="relative w-full max-w-[460px]" style={{ height: 360 }}>
+    <div className="p-6 flex items-center justify-center h-full min-h-[360px] md:min-h-[540px]" style={{ backgroundImage: 'url(/route-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <div className="relative w-full max-w-[90%] md:max-w-[460px] h-[280px] md:h-[360px]">
 
         {/* === Phase 1: Nova card with Connect Agent button === */}
         <div className="absolute inset-0 flex items-center justify-center" style={{
@@ -1967,11 +2023,9 @@ const STEPS: { num: string; title: string; desc: string; tag: string; color: str
 
 function GetStarted() {
   const [activeStep, setActiveStep] = useState(0)
-  const [progress, setProgress] = useState(0)
+  const [animating, setAnimating] = useState(false)
   const [inView, setInView] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
-  const startTimeRef = useRef(Date.now())
-  const rafRef = useRef(0)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const STEP_DURATIONS = [6000, 6000, 7000, 6000]
 
@@ -1987,36 +2041,27 @@ function GetStarted() {
     return () => obs.disconnect()
   }, [])
 
-  // Timer + progress bar — only when in view
+  // Timer — only when in view; CSS handles the progress bar animation
   useEffect(() => {
     if (!inView) {
-      cancelAnimationFrame(rafRef.current)
       if (timerRef.current) clearTimeout(timerRef.current)
+      setAnimating(false)
       return
     }
-    setProgress(0)
-    startTimeRef.current = Date.now()
-    const duration = STEP_DURATIONS[activeStep] || 5000
+    // Reset then start CSS transition on next frame
+    setAnimating(false)
+    requestAnimationFrame(() => requestAnimationFrame(() => setAnimating(true)))
 
-    // Progress bar animation
-    const tick = () => {
-      const elapsed = Date.now() - startTimeRef.current
-      const p = Math.min(1, elapsed / duration)
-      setProgress(p)
-      if (p < 1) rafRef.current = requestAnimationFrame(tick)
-    }
-    rafRef.current = requestAnimationFrame(tick)
-
-    // Auto-advance after duration
+    const duration = STEP_DURATIONS[activeStep] || 6000
     timerRef.current = setTimeout(() => {
       setActiveStep(prev => (prev + 1) % STEPS.length)
     }, duration)
 
-    return () => { cancelAnimationFrame(rafRef.current); if (timerRef.current) clearTimeout(timerRef.current) }
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [activeStep, inView])
 
   return (
-    <section ref={sectionRef} className="py-32 bg-[#f8f5f0] relative overflow-hidden">
+    <section id="get-started" ref={sectionRef} className="py-20 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1280px] mx-auto px-5 md:px-12 relative z-10">
@@ -2035,7 +2080,7 @@ function GetStarted() {
 
         {/* ── Single card: steps left, illustration right ── */}
         <RevealOnScroll>
-          <div className="rounded-[24px] overflow-hidden grid grid-cols-1 lg:grid-cols-[380px_1fr]" style={{ background: 'white', boxShadow: '0 2px 24px rgba(0,0,0,0.05)' }}>
+          <div className="rounded-[16px] md:rounded-[24px] overflow-hidden grid grid-cols-1 lg:grid-cols-[380px_1fr]" style={{ background: 'white', boxShadow: '0 2px 24px rgba(0,0,0,0.05)' }}>
 
             {/* Left — step accordion */}
             <div className="flex flex-col h-full">
@@ -2047,20 +2092,19 @@ function GetStarted() {
                     <button
                       key={s.num}
                       onClick={() => setActiveStep(i)}
-                      className="text-left transition-all duration-300 cursor-pointer flex-1 flex items-stretch relative"
+                      className="text-left transition-all duration-300 cursor-pointer lg:flex-1 flex items-stretch relative pr-4 md:pr-6"
                       style={{
                         paddingLeft: 0,
-                        paddingRight: 24,
                         borderBottom: i < STEPS.length - 1 ? '1px solid #ece7e0' : 'none',
                         background: isActive ? `linear-gradient(to right, ${s.color}0a, transparent)` : 'transparent',
                       }}
                     >
                       {/* Spacer for consistent padding */}
                       <div className="w-[4px] shrink-0" />
-                      <div className="flex-1 flex flex-col justify-center py-5 pl-5">
+                      <div className="flex-1 flex flex-col justify-center py-3 pl-3 md:py-5 md:pl-5">
                         <div className="flex items-center gap-2.5">
                           <span className="font-['Roboto',sans-serif] text-[11px] font-bold transition-colors duration-300" style={{ color: isActive ? s.color : '#c0b8ae' }}>{s.num}</span>
-                          <h3 className={`font-jakarta font-bold text-[16px] transition-colors duration-300 ${isActive ? 'text-[#191919]' : 'text-[#6b6b6b]'}`}>
+                          <h3 className={`font-jakarta font-bold text-[14px] md:text-[16px] transition-colors duration-300 ${isActive ? 'text-[#191919]' : 'text-[#6b6b6b]'}`}>
                             {s.title}
                           </h3>
                           {isActive && (
@@ -2070,16 +2114,22 @@ function GetStarted() {
                             </span>
                           )}
                         </div>
-                        <p className={`font-inter text-[14px] leading-[1.65] transition-all duration-400 overflow-hidden ${isActive ? 'text-[#6b6b6b] max-h-[100px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                          {s.desc}
-                        </p>
+                        <div className={`transition-all duration-400 overflow-hidden ${isActive ? 'max-h-[600px] opacity-100 mt-1.5 md:mt-2' : 'max-h-0 opacity-0'}`}>
+                          <p className="font-inter text-[13px] md:text-[14px] leading-[1.65] text-[#6b6b6b]">
+                            {s.desc}
+                          </p>
+                          {/* Mobile inline illustration */}
+                          <div className="lg:hidden mt-3 rounded-[12px] overflow-hidden h-[320px] relative">
+                            <s.Illustration active={isActive} />
+                          </div>
+                        </div>
                       </div>
                       {/* Timer progress bar */}
                       <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: isActive ? `${s.color}15` : 'transparent' }}>
                         <div className="h-full rounded-full" style={{
-                          width: isActive ? `${progress * 100}%` : '0%',
+                          width: isActive && animating ? '100%' : '0%',
                           background: isActive ? s.color : 'transparent',
-                          transition: 'width 50ms linear',
+                          transition: isActive && animating ? `width ${STEP_DURATIONS[activeStep]}ms linear` : 'none',
                         }} />
                       </div>
                     </button>
@@ -2088,8 +2138,8 @@ function GetStarted() {
               </div>
             </div>
 
-            {/* Right — illustration */}
-            <div className="relative overflow-hidden" style={{ minHeight: 540 }}>
+            {/* Right — illustration (desktop only) */}
+            <div className="hidden lg:block relative overflow-hidden lg:min-h-[540px]">
               {STEPS.map((s, i) => (
                 <div key={s.num} className="absolute inset-0 transition-all duration-500" style={{
                   opacity: i === activeStep ? 1 : 0,
@@ -2377,7 +2427,7 @@ function Workflows() {
   }))
 
   return (
-    <section id="workflows" className="py-32 bg-[#f8f5f0] relative overflow-hidden">
+    <section id="workflows" className="py-20 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1320px] mx-auto px-4 md:px-12 relative z-10">
@@ -3022,7 +3072,8 @@ function RevenueMultiplier() {
 
   return (
     <section
-      className="py-32 bg-[#f8f5f0] relative overflow-hidden"
+      id="impact"
+      className="py-20 bg-[#f8f5f0] relative overflow-hidden"
     >
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
@@ -3033,7 +3084,7 @@ function RevenueMultiplier() {
             <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4 mb-3">
               Results from <span className="text-[#fd5000]">Day One.</span>
             </h2>
-            <p className="font-inter text-[17px] font-light text-[#5A5A5A] max-w-[620px] mx-auto leading-[1.7]">
+            <p className="font-inter text-[15px] text-[#7A7A7A] max-w-[620px] mx-auto leading-[1.7]">
               From the first call it answers, the CSR Agent is already improving your close rates, your pipeline, and your bottom line.
             </p>
           </SectionTextBg>
@@ -3044,13 +3095,13 @@ function RevenueMultiplier() {
           gridTemplateRows: 'auto auto',
         }}>
           {/* Row 1: Large + Small + Small */}
-          <div className="col-span-1 lg:col-span-2 row-span-1"><RMCard item={RM_ITEMS[0]} i={0} /></div>
+          <div className="col-span-1 md:col-span-2 lg:col-span-2 row-span-1"><RMCard item={RM_ITEMS[0]} i={0} /></div>
           <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[1]} i={1} /></div>
           <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[2]} i={2} /></div>
           {/* Row 2: Small + Small + Large */}
           <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[3]} i={3} /></div>
           <div className="col-span-1 row-span-1"><RMCard item={RM_ITEMS[4]} i={4} /></div>
-          <div className="col-span-1 lg:col-span-2 row-span-1"><RMCard item={RM_ITEMS[5]} i={5} /></div>
+          <div className="col-span-1 md:col-span-2 lg:col-span-2 row-span-1"><RMCard item={RM_ITEMS[5]} i={5} /></div>
         </div>
 
       </div>
@@ -3132,7 +3183,7 @@ function CaseStudy() {
   }, [])
 
   return (
-    <section id="case-study" className="py-32 bg-[#f8f5f0] relative overflow-hidden rounded-b-[40px]" style={{ zIndex: 2 }}>
+    <section id="case-study" className="py-20 bg-[#f8f5f0] relative overflow-hidden rounded-b-[40px]" style={{ zIndex: 2 }}>
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1200px] mx-auto px-5 md:px-12 relative z-10">
@@ -3373,85 +3424,16 @@ function CTASection() {
 
 /* ─────────────────────────── FOOTER ─────────────────────────── */
 function Footer() {
-  const productLinks = ['CSR Agent', 'Workflows', 'Integrations', 'Pricing']
-  const companyLinks = ['About', 'Careers', 'Blog', 'Contact']
-  const legalLinks = ['Privacy Policy', 'Terms of Service', 'Security']
-
   return (
-    <footer className="bg-[#191919]">
-      <div className="max-w-[1280px] mx-auto px-5 md:px-12">
-
-        {/* Top section */}
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8 md:gap-12">
-
-          {/* Brand column */}
-          <div>
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 rounded-[8px] bg-[#fd5000] flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M14 2L4 14h7l-1 8 10-12h-7l1-8z"/></svg>
-              </div>
-              <span className="font-jakarta font-extrabold text-white text-[22px] tracking-[-0.03em]">zuper</span>
-            </div>
-            <p className="font-inter text-[14px] text-[#888] leading-[1.7] mb-6 max-w-[280px]">
-              AI-powered CSR that handles overflow calls, after-hours inquiries, and storm surge — so your roofing business never misses a lead.
-            </p>
-            <div className="flex items-center gap-3">
-              {['twitter', 'linkedin', 'youtube'].map(platform => (
-                <a key={platform} href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:-translate-y-[1px]"
-                  style={{ background: 'rgba(255,255,255,0.06)' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(253,80,0,0.15)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    {platform === 'twitter' && <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />}
-                    {platform === 'linkedin' && <><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></>}
-                    {platform === 'youtube' && <><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.33z" /><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></>}
-                  </svg>
-                </a>
-              ))}
-            </div>
+    <footer className="bg-[#1a1a1a]">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-12 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-6 h-6 rounded-[5px] bg-[#fd5000] flex items-center justify-center">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M14 2L4 14h7l-1 8 10-12h-7l1-8z"/></svg>
           </div>
-
-          {/* Product links */}
-          <div>
-            <h4 className="font-jakarta font-bold text-white text-[13px] tracking-[0.04em] uppercase mb-5">Product</h4>
-            <ul className="flex flex-col gap-3">
-              {productLinks.map(l => (
-                <li key={l}><a href="#" className="font-inter text-[14px] text-[#888] hover:text-white transition-colors">{l}</a></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company links */}
-          <div>
-            <h4 className="font-jakarta font-bold text-white text-[13px] tracking-[0.04em] uppercase mb-5">Company</h4>
-            <ul className="flex flex-col gap-3">
-              {companyLinks.map(l => (
-                <li key={l}><a href="#" className="font-inter text-[14px] text-[#888] hover:text-white transition-colors">{l}</a></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal links */}
-          <div>
-            <h4 className="font-jakarta font-bold text-white text-[13px] tracking-[0.04em] uppercase mb-5">Legal</h4>
-            <ul className="flex flex-col gap-3">
-              {legalLinks.map(l => (
-                <li key={l}><a href="#" className="font-inter text-[14px] text-[#888] hover:text-white transition-colors">{l}</a></li>
-              ))}
-            </ul>
-          </div>
+          <span className="font-jakarta font-bold text-white text-[15px] tracking-[-0.02em]">zuper</span>
         </div>
-
-        {/* Bottom bar */}
-        <div className="py-6 flex flex-col md:flex-row items-center justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="font-['Roboto',sans-serif] text-[11px] text-[#555]">
-            © 2025 Zuper Inc. All rights reserved.
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-[5px] h-[5px] rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 4px #4ade80' }} />
-            <span className="font-['Roboto',sans-serif] text-[10px] text-[#555]">All systems operational</span>
-          </div>
-        </div>
+        <span className="font-inter text-[11px] text-[#666]">© 2025 Zuper Inc. All rights reserved.</span>
       </div>
     </footer>
   )
