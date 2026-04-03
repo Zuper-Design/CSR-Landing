@@ -1037,7 +1037,7 @@ function Capabilities() {
 
 
             {/* ── Body: left column (title + image) + right column (cards) ── */}
-            <div className={`${isMobile ? 'flex flex-col gap-4' : 'flex flex-row gap-8 items-stretch flex-1 min-h-0'}`}>
+            <div className={`${isMobile ? 'flex flex-col gap-4 w-full' : 'flex flex-row gap-8 items-stretch flex-1 min-h-0'}`}>
 
               {/* Left: title + image stacked */}
               <div className="hidden lg:flex flex-col shrink-0 gap-5" style={{ width: 480 }}>
@@ -1087,7 +1087,7 @@ function Capabilities() {
               </div>
 
               {/* Right: cards — infinite auto-scroll with edge fading, pauses on hover */}
-              <div ref={viewportRef} className={`${isMobile ? '' : 'flex-1'} relative ${isMobile ? 'overflow-visible' : 'overflow-hidden'}`}
+              <div ref={viewportRef} className={`${isMobile ? 'w-full' : 'flex-1'} relative ${isMobile ? 'overflow-visible' : 'overflow-hidden'}`}
                 onMouseEnter={() => { hoveredRef.current = true }}
                 onMouseLeave={() => { hoveredRef.current = false }}
               >
@@ -1097,7 +1097,7 @@ function Capabilities() {
                 {!isMobile && <div className="absolute bottom-0 left-0 right-0 h-20 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, #f8f5f0, transparent)' }} />}
                 <div
                   ref={cardsRef}
-                  className={`flex flex-col gap-4 ${isMobile ? '' : 'absolute left-0 right-0'}`}
+                  className={`flex flex-col gap-4 ${isMobile ? 'w-full' : 'absolute left-0 right-0'}`}
                   style={isMobile ? {} : {
                     top: 0,
                     willChange: 'transform',
@@ -3429,7 +3429,7 @@ function Footer() {
     <footer className="bg-[#1a1a1a]">
       <div className="max-w-[1280px] mx-auto px-5 md:px-12 py-4 flex items-center justify-between">
         <img src="/zuper-logo.svg" alt="Zuper" className="h-5 w-auto object-contain" />
-        <span className="font-inter text-[11px] text-[#666]">© 2025 Zuper Inc. All rights reserved.</span>
+        <span className="font-inter text-[11px] text-[#666]">© 2026 Zuper Inc. All rights reserved.</span>
       </div>
     </footer>
   )
