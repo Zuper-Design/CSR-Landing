@@ -189,11 +189,14 @@ const HERO_STATS = [
 
 // Words for the reading highlight effect
 const HERO_WORDS: { word: string; lineBreak?: boolean; stroke?: boolean }[] = [
-  { word: 'Answer' },
-  { word: 'every' },
-  { word: 'call.', lineBreak: true },
-  { word: 'Win', stroke: true },
-  { word: 'every', stroke: true },
+  { word: 'First' },
+  { word: 'to' },
+  { word: 'pick' },
+  { word: 'up.', lineBreak: true },
+  { word: 'First', stroke: true },
+  { word: 'to', stroke: true },
+  { word: 'win', stroke: true },
+  { word: 'the', stroke: true },
   { word: 'job.', stroke: true },
 ]
 
@@ -390,8 +393,8 @@ function Hero() {
             <span className="w-[6px] h-[6px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 6px #4ade80' }} />
             {/* white on rgba(0,0,0,0.35)+dark photo ≈ #111 effective bg → contrast ~12:1 ✓ */}
             <span className="font-['Roboto',sans-serif] text-[9px] md:text-[10.5px] font-medium text-white tracking-[0.13em] uppercase">
-              <span className="hidden md:inline">AI that runs your front desk</span>
-              <span className="md:hidden">AI that runs your front desk</span>
+              <span className="hidden md:inline">Never miss another call</span>
+              <span className="md:hidden">Never miss another call</span>
             </span>
           </div>
 
@@ -449,7 +452,7 @@ function Hero() {
             maxWidth: 580, color: '#D4D4D4',
             animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s both',
           }}>
-            Zuper CSR Agent is your AI-powered receptionist that handles<br />overflow calls, after-hours inquiries, and emergency surges<br />so your roofing business never loses revenue to voicemail.
+            CSR Agent is your AI receptionist for overflow,<br />after hours, and the jobs voicemail costs you.
           </p>
 
           {/* CTAs */}
@@ -1030,7 +1033,7 @@ function Capabilities() {
                   <span className="text-[#fd5000]">Starting today.</span>
                 </h2>
                 <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3">
-                  Trained on roofing. Customized to your business. Works inside Zuper and can take calls, book inspections, and create jobs automatically.
+                  CSR Agent knows your business because it runs inside Zuper. So it doesn't just answer calls. It books inspections and creates jobs on the spot.
                 </p>
               </SectionTextBg>
             </div>
@@ -1050,7 +1053,7 @@ function Capabilities() {
                       <span className="text-[#fd5000]">Starting today.</span>
                     </h2>
                     <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.75] mt-3 max-w-[400px]">
-                      Trained on roofing. Customized to your business. Works inside Zuper and can take calls, book inspections, and create jobs automatically.
+                      CSR Agent knows your business because it runs inside Zuper. So it doesn't just answer calls. It books inspections and creates jobs on the spot.
                     </p>
                   </SectionTextBg>
                 </div>
@@ -2071,7 +2074,7 @@ function GetStarted() {
           <SectionTextBg>
             <SectionEyebrow icon="" label="Get Started" />
             <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
-              CSR Agent will go live<br />in <span className="text-[#fd5000]">minutes.</span>
+              From setup to live calls<br />in <span className="text-[#fd5000]">minutes.</span>
             </h2>
             <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] mt-3">
               No dev team. No long onboarding.
