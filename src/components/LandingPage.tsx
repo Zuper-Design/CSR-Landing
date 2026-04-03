@@ -189,15 +189,13 @@ const HERO_STATS = [
 
 // Words for the reading highlight effect
 const HERO_WORDS: { word: string; lineBreak?: boolean; stroke?: boolean }[] = [
-  { word: 'First' },
-  { word: 'to' },
-  { word: 'pick' },
-  { word: 'up.', lineBreak: true },
-  { word: 'First', stroke: true },
-  { word: 'to', stroke: true },
-  { word: 'win', stroke: true },
-  { word: 'the', stroke: true },
-  { word: 'job.', stroke: true },
+  { word: 'Stop' },
+  { word: 'drowning' },
+  { word: 'in' },
+  { word: 'calls.', lineBreak: true },
+  { word: 'Start', stroke: true },
+  { word: 'automating', stroke: true },
+  { word: 'it.', stroke: true },
 ]
 
 function useReadingHighlight(totalWords: number, trigger: number, wordDuration = 320, startDelay = 500) {
@@ -379,7 +377,7 @@ function Hero() {
 
       {/* ── Main content ── */}
       <div
-        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[160px] pb-[240px] md:pb-[160px]"
+        className="relative z-10 max-w-[1240px] mx-auto px-4 md:px-10 flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-14 justify-between pt-[72px] md:pt-[175px] pb-[240px] md:pb-[180px]"
       >
 
         {/* Left copy */}
@@ -387,7 +385,7 @@ function Hero() {
 
           {/* Live badge */}
           <div
-            className="flex items-center gap-[8px] rounded-full px-[12px] py-[5px] mb-4 md:mb-8"
+            className="flex items-center gap-[8px] rounded-full px-[12px] py-[5px] mb-5 md:mb-8"
             style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.28)' }}
           >
             <span className="w-[6px] h-[6px] rounded-full bg-[#4ade80] shrink-0" style={{ boxShadow: '0 0 6px #4ade80' }} />
@@ -399,7 +397,7 @@ function Hero() {
           </div>
 
           {/* Headline — reading highlight: all text visible at low opacity, word by word lights up */}
-          <h1 className="font-jakarta font-extrabold tracking-[-0.035em] leading-[0.95]" style={{ fontSize: 'clamp(58px, 6.5vw, 96px)' }}>
+          <h1 className="font-jakarta font-[900] tracking-[-0.04em] leading-[1.1]" style={{ fontSize: 'clamp(40px, 5.5vw, 80px)' }}>
             {HERO_WORDS.map((w, i) => {
               const highlighted = i <= activeWord
               const isStroke = w.stroke
