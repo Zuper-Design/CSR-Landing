@@ -456,7 +456,7 @@ function Hero() {
           </div>
 
           {/* Social proof — #BCBCBC on dark ≈ 7.6:1 ✓ */}
-          <div className="flex items-center gap-2.5 mt-4 md:mt-7" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
+          <div className="flex items-center gap-2.5 mt-4 md:mt-7 mb-[52px]" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
             <div className="flex -space-x-1.5">
               {['/logo-maven.png', '/logo-aa.png', '/logo-bmr.png'].map((src) => (
                 <img key={src} src={src} alt="Client logo" className="w-7 h-7 rounded-full object-cover bg-white border-2 border-white/40" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }} />
@@ -691,7 +691,7 @@ function Hero() {
         className="absolute bottom-0 left-0 right-0 z-10"
         style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(14px)', borderTop: '1px solid rgba(255,255,255,0.12)' }}
       >
-        <div className="max-w-[1240px] mx-auto px-4 md:px-10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
+        <div className="max-w-[1240px] mx-auto px-4 md:px-10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10 pb-14">
           {HERO_STATS.map(([v, l], i) => (
             <div key={l} className="py-5 flex flex-col items-center gap-[4px]" style={{
               animation: `smoothFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) ${0.8 + i * 0.1}s both`,
@@ -725,9 +725,8 @@ const CHANNELS = [
 
 function ChannelBand() {
   return (
-    <div className="bg-white border-y border-[#ede8e2] relative">
-      <GridLines />
-      <div className="max-w-[1240px] mx-auto px-5 md:px-12 py-5 flex items-center justify-center gap-3 flex-wrap">
+    <div className="bg-white border-b border-[#ede8e2] relative rounded-t-[40px] -mt-14 overflow-hidden" style={{ zIndex: 20 }}>
+      <div className="max-w-[1240px] mx-auto px-5 md:px-12 py-6 flex items-center justify-center gap-3 flex-wrap">
         <span className="font-['Roboto',sans-serif] text-[10px] tracking-[0.14em] uppercase font-semibold text-[#ABABAB] mr-2 whitespace-nowrap">
           Works Across
         </span>
@@ -735,7 +734,7 @@ function ChannelBand() {
           <div
             key={ch.name}
             className="flex items-center gap-2.5 bg-white rounded-[12px] px-4 py-2.5 transition-all cursor-default"
-            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+            style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.06)' }}
           >
             <div
               className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[#fd5000] shrink-0"
@@ -1934,6 +1933,24 @@ const STEPS: { num: string; title: string; desc: string; tag: string; color: str
 
 function GetStarted() {
   const [activeStep, setActiveStep] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    setProgress(0)
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    const tick = 50
+    const duration = 5000
+    let elapsed = 0
+    intervalRef.current = setInterval(() => {
+      elapsed += tick
+      setProgress(Math.min(1, elapsed / duration))
+      if (elapsed >= duration) {
+        setActiveStep(prev => (prev + 1) % STEPS.length)
+      }
+    }, tick)
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [activeStep])
 
   return (
     <section className="py-32 bg-[#f8f5f0] relative overflow-hidden">
@@ -1979,11 +1996,8 @@ function GetStarted() {
                         background: isActive ? `linear-gradient(to right, ${s.color}0a, transparent)` : 'transparent',
                       }}
                     >
-                      {/* Active indicator bar */}
-                      <div className="w-[4px] shrink-0 rounded-full transition-all duration-400 self-stretch my-4" style={{
-                        background: isActive ? s.color : 'transparent',
-                        boxShadow: isActive ? `0 0 8px ${s.color}40` : 'none',
-                      }} />
+                      {/* Spacer for consistent padding */}
+                      <div className="w-[4px] shrink-0" />
                       <div className="flex-1 flex flex-col justify-center py-5 pl-5">
                         <div className="flex items-center gap-2.5">
                           <span className="font-['Roboto',sans-serif] text-[11px] font-bold transition-colors duration-300" style={{ color: isActive ? s.color : '#c0b8ae' }}>{s.num}</span>
@@ -2000,6 +2014,14 @@ function GetStarted() {
                         <p className={`font-inter text-[14px] leading-[1.65] transition-all duration-400 overflow-hidden ${isActive ? 'text-[#6b6b6b] max-h-[100px] opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
                           {s.desc}
                         </p>
+                      </div>
+                      {/* Timer progress bar */}
+                      <div className="absolute bottom-0 left-0 right-0 h-[2px]" style={{ background: isActive ? `${s.color}15` : 'transparent' }}>
+                        <div className="h-full rounded-full" style={{
+                          width: isActive ? `${progress * 100}%` : '0%',
+                          background: isActive ? s.color : 'transparent',
+                          transition: 'width 50ms linear',
+                        }} />
                       </div>
                     </button>
                   )
@@ -2998,7 +3020,7 @@ function CaseStudy() {
   }, [])
 
   return (
-    <section id="case-study" className="py-32 bg-[#f8f5f0] relative overflow-hidden">
+    <section id="case-study" className="py-32 bg-[#f8f5f0] relative overflow-hidden rounded-b-[40px]" style={{ zIndex: 2 }}>
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1200px] mx-auto px-5 md:px-12 relative z-10">
@@ -3128,7 +3150,7 @@ function CTAConfetti({ trigger }: { trigger: boolean }) {
       const fromLeft = i < 80
       particles.push({
         x: fromLeft ? rect.width * 0.12 : rect.width * 0.88,
-        y: rect.height * 0.45 + (Math.random() - 0.5) * rect.height * 0.2,
+        y: rect.height * 0.55 + (Math.random() - 0.5) * rect.height * 0.2,
         vx: (fromLeft ? 1 : -1) * (2 + Math.random() * 7),
         vy: -5 - Math.random() * 9,
         w: 4 + Math.random() * 6,
@@ -3188,7 +3210,7 @@ function CTASection() {
     const obs = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting && !confettiFired) {
-          setConfettiFired(true)
+          setTimeout(() => setConfettiFired(true), 1000)
           obs.disconnect()
         }
       },
@@ -3199,8 +3221,10 @@ function CTASection() {
   }, [confettiFired])
 
   return (
-    <div ref={sectionRef} id="cta" className="snap-section relative overflow-hidden text-center py-24 px-6" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
-      <CTAConfetti trigger={confettiFired} />
+    <div ref={sectionRef} id="cta" className="snap-section relative overflow-hidden text-center pt-52 pb-40 px-6 -mt-10" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 15 }}>
+        <CTAConfetti trigger={confettiFired} />
+      </div>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 100%, rgba(0,0,0,0.2), transparent)' }} />
       {/* Diagonal line pattern overlay */}
       <div
