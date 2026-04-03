@@ -463,7 +463,8 @@ function Hero() {
             >
               Schedule a Demo
             </a>
-            <button
+            <a
+              href="https://www.youtube.com/watch?v=njtFIVu4iAo" target="_blank" rel="noreferrer"
               className="hidden md:flex items-center gap-2 font-inter font-semibold text-[15px] text-white px-8 py-[14px] rounded-[12px] transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
@@ -471,19 +472,19 @@ function Hero() {
             >
               <svg width="8" height="10" viewBox="0 0 10 12" fill="currentColor"><path d="M0 0L10 6L0 12V0Z"/></svg>
               See How It Works
-            </button>
+            </a>
           </div>
 
           {/* Social proof — #BCBCBC on dark ≈ 7.6:1 ✓ */}
           <div className="flex items-center gap-2.5 mt-4 md:mt-7 mb-[52px]" style={{ animation: 'smoothFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.8s both' }}>
             <div className="flex -space-x-1.5">
-              {['/logo-maven.png', '/logo-aa.png', '/logo-bmr.png'].map((src) => (
+              {['/logo-maven.png', '/logo-aa.png'].map((src) => (
                 <img key={src} src={src} alt="Client logo" className="w-7 h-7 rounded-full object-cover bg-white border-2 border-white/40" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }} />
               ))}
             </div>
             <p className="font-inter text-[11px] md:text-[13px]" style={{ color: '#BCBCBC' }}>
-              <span className="hidden md:inline">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span>, <span className="font-semibold text-white">Brothers Metal</span> & others</span>
-              <span className="md:hidden">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A</span> & others</span>
+              <span className="hidden md:inline">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A Roofing Services</span> & others</span>
+              <span className="md:hidden">Trusted by <span className="font-semibold text-white">Maven</span>, <span className="font-semibold text-white">A&A Roofing</span> & others</span>
             </p>
           </div>
 
@@ -494,7 +495,7 @@ function Hero() {
             <div className="flex items-center justify-between px-4 pt-3 pb-2">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 6px #4ade80' }} />
-                <span className="font-inter text-[10px] font-semibold text-white tracking-wide uppercase">AI Agent Demo</span>
+                <span className="font-inter text-[10px] font-semibold text-white tracking-wide uppercase">CSR Agent</span>
               </div>
               <span className="font-['Roboto',sans-serif] text-[10px]" style={{ color: '#8A8A8A' }}>
                 {playing ? `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}` : '1:18'}
@@ -646,7 +647,7 @@ function Hero() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4ade80]" style={{ boxShadow: '0 0 6px #4ade80' }} />
                 {/* white on #0C0806 → ~20:1 ✓ */}
-                <span className="font-inter text-[12px] font-semibold text-white tracking-wide uppercase">AI Agent Demo</span>
+                <span className="font-inter text-[12px] font-semibold text-white tracking-wide uppercase">CSR Agent</span>
               </div>
               {/* #8A8A8A on #0C0806 ≈ 5.1:1 ✓ */}
               <span className="font-['Roboto',sans-serif] text-[11px]" style={{ color: '#8A8A8A' }}>
@@ -1208,7 +1209,7 @@ export function MeetAgents() {
   }, [])
 
   return (
-    <div ref={sectionRef} className="snap-section bg-[#f8f5f0] relative">
+    <div ref={sectionRef} className="bg-[#f8f5f0] relative">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
 
@@ -1379,7 +1380,7 @@ export function VoiceLanguages() {
   const [activeIdx, setActiveIdx] = useState(-1)
 
   return (
-    <div className="snap-section py-20 bg-[#f8f5f0] relative overflow-hidden">
+    <div className="py-20 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1120px] mx-auto px-5 md:px-12 relative z-10">
@@ -2004,7 +2005,7 @@ const STEPS: { num: string; title: string; desc: string; tag: string; color: str
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
     Illustration: IllusAgentProfile,
   },
-  { num: '02', title: 'Call Handling', desc: 'Toggle what the agent can do: answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
+  { num: '02', title: 'Superpowers', desc: 'Toggle what the agent can do: answer calls, take bookings, share updates, reschedule.', tag: 'Capabilities',
     color: '#fd5000', tagBg: '#fff3ed', tagText: '#b93500',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
     Illustration: IllusSuperpowers,
@@ -3384,7 +3385,7 @@ function CTASection() {
   }, [confettiFired])
 
   return (
-    <div ref={sectionRef} id="cta" className="snap-section relative overflow-hidden text-center pt-52 pb-40 px-6 -mt-10" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
+    <div ref={sectionRef} id="cta" className="relative overflow-hidden text-center pt-52 pb-40 px-6 -mt-10" style={{ background: 'linear-gradient(135deg, #8B1A0A 0%, #C83A14 40%, #fd5000 70%, #F5832B 100%)' }}>
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 15 }}>
         <CTAConfetti trigger={confettiFired} />
       </div>
@@ -3409,11 +3410,11 @@ function CTASection() {
               onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}>
               Schedule a Demo
             </a>
-            <a href="#workflows" className="font-inter text-white px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
+            <a href="https://www.youtube.com/watch?v=njtFIVu4iAo" target="_blank" rel="noreferrer" className="font-inter text-white px-9 py-4 rounded-[12px] text-[15px] font-semibold transition-all duration-300 hover:-translate-y-[2px] active:translate-y-0"
               style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
               onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.08)'; e.currentTarget.style.background = 'transparent' }}>
-              Watch Sample Calls
+              See How It Works
             </a>
           </div>
         </div>
@@ -3427,12 +3428,7 @@ function Footer() {
   return (
     <footer className="bg-[#1a1a1a]">
       <div className="max-w-[1280px] mx-auto px-5 md:px-12 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-[5px] bg-[#fd5000] flex items-center justify-center">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M14 2L4 14h7l-1 8 10-12h-7l1-8z"/></svg>
-          </div>
-          <span className="font-jakarta font-bold text-white text-[15px] tracking-[-0.02em]">zuper</span>
-        </div>
+        <img src="/zuper-logo.svg" alt="Zuper" className="h-5 w-auto object-contain" />
         <span className="font-inter text-[11px] text-[#666]">© 2025 Zuper Inc. All rights reserved.</span>
       </div>
     </footer>

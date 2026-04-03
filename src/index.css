@@ -59,8 +59,9 @@
   }
 
 
-  /* Scroll snap — proximity snaps softly to section top */
-  section, .snap-section {
+
+  /* Soft proximity snap — only engages very close to section tops */
+  section[id] {
     scroll-snap-align: start;
     scroll-margin-top: 0;
   }
@@ -94,13 +95,6 @@
 
 /* Mobile responsive overrides */
 @media (max-width: 768px) {
-  /* Disable scroll snap on mobile */
-  html {
-    scroll-snap-type: none;
-  }
-  section, .snap-section {
-    scroll-snap-align: none;
-  }
 
   /* Hide grid lines on mobile */
   .grid-lines-hide-mobile {
