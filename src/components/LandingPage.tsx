@@ -2031,7 +2031,7 @@ function GetStarted() {
 interface Step { title: string; desc: string; doneAt?: number }
 interface Message { role: 'ai' | 'cu'; who: string; text: string; tag?: string; highlight?: boolean; time?: number }
 interface WorkflowPanel {
-  badge: string; badgeColor: 'green' | 'orange' | 'red'
+  badge: string; badgeColor: 'green' | 'orange' | 'red' | 'blue' | 'purple'
   tabName: string; tabNote: string
   h3: string; desc: string; steps: Step[]
   callAvatar: string; callName: string; callInfo: string; callDur: string
