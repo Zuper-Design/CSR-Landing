@@ -45,7 +45,6 @@
   }
   html {
     scroll-behavior: smooth;
-    scroll-snap-type: y proximity;
     scroll-padding-top: 0;
   }
   body {
@@ -60,11 +59,6 @@
 
 
 
-  /* Soft proximity snap — only engages very close to section tops */
-  section[id] {
-    scroll-snap-align: start;
-    scroll-margin-top: 0;
-  }
 
   /* Smoother transitions globally */
   a, button {
