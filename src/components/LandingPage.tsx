@@ -244,11 +244,15 @@ function useReadingHighlight(totalWords: number, trigger: number, wordDuration =
 }
 
 const DEMO_TRANSCRIPT = [
-  { speaker: 'Agent', text: 'Hi, this is ZuperAI — how can I help with your roofing inquiry today?' },
-  { speaker: 'Caller', text: "Yeah, we had a big hailstorm last night and I think my roof's damaged." },
-  { speaker: 'Agent', text: "I'm sorry to hear that. Let me get your details and schedule an inspection right away." },
-  { speaker: 'Caller', text: "That'd be great. My name is Marcus, I'm at 412 Oak Street." },
-  { speaker: 'Agent', text: "Got it, Marcus. I have a crew available tomorrow at 10 AM. Does that work for you?" },
+  { speaker: 'Agent', text: "Hi there, Mary. You've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you need. Are you calling about a new roof inspection, an existing project, or something else today?", time: 1000 },
+  { speaker: 'Caller', text: "No, I just wanna know where you're at so I can maybe visit your office.", time: 14000 },
+  { speaker: 'Agent', text: "Sure. Happy to help with that. We're in North Carolina with offices in Jacksonville and Hampstead. You're welcome to visit us at either location. Is there anything else you'd like help with today?", time: 17000 },
+  { speaker: 'Caller', text: "I'm looking for a job. Is there someone I can talk to?", time: 28000 },
+  { speaker: 'Agent', text: "We're always looking for great people to join our team. You can visit our careers page to see open positions and apply directly. Or if you'd like, I can take your name and number for our recruitment specialist to follow up. What would you prefer?", time: 32000 },
+  { speaker: 'Caller', text: "Please take my number and take a message.", time: 49000 },
+  { speaker: 'Agent', text: "I already have your number on file. I'll pass it along to our recruitment specialist, and they'll reach out to you soon. Is there anything else I can assist you with today?", time: 52000 },
+  { speaker: 'Caller', text: "No. You've been great. Thank you.", time: 65000 },
+  { speaker: 'Agent', text: "You're very welcome. Thanks for calling Maven Roofing. Have a wonderful day.", time: 68000 },
 ]
 
 function Hero() {
@@ -258,52 +262,70 @@ function Hero() {
   const [cardsFanned, setCardsFanned] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [elapsed, setElapsed] = useState(0)
+  const elapsedMsRef = useRef(0)
   const [activeMsg, setActiveMsg] = useState(-1)
   const [activeWordIdx, setActiveWordIdx] = useState(-1)
+  const demoAudioRef = useRef<HTMLAudioElement | null>(null)
+  const demoTickRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const { activeIndex: activeWord, phase } = useReadingHighlight(HERO_WORDS.length, trigger)
 
-  // Demo playback: cycle through transcript messages with word-by-word highlight
+  // Create demo audio element
   useEffect(() => {
-    if (!playing) return
-    let msgIdx = 0
-    let wordIdx = -1
-    let timeout: ReturnType<typeof setTimeout>
-    let timerInterval: ReturnType<typeof setInterval>
+    demoAudioRef.current = new Audio('/demo.mp3')
+    demoAudioRef.current.preload = 'auto'
+    return () => { demoAudioRef.current?.pause(); demoAudioRef.current = null }
+  }, [])
 
-    // Elapsed timer
-    setElapsed(0)
-    timerInterval = setInterval(() => setElapsed(t => t + 1), 1000)
-
-    const nextWord = () => {
-      const words = DEMO_TRANSCRIPT[msgIdx].text.split(' ')
-      wordIdx++
-      if (wordIdx >= words.length) {
-        // Move to next message after a pause
-        msgIdx++
-        wordIdx = -1
-        if (msgIdx >= DEMO_TRANSCRIPT.length) {
-          // Loop back
-          msgIdx = 0
-          setActiveMsg(0)
-          setActiveWordIdx(-1)
-          setElapsed(0)
-          timeout = setTimeout(nextWord, 800)
-          return
-        }
-        setActiveMsg(msgIdx)
-        setActiveWordIdx(-1)
-        timeout = setTimeout(nextWord, 600)
-        return
-      }
-      setActiveWordIdx(wordIdx)
-      timeout = setTimeout(nextWord, 80 + Math.random() * 60)
+  // Sync playback with audio
+  useEffect(() => {
+    if (!playing) {
+      demoAudioRef.current?.pause()
+      if (demoTickRef.current) clearInterval(demoTickRef.current)
+      return
     }
-
+    const audio = demoAudioRef.current
+    if (!audio) return
+    audio.currentTime = 0
+    audio.play().catch(() => {})
+    setElapsed(0)
+    elapsedMsRef.current = 0
     setActiveMsg(0)
     setActiveWordIdx(-1)
-    timeout = setTimeout(nextWord, 400)
 
-    return () => { clearTimeout(timeout); clearInterval(timerInterval) }
+    demoTickRef.current = setInterval(() => {
+      const ms = Math.floor(audio.currentTime * 1000)
+      elapsedMsRef.current = ms
+      setElapsed(Math.floor(audio.currentTime))
+
+      // Find which message is active based on audio time
+      let currentMsg = 0
+      for (let i = DEMO_TRANSCRIPT.length - 1; i >= 0; i--) {
+        if (ms >= (DEMO_TRANSCRIPT[i].time || 0)) { currentMsg = i; break }
+      }
+      setActiveMsg(currentMsg)
+
+      // Estimate word progress within current message
+      const msgTime = DEMO_TRANSCRIPT[currentMsg].time || 0
+      const nextMsgTime = currentMsg < DEMO_TRANSCRIPT.length - 1
+        ? (DEMO_TRANSCRIPT[currentMsg + 1].time || 78000)
+        : 78000
+      const msgElapsed = ms - msgTime
+      const msgDuration = nextMsgTime - msgTime
+      const words = DEMO_TRANSCRIPT[currentMsg].text.split(' ')
+      const wordProgress = Math.min(words.length - 1, Math.floor((msgElapsed / msgDuration) * words.length * 1.3))
+      setActiveWordIdx(wordProgress)
+
+      // Stop at end
+      if (audio.ended) {
+        setPlaying(false)
+        setActiveMsg(-1)
+        setActiveWordIdx(-1)
+        setElapsed(0)
+        elapsedMsRef.current = 0
+      }
+    }, 100)
+
+    return () => { if (demoTickRef.current) clearInterval(demoTickRef.current) }
   }, [playing])
 
   // Restart animation every time the hero section enters the viewport
@@ -656,7 +678,7 @@ function Hero() {
                 </p>
               ) : (
                 <p className="font-['Roboto',sans-serif] text-[11px] leading-[1.6]" style={{ color: '#B0B0B0' }}>
-                  <span style={{ color: '#fd7040' }}>Agent</span>{"  "}Hi, this is ZuperAI — how can I help with your roofing inquiry today?
+                  <span style={{ color: '#fd7040' }}>Agent</span>{"  "}Hi there, Mary. You've reached Maven Roofing Services. This is Mavis...
                 </p>
               )}
             </div>
@@ -665,7 +687,7 @@ function Hero() {
             <div className="px-4 pb-5">
               <button
                 aria-label={playing ? 'Stop call playback' : 'Play call demo'}
-                onClick={() => { setPlaying(p => !p); if (playing) { setActiveMsg(-1); setActiveWordIdx(-1); setElapsed(0) } }}
+                onClick={() => { setPlaying(p => !p); if (playing) { setActiveMsg(-1); setActiveWordIdx(-1); setElapsed(0); elapsedMsRef.current = 0; if (demoAudioRef.current) { demoAudioRef.current.pause(); demoAudioRef.current.currentTime = 0 } } }}
                 className="w-full flex items-center justify-center gap-2.5 font-inter font-semibold text-[14px] rounded-[12px] py-3 transition-all hover:brightness-110 active:scale-[0.98] text-white"
                 style={{ background: playing ? 'rgba(255,255,255,0.12)' : '#fd5000', border: `1px solid ${playing ? 'rgba(255,255,255,0.25)' : '#fd5000'}`, boxShadow: playing ? 'none' : '0 4px 18px rgba(253,80,0,0.35)', transition: 'all 0.3s ease' }}
               >
@@ -1355,7 +1377,7 @@ export function VoiceLanguages() {
 /* ─────────────────────────── GET STARTED ─────────────────────────── */
 
 // Animated illustration: Agent profile — Nova card with form fields appearing
-function IllusAgentProfile({ active }: { active?: boolean }) {
+function IllusAgentProfile({ active, onComplete }: { active?: boolean; onComplete?: () => void }) {
   const [phase, setPhase] = useState<'typing' | 'ready' | 'hovering' | 'clicking' | 'card' | 'reset'>('typing')
   const [typedChars, setTypedChars] = useState(0)
   const [spinAngle, setSpinAngle] = useState(0)
@@ -1400,10 +1422,10 @@ function IllusAgentProfile({ active }: { active?: boolean }) {
     return () => clearTimeout(t)
   }, [phase])
 
-  // Card holds then resets
+  // Card holds then signals complete
   useEffect(() => {
     if (phase !== 'card') return
-    const t = setTimeout(() => setPhase('reset'), 3500)
+    const t = setTimeout(() => { onComplete?.(); setPhase('reset') }, 3500)
     return () => clearTimeout(t)
   }, [phase])
 
@@ -1529,7 +1551,7 @@ function IllusAgentProfile({ active }: { active?: boolean }) {
 }
 
 // Animated illustration: Superpowers — toggles enable one by one, pills appear on Nova card
-function IllusSuperpowers({ active }: { active?: boolean }) {
+function IllusSuperpowers({ active, onComplete }: { active?: boolean; onComplete?: () => void }) {
   const caps = [
     { label: 'Answer calls', icon: '📞', color: '#fd5000', bg: '#fff3ed' },
     { label: 'Take bookings', icon: '📅', color: '#2563eb', bg: '#eef4ff' },
@@ -1537,16 +1559,22 @@ function IllusSuperpowers({ active }: { active?: boolean }) {
     { label: 'Reschedule', icon: '🔄', color: '#7c3aed', bg: '#f0e8ff' },
   ]
   const [enabledCount, setEnabledCount] = useState(0)
-  // Reset when step becomes active
+  const completedRef = useRef(false)
   useEffect(() => {
-    if (active) setEnabledCount(0)
+    if (active) { setEnabledCount(0); completedRef.current = false }
   }, [active])
   useEffect(() => {
     const id = setInterval(() => {
-      setEnabledCount(prev => (prev >= caps.length ? 0 : prev + 1))
+      setEnabledCount(prev => {
+        if (prev >= caps.length) {
+          if (!completedRef.current) { completedRef.current = true; setTimeout(() => onComplete?.(), 1200) }
+          return 0
+        }
+        return prev + 1
+      })
     }, 1200)
     return () => clearInterval(id)
-  }, [])
+  }, [active])
   return (
     <div className="p-6 flex flex-col justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/sp-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="w-full max-w-[500px] mx-auto flex flex-col items-center gap-4">
@@ -1616,21 +1644,27 @@ function IllusSuperpowers({ active }: { active?: boolean }) {
 }
 
 // Animated illustration: Knowledge base — cards feed into Nova agent
-function IllusKnowledgeBase({ active }: { active?: boolean }) {
+function IllusKnowledgeBase({ active, onComplete }: { active?: boolean; onComplete?: () => void }) {
   const items = [
     { label: 'Greeting', icon: '💬', text: 'Hi there! This is Nova, an AI agent...' },
     { label: 'Company Info', icon: '🏢', text: 'Maven Pvt. Ltd. — Roofing specialist' },
     { label: 'FAQ Trained', icon: '📖', text: 'Weekend appointments, pricing, etc.' },
   ]
   const [fedCount, setFedCount] = useState(0)
-  // Reset when step becomes active
+  const completedRef = useRef(false)
   useEffect(() => {
-    if (active) setFedCount(0)
+    if (active) { setFedCount(0); completedRef.current = false }
   }, [active])
   useEffect(() => {
-    const id = setInterval(() => setFedCount(prev => (prev >= items.length ? 0 : prev + 1)), 1800)
+    const id = setInterval(() => setFedCount(prev => {
+      if (prev >= items.length) {
+        if (!completedRef.current) { completedRef.current = true; setTimeout(() => onComplete?.(), 1600) }
+        return 0
+      }
+      return prev + 1
+    }), 1800)
     return () => clearInterval(id)
-  }, [])
+  }, [active])
 
   return (
     <div className="p-6 flex items-center justify-center h-full min-h-[540px]" style={{ backgroundImage: 'url(/kb-bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -1718,7 +1752,7 @@ function IllusKnowledgeBase({ active }: { active?: boolean }) {
 }
 
 // Animated illustration: Add to route — Nova card + connect button → cursor clicks → call scene
-function IllusAddRoute({ active }: { active?: boolean }) {
+function IllusAddRoute({ active, onComplete }: { active?: boolean; onComplete?: () => void }) {
   // card: show Nova card with button, hovering: cursor moves to btn, clicking: press,
   // scene: call scene with biz→customer, joining: Nova slides into middle, reset
   const [phase, setPhase] = useState<'card' | 'hovering' | 'clicking' | 'scene' | 'joining' | 'reset'>('card')
@@ -1745,7 +1779,7 @@ function IllusAddRoute({ active }: { active?: boolean }) {
       return () => clearTimeout(t)
     }
     if (phase === 'joining') {
-      const t = setTimeout(() => setPhase('reset'), 3200)
+      const t = setTimeout(() => { onComplete?.(); setPhase('reset') }, 3200)
       return () => clearTimeout(t)
     }
     if (phase === 'reset') {
@@ -1908,7 +1942,7 @@ function IllusAddRoute({ active }: { active?: boolean }) {
   )
 }
 
-const STEPS: { num: string; title: string; desc: string; tag: string; color: string; tagBg: string; tagText: string; icon: React.ReactNode; Illustration: React.ComponentType<{ active?: boolean }> }[] = [
+const STEPS: { num: string; title: string; desc: string; tag: string; color: string; tagBg: string; tagText: string; icon: React.ReactNode; Illustration: React.ComponentType<{ active?: boolean; onComplete?: () => void }> }[] = [
   { num: '01', title: 'Agent Identity', desc: 'Name your agent, set the personality, and define expertise areas.', tag: 'Identity',
     color: '#7c3aed', tagBg: '#f0e8ff', tagText: '#5b21b6',
     icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
@@ -1934,44 +1968,69 @@ const STEPS: { num: string; title: string; desc: string; tag: string; color: str
 function GetStarted() {
   const [activeStep, setActiveStep] = useState(0)
   const [progress, setProgress] = useState(0)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [inView, setInView] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const startTimeRef = useRef(Date.now())
+  const rafRef = useRef(0)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const STEP_DURATIONS = [6000, 6000, 7000, 6000]
 
+  // Detect when section enters viewport
   useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.3 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  // Timer + progress bar — only when in view
+  useEffect(() => {
+    if (!inView) {
+      cancelAnimationFrame(rafRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      return
+    }
     setProgress(0)
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    const tick = 50
-    const duration = 5000
-    let elapsed = 0
-    intervalRef.current = setInterval(() => {
-      elapsed += tick
-      setProgress(Math.min(1, elapsed / duration))
-      if (elapsed >= duration) {
-        setActiveStep(prev => (prev + 1) % STEPS.length)
-      }
-    }, tick)
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [activeStep])
+    startTimeRef.current = Date.now()
+    const duration = STEP_DURATIONS[activeStep] || 5000
+
+    // Progress bar animation
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current
+      const p = Math.min(1, elapsed / duration)
+      setProgress(p)
+      if (p < 1) rafRef.current = requestAnimationFrame(tick)
+    }
+    rafRef.current = requestAnimationFrame(tick)
+
+    // Auto-advance after duration
+    timerRef.current = setTimeout(() => {
+      setActiveStep(prev => (prev + 1) % STEPS.length)
+    }, duration)
+
+    return () => { cancelAnimationFrame(rafRef.current); if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [activeStep, inView])
 
   return (
-    <section className="py-32 bg-[#f8f5f0] relative overflow-hidden">
+    <section ref={sectionRef} className="py-32 bg-[#f8f5f0] relative overflow-hidden">
       <DotGrid {...DOT_GRID_PROPS} />
       <GridLines />
       <div className="max-w-[1280px] mx-auto px-5 md:px-12 relative z-10">
         {/* Title row — eyebrow + heading + subtitle in one line */}
         <RevealOnScroll className="mb-14">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-8">
-            <SectionTextBg>
-              <SectionEyebrow icon="" label="Get Started" />
-              <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
-                CSR Agent will go live<br />in <span className="text-[#fd5000]">minutes.</span>
-              </h2>
-            </SectionTextBg>
-            <SectionTextBg>
-              <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] max-w-[380px] md:text-right shrink-0">
-                No dev team. No long onboarding. Works inside Zuper and can take calls, book inspections, and create jobs automatically.
-              </p>
-            </SectionTextBg>
-          </div>
+          <SectionTextBg>
+            <SectionEyebrow icon="" label="Get Started" />
+            <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.08] tracking-[-0.035em] mt-4">
+              CSR Agent will go live<br />in <span className="text-[#fd5000]">minutes.</span>
+            </h2>
+            <p className="font-inter text-[15px] text-[#7A7A7A] leading-[1.7] mt-3">
+              No dev team. No long onboarding.
+            </p>
+          </SectionTextBg>
         </RevealOnScroll>
 
         {/* ── Single card: steps left, illustration right ── */}
@@ -2051,7 +2110,7 @@ function GetStarted() {
 
 /* ─────────────────────────── WORKFLOWS ─────────────────────────── */
 interface Step { title: string; desc: string; doneAt?: number }
-interface Message { role: 'ai' | 'cu'; who: string; text: string; tag?: string; highlight?: boolean; time?: number }
+interface Message { role: 'ai' | 'cu'; who: string; text: string; tag?: string; highlight?: boolean; time?: number; blurText?: string }
 interface WorkflowPanel {
   badge: string; badgeColor: 'green' | 'orange' | 'red' | 'blue' | 'purple'
   tabName: string; tabNote: string
@@ -2067,35 +2126,44 @@ const WORKFLOWS: WorkflowPanel[] = [
     h3: 'New Lead Intake & Booking',
     desc: "The CSR Agent picks up as your company, identifies what the caller needs, builds their profile, captures the roofing issue, and books the inspection. All on one call.",
     steps: [
-      { title: 'Greet & Route',           desc: 'Picks up as your company. Asks if it\'s a new inspection, existing project, or something else.', doneAt: 15000 },
+      { title: 'Greet & Route',           desc: 'Picks up as your company. Asks if it\'s a new inspection, existing project, or something else.', doneAt: 13000 },
       { title: 'Build the Profile',       desc: 'Collects name and phone. If the caller skips a field, the agent moves on.', doneAt: 52000 },
-      { title: 'Confirm the Address',     desc: 'Captures property address, reads it back, and confirms before proceeding.', doneAt: 86000 },
-      { title: 'Capture the Issue',       desc: 'Asks what\'s going on with the roof. Logs the damage description and confirms homeowner status.', doneAt: 115000 },
-      { title: 'Book the Inspection',     desc: 'Offers a date and time, confirms the appointment, and creates the job in Zuper.', doneAt: 160000 },
+      { title: 'Confirm the Address',     desc: 'Captures property address, reads it back, and confirms before proceeding.', doneAt: 85000 },
+      { title: 'Capture the Issue',       desc: 'Asks what\'s going on with the roof. Logs the damage description and confirms homeowner status.', doneAt: 113000 },
+      { title: 'Book the Inspection',     desc: 'Offers a date and time, confirms the appointment, and creates the job in Zuper.', doneAt: 145000 },
     ],
     callAvatar: '🏠', callName: 'John — Maven Roofing Services', callInfo: '3:00 · New Roof Inspection', callDur: '3:00',
     messages: [
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there. You've reached Maven Roofing Services. This is Mavis. I'm here to help. Are you calling about a new roofing inspection, an existing project, or something else today?", time: 3000 },
-      { role: 'cu', who: 'John', text: "A roof inspection.", time: 15000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Let's get your profile set up. Can I have your full name?", tag: 'Profile', time: 20000 },
-      { role: 'cu', who: 'John', text: "John Smith.", time: 28000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Thanks, John. Would you like me to use the number you're calling from?", time: 33000 },
-      { role: 'cu', who: 'John', text: "Yes, please.", time: 40000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Got it. What's the best email for you?", time: 45000 },
-      { role: 'cu', who: 'John', text: "I'd rather not give that out right now. I'll give it to the inspector when he gets here.", time: 52000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "No problem. We can skip the email. Can you give me the property address?", time: 60000 },
-      { role: 'cu', who: 'John', text: "25488 Highway 17, Hampstead, North Carolina.", time: 70000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "That's 25488 Highway 17, Hampstead, North Carolina. Sound right?", tag: 'Address Confirm', time: 78000 },
-      { role: 'cu', who: 'John', text: "That's correct.", time: 86000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Great. I'll create your profile now. Are you the homeowner or calling on behalf of someone else?", tag: 'Qualifying', time: 92000 },
-      { role: 'cu', who: 'John', text: "I'm the homeowner.", time: 100000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Could you tell me about the issue with your roof?", time: 106000 },
-      { role: 'cu', who: 'John', text: "I've been noticing water spots on my living room ceiling.", time: 115000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Water spots on the ceiling. When would be the best time for an inspection?", tag: 'Booking', time: 123000 },
-      { role: 'cu', who: 'John', text: "Tomorrow morning.", time: 132000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Tomorrow, April 1st. Any specific time, or should we go with the morning window around 9 AM?", time: 140000 },
-      { role: 'cu', who: 'John', text: "9 AM works.", time: 150000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Your roof inspection is set for tomorrow at 9 AM. A professional will come out to check the water spots. If you need to update anything, just call us back. Have a great day, John.", tag: 'Confirmed ✓', highlight: true, time: 160000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there. You've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you needed. Are you calling about a new roof inspection, an existing project, or something else today?", time: 2000 },
+      { role: 'cu', who: 'John', text: "New roof inspection.", time: 13000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "All right, let's get your profile set up. Can I have your full name, please?", tag: 'Profile', time: 16000 },
+      { role: 'cu', who: 'John', text: "It's John Smith.", time: 21000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Thanks, John. Would you like me to use the number you're calling from?", time: 23000 },
+      { role: 'cu', who: 'John', text: "Yes, please.", time: 32000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Okay, I'll use that number. Is that right?", time: 34000 },
+      { role: 'cu', who: 'John', text: "That's correct.", time: 40000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Great. What's the best email for you?", time: 41000 },
+      { role: 'cu', who: 'John', text: "I don't want to give it out right now. I'll just give it to the inspector once he gets there.", time: 45000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "No problem. We can skip the email for now. Let's move on. Could you give me the property address?", time: 52000 },
+      { role: 'cu', who: 'John', text: "Yes, that is 25488 US 17.", time: 60000, blurText: '25488 US 17' },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Got it. That's 25488 US 17. Could you also tell me the city and state?", time: 67000, blurText: '25488 US 17' },
+      { role: 'cu', who: 'John', text: "That is Hampstead, North Carolina.", time: 74000, blurText: 'Hampstead, North Carolina' },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Thanks. So that's 25488 US 17, Hampstead, North Carolina. Does that sound correct?", tag: 'Address Confirm', time: 78000, blurText: '25488 US 17, Hampstead, North Carolina' },
+      { role: 'cu', who: 'John', text: "That is correct.", time: 85000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Great. I've got your address. I'll create your profile now. This will just take a moment. Are you the homeowner or calling on behalf of someone else?", tag: 'Qualifying', time: 87000 },
+      { role: 'cu', who: 'John', text: "I am the homeowner.", time: 99000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Thanks for confirming. Could you tell me a bit about the issue with your roof that you'd like us to inspect?", time: 101000 },
+      { role: 'cu', who: 'John', text: "I've been noticing some water spots on my living room ceiling.", time: 109000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Got it. Water spots on the living room ceiling. When would be the best date and time for us to send someone out for the inspection?", tag: 'Booking', time: 113000 },
+      { role: 'cu', who: 'John', text: "Tomorrow morning.", time: 127000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Thanks. Just to confirm, tomorrow morning April 1st. Did you have a specific time in mind or should we go with the morning window around 9 AM?", time: 128000 },
+      { role: 'cu', who: 'John', text: "We can do 9 AM.", time: 137000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Perfect. We'll set the inspection for tomorrow morning at 9 AM. Let me get that set up for you now.", time: 139000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Your roof inspection is all set for tomorrow, April 1st at 9 AM. A professional will come out to check the water spots on your living room ceiling. If you need anything else or want to update details later, just let us know.", tag: 'Confirmed ✓', highlight: true, time: 145000 },
+      { role: 'cu', who: 'John', text: "Okay, thank you.", time: 159000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're very welcome, John. Have a great day, and we'll see you tomorrow morning at 9 AM. Goodbye.", time: 161000 },
+      { role: 'cu', who: 'John', text: "Goodbye.", time: 168000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Goodbye, John. Take care. We'll see you soon.", time: 171000 },
     ],
   },
   {
@@ -2104,21 +2172,23 @@ const WORKFLOWS: WorkflowPanel[] = [
     h3: 'Customer Service & Scope Handling',
     desc: "Existing customer calls to check their balance. Then asks about fences. The CSR Agent checks for open invoices, answers accurately, and redirects off-scope requests back to what you cover.",
     steps: [
-      { title: 'Recognize the Caller',      desc: 'Identifies them as an existing customer.', doneAt: 12000 },
-      { title: 'Check Account Status',       desc: 'Looks up invoices. Confirms no balance owed.', doneAt: 28000 },
-      { title: 'Handle Off-Scope Request',   desc: "Caller asks about fences. Agent responds: 'We specialize in roofing. We don't handle fences.'", doneAt: 40000 },
+      { title: 'Recognize the Caller',      desc: 'Identifies them as an existing customer.', doneAt: 11000 },
+      { title: 'Check Account Status',       desc: 'Looks up invoices. Confirms no balance owed.', doneAt: 23000 },
+      { title: 'Handle Off-Scope Request',   desc: "Caller asks about fences. Agent responds: 'We specialize in roofing. We don't handle fences.'", doneAt: 42000 },
       { title: 'Redirect to Services',       desc: 'Offers to help with anything roofing-related.', doneAt: 46000 },
       { title: 'Close the Call',             desc: 'Wraps up warmly. No time wasted.', doneAt: 55000 },
     ],
     callAvatar: '👤', callName: 'Existing Customer — Maven Roofing', callInfo: '0:59 · Service Query', callDur: '0:59',
     messages: [
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there, you've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you need. Are you calling about a new roofing inspection, an existing project, or something else today?", time: 2000 },
-      { role: 'cu', who: 'Caller', text: "Do I owe you anything?", time: 12000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "I can help with that. I don't see any invoices created for you at this time, so it looks like you don't owe anything right now. Is there anything else I can assist you with today?", tag: 'Account Check', time: 16000 },
-      { role: 'cu', who: 'Caller', text: "Well, can you guys do my fence?", time: 28000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We specialize in roofing services: inspections, repairs, replacements, and working with insurance for roof-related issues. We don't handle fences. Is there something related to your roof I can help with?", tag: 'Off-Scope', time: 33000 },
-      { role: 'cu', who: 'Caller', text: "Not at the moment, thank you.", time: 46000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're welcome. If anything comes up with your roof in the future, feel free to reach out. Have a great day.", highlight: true, time: 50000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there. You've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you need. Are you calling about a new roof inspection, an existing project, or something else today?", time: 2000 },
+      { role: 'cu', who: 'Caller', text: "Do I owe you anything?", time: 11000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "I can help with that. I don't see any invoices created for you at this time, so it looks like you don't owe anything right now. Is there anything else I can assist you with today?", tag: 'Account Check', time: 14000 },
+      { role: 'cu', who: 'Caller', text: "Well, can you guys do my fence?", time: 23000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We specialize in roofing services: inspections, repairs, replacements, and working with insurance for roof-related issues. We don't handle fences. Is there something related to your roof that you'd like help with?", tag: 'Off-Scope', time: 28000 },
+      { role: 'cu', who: 'Caller', text: "Not at the moment, thank you.", time: 42000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're welcome. If anything comes up with your roof in the future, feel free to reach out. Have a great day.", time: 46000 },
+      { role: 'cu', who: 'Caller', text: "Bye.", time: 53000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Take care and goodbye.", highlight: true, time: 55000 },
     ],
   },
   {
@@ -2127,21 +2197,25 @@ const WORKFLOWS: WorkflowPanel[] = [
     h3: 'FAQ & Service Scope',
     desc: "Caller asks about solar. Then gutters. The CSR Agent answers both accurately: no to solar, and gutters only as part of a full roof replacement. Stays in your lane and redirects to what you do cover.",
     steps: [
-      { title: 'Greet & Route',         desc: 'Picks up as your company. Caller says they have a question.', doneAt: 16000 },
-      { title: 'Answer: Solar',         desc: "'We specialize in roofing. We don't offer solar installations.'", doneAt: 38000 },
-      { title: 'Answer: Gutters',       desc: "'We don't install gutters as a standalone service. During a roof replacement, we can discuss gutter options.'", doneAt: 70000 },
-      { title: 'Offer Roofing Help',    desc: "'If you're having any roofing concerns, I'd be happy to help.'", doneAt: 85000 },
-      { title: 'Close the Call',        desc: 'Wraps up. No confusion. No wrong promises.', doneAt: 100000 },
+      { title: 'Greet & Route',         desc: 'Picks up as your company. Caller says they have a question.', doneAt: 25000 },
+      { title: 'Answer: Solar',         desc: "'We specialize in roofing. We don't offer solar installations.'", doneAt: 62000 },
+      { title: 'Answer: Gutters',       desc: "'We don't install gutters as a standalone service. During a roof replacement, we can discuss gutter options.'", doneAt: 92000 },
+      { title: 'Offer Roofing Help',    desc: "'If you're having any roofing concerns, I'd be happy to help.'", doneAt: 96000 },
+      { title: 'Close the Call',        desc: 'Wraps up. No confusion. No wrong promises.', doneAt: 105000 },
     ],
-    callAvatar: '❓', callName: 'Caller — Maven Roofing', callInfo: '1:52 · FAQ Query', callDur: '1:52',
+    callAvatar: '❓', callName: 'John — Maven Roofing Services', callInfo: '1:52 · FAQ Query', callDur: '1:52',
     messages: [
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there, you've reached Maven Roofing Services. This is Mavis. I'm here to help. Are you calling about a new roofing inspection, an existing project, or something else today?", time: 3000 },
-      { role: 'cu', who: 'Caller', text: "I just have a couple questions. Do you guys do solar?", time: 16000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Great question. We specialize in roofing — inspections, repairs, and full replacements. We don't offer solar installations. Is there anything roof-related I can help with?", tag: 'Solar — No', time: 22000 },
-      { role: 'cu', who: 'Caller', text: "What about gutters?", time: 42000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We don't install gutters as a standalone service. However, during a full roof replacement, we can discuss gutter options as part of the project. Would you like to schedule a roof inspection?", tag: 'Gutters — Conditional', time: 48000 },
-      { role: 'cu', who: 'Caller', text: "Not right now, but good to know. Thanks.", time: 78000 },
-      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're welcome. If you're ever having any roofing concerns, feel free to reach out. Have a great day.", highlight: true, time: 85000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Hi there, John, you've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you need. Are you calling about a new roof inspection, an existing project, or something else today?", time: 4000 },
+      { role: 'cu', who: 'John', text: "Something else.", time: 17000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Sure, happy to help with that. What do you need help with today?", time: 19000 },
+      { role: 'cu', who: 'John', text: "I've got a quick question.", time: 25000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "Of course. What can I answer for you? I'm right here and ready to help. What's your question?", time: 38000 },
+      { role: 'cu', who: 'John', text: "Yeah, I just want to know if you guys do solar.", time: 43000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We specialize in roofing services: inspections, repairs, replacements, and insurance claims. At this time, we don't offer solar installation, but if you need any help with your roof, I'm here to assist. Is there anything else I can help you with today?", tag: 'Solar — No', time: 49000 },
+      { role: 'cu', who: 'John', text: "Yeah, how about gutters? Do you install gutters?", time: 62000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "We focus on roofing services, like inspections, repairs, and replacements, and we don't install gutters as a standalone service. However, during a roof replacement, we can certainly discuss gutter options if they're part of the overall project. If you're having any roofing concerns or need an inspection, I'd be happy to help with that. What else can I assist you with?", tag: 'Gutters — Conditional', time: 67000 },
+      { role: 'cu', who: 'John', text: "That'll be it for me. Thank you.", time: 92000 },
+      { role: 'ai', who: 'Mavis · Maven Roofing Services', text: "You're very welcome. If you ever need help with your roof or have more questions, feel free to reach out. Have a great day.", highlight: true, time: 96000 },
     ],
   },
 ]
@@ -2159,6 +2233,45 @@ const BADGE_STYLES: Record<string, string> = {
 function parseDurMs(dur: string) {
   const [m, s] = dur.split(':').map(Number)
   return (m * 60 + s) * 1000
+}
+
+function renderBlurredText(text: string, blurText?: string) {
+  if (!blurText) return text
+  const parts = text.split(blurText)
+  return parts.flatMap((part, i, arr) =>
+    i < arr.length - 1
+      ? [part, <span key={i} style={{ filter: 'blur(5px)', userSelect: 'none' }}>{blurText}</span>]
+      : [part]
+  )
+}
+
+function renderBlurredTypewriter(text: string, charProgress: number, blurText?: string) {
+  if (!blurText) {
+    return <>{text.slice(0, charProgress)}<span className="text-[#ccc]">{text.slice(charProgress)}</span></>
+  }
+  const idx = text.indexOf(blurText)
+  if (idx === -1) {
+    return <>{text.slice(0, charProgress)}<span className="text-[#ccc]">{text.slice(charProgress)}</span></>
+  }
+  const blurEnd = idx + blurText.length
+  const result: React.ReactNode[] = []
+  // Before blur region
+  if (charProgress <= idx) {
+    result.push(text.slice(0, charProgress))
+    result.push(<span key="grey1" className="text-[#ccc]">{text.slice(charProgress, idx)}</span>)
+    result.push(<span key="blur" className="text-[#ccc]" style={{ filter: 'blur(5px)', userSelect: 'none' }}>{blurText}</span>)
+    result.push(<span key="grey2" className="text-[#ccc]">{text.slice(blurEnd)}</span>)
+  } else if (charProgress <= blurEnd) {
+    result.push(text.slice(0, idx))
+    result.push(<span key="blur" style={{ filter: 'blur(5px)', userSelect: 'none' }}>{blurText}</span>)
+    result.push(<span key="grey" className="text-[#ccc]">{text.slice(blurEnd)}</span>)
+  } else {
+    result.push(text.slice(0, idx))
+    result.push(<span key="blur" style={{ filter: 'blur(5px)', userSelect: 'none' }}>{blurText}</span>)
+    result.push(text.slice(blurEnd, charProgress))
+    result.push(<span key="grey" className="text-[#ccc]">{text.slice(charProgress)}</span>)
+  }
+  return <>{result}</>
 }
 
 function formatMs(ms: number) {
@@ -2258,9 +2371,9 @@ function Workflows() {
     }
   }, [visibleMsgs])
 
-  const bars = Array.from({ length: 52 }, (_, i) => ({
-    h: 18 + Math.abs(Math.sin(i * 0.45) * 28 + Math.sin(i * 1.2) * 18),
-    filled: i / 52 < ratio,
+  const bars = Array.from({ length: 80 }, (_, i) => ({
+    h: 18 + Math.abs(Math.sin(i * 0.35) * 28 + Math.sin(i * 0.9) * 18),
+    filled: i / 80 < ratio,
   }))
 
   return (
@@ -2274,10 +2387,10 @@ function Workflows() {
           <SectionTextBg>
             <SectionEyebrow icon="🔁" label="Workflows" />
             <h2 className="font-jakarta font-extrabold text-[#191919] text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.035em] mt-4 mb-3">
-              Three scenarios.<br /><span className="text-[#fd5000]">One agent.</span>
+              Many scenarios.<br /><span className="text-[#fd5000]">One agent.</span>
             </h2>
             <p className="font-inter text-[15px] text-[#7A7A7A] max-w-[480px] leading-[1.7]">
-              See exactly how the CSR Agent handles your most critical call types — with real sample transcripts.
+              See exactly how the CSR Agent handles your most critical call types with real sample transcripts.
             </p>
           </SectionTextBg>
         </RevealOnScroll>
@@ -2360,12 +2473,12 @@ function Workflows() {
                   </div>
                   <span className="font-['Roboto',sans-serif] text-[9px] text-[#6b6b6b] tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
-                <div className="flex items-center gap-[2px] h-5">
+                <div className="flex items-center gap-[1px] h-5">
                   {bars.map((b, bi) => (
                     <div key={bi} className="flex-1 rounded-full" style={{
-                      height: `${b.h}%`, background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.4)') : 'rgba(0,0,0,0.05)',
-                      transformOrigin: 'bottom',
-                      animation: playing && b.filled ? `waveSmooth ${2.5 + Math.sin(bi * 0.3) * 1}s ease-in-out ${bi * 0.08}s infinite` : 'none',
+                      height: `${b.h}%`,
+                      background: b.filled ? '#fd5000' : 'rgba(0,0,0,0.08)',
+                      transition: 'background 0.2s ease',
                     }} />
                   ))}
                 </div>
@@ -2385,7 +2498,7 @@ function Workflows() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className={`font-inter text-[9px] font-semibold uppercase tracking-[0.08em] mb-0.5 ${m.role === 'ai' ? 'text-[#fd5000]' : 'text-[#ABABAB]'}`}>{m.who}</div>
-                        <div className="font-inter text-[12px] leading-[1.6] text-[#5A5A5A]">{m.text}</div>
+                        <div className="font-inter text-[12px] leading-[1.6] text-[#5A5A5A]">{renderBlurredText(m.text, m.blurText)}</div>
                         {m.tag && <span className="inline-flex mt-1 font-['Roboto',sans-serif] text-[8px] font-medium px-2 py-[2px] rounded-full" style={{ background: 'rgba(253,80,0,0.08)', color: '#fd5000' }}>{m.tag}</span>}
                       </div>
                     </div>
@@ -2471,15 +2584,14 @@ function Workflows() {
                   <span className="font-['Roboto',sans-serif] text-[10px] text-[#6b6b6b] shrink-0 tabular-nums">{formatMs(elapsedMs)} / {panel.callDur}</span>
                 </div>
                 {/* Waveform */}
-                <div className="flex items-center gap-[2px] h-7">
+                <div className="flex items-center gap-[1px] h-7">
                   {bars.map((b, i) => (
                     <div key={i} className="flex-1 rounded-full"
                       style={{
                         height: `${b.h}%`,
-                        background: b.filled ? (playing ? '#fd5000' : 'rgba(253,80,0,0.4)') : 'rgba(0,0,0,0.05)',
+                        background: b.filled ? '#fd5000' : 'rgba(0,0,0,0.08)',
                         transformOrigin: 'bottom',
-                        animation: playing && b.filled ? `waveSmooth ${2.5 + Math.sin(i * 0.3) * 1}s ease-in-out ${i * 0.08}s infinite` : 'none',
-                        transition: 'background 0.3s ease',
+                        transition: 'background 0.2s ease',
                       }} />
                   ))}
                 </div>
@@ -2513,9 +2625,9 @@ function Workflows() {
                         {m.who}
                       </div>
                       <div className={`font-inter text-[13px] leading-[1.65] ${isActive ? 'text-[#191919]' : m.highlight ? 'text-[#191919] font-medium' : 'text-[#5A5A5A]'}`}>
-                        {isActive ? (
-                          <>{m.text.slice(0, charProgress)}<span className="text-[#ccc]">{m.text.slice(charProgress)}</span></>
-                        ) : m.text}
+                        {isActive
+                          ? renderBlurredTypewriter(m.text, charProgress, m.blurText)
+                          : renderBlurredText(m.text, m.blurText)}
                       </div>
                       {m.tag && (
                         <span className="inline-flex mt-1.5 font-['Roboto',sans-serif] text-[10px] font-medium px-[9px] py-[4px] rounded-full"
