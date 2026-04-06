@@ -971,10 +971,15 @@ function Capabilities() {
         offsetRef.current = ((offsetRef.current % half) + half) % half
       }
 
-      // Color overlay — fully visible once section top reaches viewport
+      // Color overlay — fades in once user is inside the capabilities section
       if (sectionRef.current && colorLayerRef.current) {
         const rect = sectionRef.current.getBoundingClientRect()
-        const progress = Math.min(1, Math.max(0, 1 - rect.top / 200))
+        const vh = window.innerHeight
+        // Start fading only when the section has entered ~60% into viewport
+        // Complete when section top reaches top of viewport
+        const start = vh * 0.8
+        const end = 0
+        const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end)))
         colorLayerRef.current.style.opacity = String(progress)
       }
 
@@ -1057,22 +1062,22 @@ function Capabilities() {
                 </div>
 
                 {/* Image */}
-                <div className="rounded-[24px] overflow-hidden flex-1 min-h-0" style={{ position: 'relative', boxShadow: '0 8px 48px rgba(0,0,0,0.13)' }}>
+                <div className="rounded-[24px] overflow-hidden flex-1 min-h-0 relative" style={{ boxShadow: '0 8px 48px rgba(0,0,0,0.13)', background: 'white' }}>
                   <img
                     src={assets.csrAgentDesk}
                     alt="CSR Agent"
                     className="w-full h-full block"
-                    style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'scale(1.15)' }}
+                    style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'scale(1.1)' }}
                   />
                   <img
                     ref={colorLayerRef}
                     src={assets.csrAgentColor}
                     alt=""
                     aria-hidden
+                    className="absolute inset-0 w-full h-full"
                     style={{
                       objectFit: 'cover', objectPosition: 'center top',
-                      position: 'absolute', inset: 0, width: '100%', height: '100%',
-                      transform: 'scale(1.15)',
+                      transform: 'scale(1.1)',
                       opacity: 0,
                     }}
                   />

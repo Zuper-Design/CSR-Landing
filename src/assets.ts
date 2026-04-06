@@ -58,10 +58,10 @@ export const assets = {
   zuperCentralLogo: 'https://www.figma.com/api/mcp/asset/a13a0e2c-69e4-442a-851d-c80f18ea26b5',
   // Group bubble frame
   bubbleFrame: 'https://www.figma.com/api/mcp/asset/9018c756-200b-4690-8f59-37cbb5a0afed',
-  // CSR agent at desk — line art
-  csrAgentDesk: 'https://www.figma.com/api/mcp/asset/0adfe364-8707-4774-b8d8-cc6e1836c446',
-  // CSR agent at desk — full colour 3D
-  csrAgentColor: 'https://www.figma.com/api/mcp/asset/23ce2025-63c4-4a6c-b5b2-1cf7949e7171',
+  // CSR agent — greyscale line art
+  csrAgentDesk: '/csr-agent-desk.png',
+  // CSR agent — full color version
+  csrAgentColor: '/csr-agent-color.png',
   // "Why customers" section image
   whyCustomersImg: 'https://www.figma.com/api/mcp/asset/fd315ac2-95bc-44e7-950c-d59fc07d08c5',
   // Footer background "ZUPER" text
