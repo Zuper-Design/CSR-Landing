@@ -241,15 +241,34 @@ function useReadingHighlight(totalWords: number, trigger: number, wordDuration =
 }
 
 const DEMO_TRANSCRIPT = [
-  { speaker: 'Agent', text: "Hi there, Mary. You've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you need. Are you calling about a new roof inspection, an existing project, or something else today?", time: 1000 },
-  { speaker: 'Caller', text: "No, I just wanna know where you're at so I can maybe visit your office.", time: 14000 },
-  { speaker: 'Agent', text: "Sure. Happy to help with that. We're in North Carolina with offices in Jacksonville and Hampstead. You're welcome to visit us at either location. Is there anything else you'd like help with today?", time: 17000 },
-  { speaker: 'Caller', text: "I'm looking for a job. Is there someone I can talk to?", time: 28000 },
-  { speaker: 'Agent', text: "We're always looking for great people to join our team. You can visit our careers page to see open positions and apply directly. Or if you'd like, I can take your name and number for our recruitment specialist to follow up. What would you prefer?", time: 32000 },
-  { speaker: 'Caller', text: "Please take my number and take a message.", time: 49000 },
-  { speaker: 'Agent', text: "I already have your number on file. I'll pass it along to our recruitment specialist, and they'll reach out to you soon. Is there anything else I can assist you with today?", time: 52000 },
-  { speaker: 'Caller', text: "No. You've been great. Thank you.", time: 65000 },
-  { speaker: 'Agent', text: "You're very welcome. Thanks for calling Maven Roofing. Have a wonderful day.", time: 68000 },
+  { speaker: 'Agent', text: "Hi there. You've reached Maven Roofing Services. This is Mavis. I'm here to help you get the support you needed. Are you calling about a new roof inspection, an existing project, or something else today?", time: 2000 },
+  { speaker: 'Caller', text: "New roof inspection.", time: 13000 },
+  { speaker: 'Agent', text: "All right, let's get your profile set up. Can I have your full name, please?", time: 16000 },
+  { speaker: 'Caller', text: "It's John Smith.", time: 21000 },
+  { speaker: 'Agent', text: "Thanks, John. Would you like me to use the number you're calling from?", time: 23000 },
+  { speaker: 'Caller', text: "Yes, please.", time: 32000 },
+  { speaker: 'Agent', text: "Okay, I'll use that number. Is that right?", time: 34000 },
+  { speaker: 'Caller', text: "That's correct.", time: 40000 },
+  { speaker: 'Agent', text: "Great. What's the best email for you?", time: 41000 },
+  { speaker: 'Caller', text: "I'll just give it to the inspector once he gets there.", time: 45000 },
+  { speaker: 'Agent', text: "No problem. Could you give me the property address?", time: 52000 },
+  { speaker: 'Caller', text: "Yes, that is [redacted].", time: 60000 },
+  { speaker: 'Agent', text: "Got it. Could you also tell me the city and state?", time: 67000 },
+  { speaker: 'Caller', text: "[redacted], North Carolina.", time: 74000 },
+  { speaker: 'Agent', text: "Thanks. So that's the address. Does that sound correct?", time: 78000 },
+  { speaker: 'Caller', text: "That is correct.", time: 85000 },
+  { speaker: 'Agent', text: "Great. Are you the homeowner or calling on behalf of someone else?", time: 87000 },
+  { speaker: 'Caller', text: "I am the homeowner.", time: 99000 },
+  { speaker: 'Agent', text: "Thanks for confirming. Could you tell me about the issue with your roof?", time: 101000 },
+  { speaker: 'Caller', text: "I've been noticing some water spots on my living room ceiling.", time: 109000 },
+  { speaker: 'Agent', text: "Got it. When would be the best date and time for the inspection?", time: 113000 },
+  { speaker: 'Caller', text: "Tomorrow morning.", time: 127000 },
+  { speaker: 'Agent', text: "Thanks. Just to confirm, tomorrow morning at 9 AM?", time: 128000 },
+  { speaker: 'Caller', text: "We can do 9 AM.", time: 137000 },
+  { speaker: 'Agent', text: "Perfect. Setting the inspection for tomorrow at 9 AM.", time: 139000 },
+  { speaker: 'Agent', text: "Your roof inspection is all set for tomorrow at 9 AM. A professional will check the water spots on your living room ceiling.", time: 145000 },
+  { speaker: 'Caller', text: "Okay, thank you.", time: 159000 },
+  { speaker: 'Agent', text: "You're very welcome, John. Have a great day. Goodbye.", time: 161000 },
 ]
 
 function Hero() {
@@ -280,7 +299,7 @@ function Hero() {
     }
     // Lazy create audio on first play
     if (!demoAudioRef.current) {
-      demoAudioRef.current = new Audio('/demo.mp3')
+      demoAudioRef.current = new Audio('/business-hours.mp3')
       demoAudioRef.current.preload = 'auto'
     }
     const audio = demoAudioRef.current
