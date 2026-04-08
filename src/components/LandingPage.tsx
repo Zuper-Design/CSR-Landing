@@ -266,10 +266,8 @@ function Hero() {
   const demoTickRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const { activeIndex: activeWord, phase } = useReadingHighlight(HERO_WORDS.length, trigger)
 
-  // Create demo audio element
+  // Create demo audio element — lazy, only on first play
   useEffect(() => {
-    demoAudioRef.current = new Audio('/demo.mp3')
-    demoAudioRef.current.preload = 'auto'
     return () => { demoAudioRef.current?.pause(); demoAudioRef.current = null }
   }, [])
 
@@ -279,6 +277,11 @@ function Hero() {
       demoAudioRef.current?.pause()
       if (demoTickRef.current) clearInterval(demoTickRef.current)
       return
+    }
+    // Lazy create audio on first play
+    if (!demoAudioRef.current) {
+      demoAudioRef.current = new Audio('/demo.mp3')
+      demoAudioRef.current.preload = 'auto'
     }
     const audio = demoAudioRef.current
     if (!audio) return
@@ -517,7 +520,7 @@ function Hero() {
                     animation: `${playing ? 'orbPulseRing' : 'orbIdlePulse'} ${playing ? 2.1 : 3.5}s ease-out infinite ${d}s`,
                   }} />
                 ))}
-                <video autoPlay loop muted playsInline className="relative" style={{
+                <video autoPlay loop muted playsInline preload="metadata" className="relative" style={{
                   width: 90, height: 90, borderRadius: '50%', objectFit: 'cover',
                   filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.50))',
                   animation: playing ? 'none' : 'orbGlow 3.5s ease-in-out infinite',
@@ -686,6 +689,7 @@ function Hero() {
                   loop
                   muted
                   playsInline
+                  preload="metadata"
                   className="relative"
                   style={{
                     width: 220, height: 220, borderRadius: '50%', objectFit: 'cover',
